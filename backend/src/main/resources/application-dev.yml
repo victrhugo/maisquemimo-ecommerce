@@ -1,0 +1,108 @@
+# ============================================================
+# SPRING BOOT - DEVELOPMENT PROFILE
+# ============================================================
+# Use: java -jar app.jar --spring.profiles.active=dev
+# Ou: SPRING_PROFILES_ACTIVE=dev java -jar app.jar
+# Ou por padrão via docker-compose
+
+spring:
+  application:
+    name: maisquemimo-commerce
+
+  # ========================================
+  # DATABASE CONFIGURATION - DEVELOPMENT
+  # PostgreSQL local via Docker
+  # ========================================
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/maisquemimo_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 600000
+      connection-timeout: 30000
+      validation-query: SELECT 1
+
+  # ========================================
+  # JPA / HIBERNATE CONFIGURATION
+  # ========================================
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+  # ========================================
+  # DATABASE MIGRATIONS (Flyway)
+  # ========================================
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+# ========================================
+# SERVER CONFIGURATION
+# ========================================
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+
+# ========================================
+# LOGGING CONFIGURATION - DEVELOPMENT
+# DEBUG para troubleshooting
+# ========================================
+logging:
+  level:
+    root: INFO
+    com.maisquemimo: DEBUG
+    org.springframework: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.flywaydb: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# ========================================
+# JWT SECURITY CONFIGURATION - DEVELOPMENT
+# ========================================
+jwt:
+  secret: ${JWT_SECRET:dev-secret-key-change-in-production}
+  expiration: ${JWT_EXPIRATION:86400000}  # 24 horas
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}  # 7 dias
+
+# ========================================
+# ACTUATOR CONFIGURATION - DEVELOPMENT
+# ========================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,env,configprops,threaddump,heapdump
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
+  health:
+    defaults:
+      enabled: true
+    db:
+      enabled: true
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true

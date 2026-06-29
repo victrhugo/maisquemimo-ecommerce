@@ -32,11 +32,16 @@ services:
       dockerfile: Dockerfile
     container_name: maisquemimo-api
     environment:
+      SPRING_PROFILES_ACTIVE: dev  # Use dev profile for local development
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/maisquemimo_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      JWT_SECRET: ${JWT_SECRET:-sua-chave-super-secreta-alterada-em-producao}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-key-change-in-production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-604800000}
+      SERVER_PORT: 8080
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      JAVA_OPTS: -Xms256m -Xmx512m
     ports:
       - "8080:8080"
     depends_on:

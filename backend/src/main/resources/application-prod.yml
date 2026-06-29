@@ -1,0 +1,129 @@
+# ============================================================
+# SPRING BOOT - PRODUCTION PROFILE
+# ============================================================
+# Use: java -jar app.jar --spring.profiles.active=prod
+# Ou: SPRING_PROFILES_ACTIVE=prod java -jar app.jar
+
+spring:
+  application:
+    name: maisquemimo-commerce
+
+  # ========================================
+  # DATABASE CONFIGURATION - PRODUCTION
+  # Neon PostgreSQL com SSL obrigatório
+  # ========================================
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/maisquemimo_db?sslmode=require&connectTimeout=10&socketTimeout=30}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    hikari:
+      # Aumentado para produção
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      validation-query: SELECT 1
+
+  # ========================================
+  # JPA / HIBERNATE CONFIGURATION
+  # ========================================
+  jpa:
+    hibernate:
+      ddl-auto: validate  # NEVER use create/create-drop in prod
+    properties:
+      hibernate:
+        format_sql: false  # Desabilitar em prod (performance)
+        use_sql_comments: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc.batch_size: 20
+        order_inserts: true
+        order_updates: true
+    show-sql: false
+
+  # ========================================
+  # DATABASE MIGRATIONS (Flyway)
+  # ========================================
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
+# ========================================
+# SERVER CONFIGURATION
+# ========================================
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+  error:
+    include-message: always
+    include-binding-errors: always
+  compression:
+    enabled: true
+    min-response-size: 1024
+  tomcat:
+    threads:
+      max: 100
+      min-spare: 10
+    connection-timeout: 30000
+    max-connections: 10000
+
+# ========================================
+# LOGGING CONFIGURATION - PRODUCTION
+# Apenas INFO e WARN em produção
+# ========================================
+logging:
+  level:
+    root: INFO
+    com.maisquemimo: INFO  # ← INFO em prod (sem DEBUG)
+    org.springframework: WARN
+    org.springframework.security: WARN
+    org.springframework.web: WARN
+    org.hibernate: WARN
+    org.flywaydb: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /var/log/maisquemimo/app.log
+    max-size: 10MB
+    max-history: 30
+
+# ========================================
+# JWT SECURITY CONFIGURATION - PRODUCTION
+# Obrigatório configurar em produção
+# ========================================
+jwt:
+  secret: ${JWT_SECRET:MUST_BE_SET_IN_PRODUCTION}
+  expiration: ${JWT_EXPIRATION:86400000}  # 24 horas
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}  # 7 dias
+
+# ========================================
+# ACTUATOR CONFIGURATION - PRODUCTION
+# ========================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      show-components: when-authorized
+      probes:
+        enabled: true
+  health:
+    defaults:
+      enabled: true
+    db:
+      enabled: true
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true

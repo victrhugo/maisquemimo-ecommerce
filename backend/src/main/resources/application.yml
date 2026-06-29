@@ -5,6 +5,7 @@ spring:
   # ========================================
   # DATABASE CONFIGURATION
   # Suporta variáveis de ambiente para Railway/Neon
+  # Em produção: use SSL (sslmode=require)
   # ========================================
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/maisquemimo_db}
@@ -13,6 +14,7 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
+      connection-timeout: 30000
 
   # ========================================
   # JPA / HIBERNATE CONFIGURATION
@@ -22,8 +24,7 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
-        format_sql: true
-        use_sql_comments: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
 
   # ========================================
@@ -32,6 +33,13 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+# ========================================
+# SPRING PROFILES
+# dev: Desenvolvimento com debug
+# prod: Produção com otimizações
+# ========================================
+spring.profiles.active: ${SPRING_PROFILES_ACTIVE:dev}
 
 # ========================================
 # SERVER CONFIGURATION
@@ -44,21 +52,30 @@ server:
     include-message: always
 
 # ========================================
-# LOGGING CONFIGURATION
+# LOGGING CONFIGURATION (Default: INFO)
+# Sobrescrito por application-dev.yml e application-prod.yml
 # ========================================
 logging:
   level:
     root: INFO
-    com.maisquemimo: DEBUG
-    org.springframework.security: DEBUG
-  pattern:
-    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
 # ========================================
 # JWT SECURITY CONFIGURATION
 # Variáveis de ambiente para produção
 # ========================================
 jwt:
-  secret: ${JWT_SECRET:sua-chave-super-secreta-aqui-altere-em-producao}
+  secret: ${JWT_SECRET:deve-ser-definido-em-producao}
   expiration: ${JWT_EXPIRATION:86400000}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+
+# ========================================
+# ACTUATOR (Padrão: apenas health)
+# ========================================
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+
