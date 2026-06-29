@@ -2,14 +2,21 @@ spring:
   application:
     name: maisquemimo-commerce
 
+  # ========================================
+  # DATABASE CONFIGURATION
+  # Suporta variáveis de ambiente para Railway/Neon
+  # ========================================
   datasource:
-    url: jdbc:postgresql://localhost:5432/maisquemimo_db
-    username: postgres
-    password: postgres
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/maisquemimo_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
 
+  # ========================================
+  # JPA / HIBERNATE CONFIGURATION
+  # ========================================
   jpa:
     hibernate:
       ddl-auto: validate
@@ -19,17 +26,26 @@ spring:
         use_sql_comments: true
     show-sql: false
 
+  # ========================================
+  # DATABASE MIGRATIONS (Flyway)
+  # ========================================
   flyway:
     enabled: true
     baseline-on-migrate: true
 
+# ========================================
+# SERVER CONFIGURATION
+# ========================================
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /api
   error:
     include-message: always
 
+# ========================================
+# LOGGING CONFIGURATION
+# ========================================
 logging:
   level:
     root: INFO
@@ -38,7 +54,11 @@ logging:
   pattern:
     console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
+# ========================================
+# JWT SECURITY CONFIGURATION
+# Variáveis de ambiente para produção
+# ========================================
 jwt:
   secret: ${JWT_SECRET:sua-chave-super-secreta-aqui-altere-em-producao}
-  expiration: 86400000 # 24 horas
-  refresh-expiration: 604800000 # 7 dias
+  expiration: ${JWT_EXPIRATION:86400000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
