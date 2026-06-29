@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: maisquemimo-commerce
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/maisquemimo_db
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+    show-sql: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+  error:
+    include-message: always
+
+logging:
+  level:
+    root: INFO
+    com.maisquemimo: DEBUG
+    org.springframework.security: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+jwt:
+  secret: ${JWT_SECRET:sua-chave-super-secreta-aqui-altere-em-producao}
+  expiration: 86400000 # 24 horas
+  refresh-expiration: 604800000 # 7 dias
