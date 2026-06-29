@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Mais que Mimo — Design System
+   Paleta: rosé, creme, malva, cinza-quente
+   ============================================================ */
+
+:root {
+  /* Brand */
+  --mqm-rose-50:  #FDF2F5;
+  --mqm-rose-100: #FAE1E8;
+  --mqm-rose-200: #F4C4D1;
+  --mqm-rose-300: #EB9DB2;
+  --mqm-rose-400: #DE6D8C;
+  --mqm-rose-500: #C94F72;
+  --mqm-rose-600: #A83D5E;
+  --mqm-rose-700: #8C3150;
+  --mqm-rose-800: #742A44;
+  --mqm-rose-900: #61253B;
+
+  --mqm-mauve-50:  #F5F0F5;
+  --mqm-mauve-100: #EBE1EB;
+  --mqm-mauve-200: #D7C3D8;
+  --mqm-mauve-300: #BCA0BE;
+  --mqm-mauve-400: #9E79A1;
+  --mqm-mauve-500: #845E87;
+  --mqm-mauve-600: #6C4B70;
+  --mqm-mauve-700: #583D5B;
+  --mqm-mauve-800: #49334D;
+  --mqm-mauve-900: #3D2C41;
+
+  --mqm-cream-50:  #FFFCF8;
+  --mqm-cream-100: #FDF6ED;
+  --mqm-cream-200: #FAECDB;
+  --mqm-cream-300: #F5DEC0;
+  --mqm-cream-400: #EFCCA0;
+  --mqm-cream-500: #E6B67D;
+
+  --mqm-sage-500: #7A9B87;
+  --mqm-sage-600: #628070;
+
+  /* Semantic tokens — light mode */
+  --background:          var(--mqm-cream-50);
+  --foreground:          #2C2628;
+  --card:                #FFFFFF;
+  --card-foreground:     #2C2628;
+  --popover:             #FFFFFF;
+  --popover-foreground:  #2C2628;
+  --primary:             var(--mqm-rose-500);
+  --primary-foreground:  #FFFFFF;
+  --secondary:           var(--mqm-cream-100);
+  --secondary-foreground: #2C2628;
+  --muted:               var(--mqm-cream-200);
+  --muted-foreground:    #8A7E82;
+  --accent:              var(--mqm-mauve-100);
+  --accent-foreground:   var(--mqm-mauve-700);
+  --destructive:         #E05252;
+  --destructive-foreground: #FFFFFF;
+  --border:              var(--mqm-cream-300);
+  --input:               var(--mqm-cream-200);
+  --ring:                var(--mqm-rose-300);
+  --radius:              0.625rem;
+
+  /* Brand gradients */
+  --gradient-brand: linear-gradient(135deg, var(--mqm-rose-400) 0%, var(--mqm-mauve-500) 100%);
+  --gradient-soft:  linear-gradient(180deg, var(--mqm-cream-50) 0%, var(--mqm-cream-100) 100%);
+}
+
+.dark {
+  --background:          #1E1A1C;
+  --foreground:          #F0E8EA;
+  --card:                #2A2426;
+  --card-foreground:     #F0E8EA;
+  --popover:             #2A2426;
+  --popover-foreground:  #F0E8EA;
+  --primary:             var(--mqm-rose-400);
+  --primary-foreground:  #FFFFFF;
+  --secondary:           #3A3235;
+  --secondary-foreground: #F0E8EA;
+  --muted:               #3A3235;
+  --muted-foreground:    #A89CA0;
+  --accent:              var(--mqm-mauve-800);
+  --accent-foreground:   var(--mqm-mauve-200);
+  --destructive:         #E05252;
+  --destructive-foreground: #FFFFFF;
+  --border:              #4A4245;
+  --input:               #3A3235;
+  --ring:                var(--mqm-rose-500);
+}
+
+@theme inline {
+  --color-background:         var(--background);
+  --color-foreground:         var(--foreground);
+  --color-card:               var(--card);
+  --color-card-foreground:    var(--card-foreground);
+  --color-popover:            var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary:            var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary:          var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:              var(--muted);
+  --color-muted-foreground:   var(--muted-foreground);
+  --color-accent:             var(--accent);
+  --color-accent-foreground:  var(--accent-foreground);
+  --color-destructive:        var(--destructive);
+  --color-border:             var(--border);
+  --color-input:              var(--input);
+  --color-ring:               var(--ring);
+  --radius-sm:   calc(var(--radius) - 4px);
+  --radius-md:   calc(var(--radius) - 2px);
+  --radius-lg:   var(--radius);
+  --radius-xl:   calc(var(--radius) + 4px);
+  --font-sans:   var(--font-plus-jakarta);
+  --font-display: var(--font-playfair);
+}
+
+/* ============================================================
+   Base styles
+   ============================================================ */
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar customizado */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--mqm-rose-300);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mqm-rose-400);
+}
+
+/* Focus ring consistente */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Seleção de texto com cor da marca */
+::selection {
+  background: var(--mqm-rose-200);
+  color: var(--mqm-rose-800);
+}
