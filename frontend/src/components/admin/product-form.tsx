@@ -1,7 +1,7 @@
 'use client';
 
-import { FC, useEffect } from 'react';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { FC } from 'react';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Product } from '@/types/product';
@@ -31,6 +31,7 @@ const productFormSchema = z.object({
 });
 
 type ProductFormData = z.infer<typeof productFormSchema>;
+export type { ProductFormData };
 
 interface ProductFormProps {
   product?: Product;
@@ -52,9 +53,8 @@ export const ProductForm: FC<ProductFormProps> = ({
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    watch,
   } = useForm<ProductFormData>({
-    resolver: zodResolver(productFormSchema) as any,
+    resolver: zodResolver(productFormSchema),
     defaultValues: product
       ? {
           name: product.name,
@@ -87,7 +87,7 @@ export const ProductForm: FC<ProductFormProps> = ({
         description: product ? 'Produto atualizado' : 'Produto criado',
       });
       if (!product) reset();
-    } catch (error) {
+    } catch {
       toast({
         title: 'Erro',
         description: 'Falha ao salvar produto',
@@ -120,7 +120,7 @@ export const ProductForm: FC<ProductFormProps> = ({
             <textarea
               id="description"
               placeholder="Descrição detalhada do produto..."
-              className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="w-full rounded-[var(--radius-lg)] border border-input bg-background/85 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground transition-all duration-[var(--motion-fast)] ease-[var(--ease-brand)] focus:outline-none focus:ring-2 focus:ring-ring"
               rows={4}
               {...register('description')}
               disabled={isLoading || isSubmitting}
@@ -297,11 +297,7 @@ export const ProductForm: FC<ProductFormProps> = ({
 
       {/* Botões */}
       <div className="flex gap-3">
-        <Button
-          type="submit"
-          disabled={isLoading || isSubmitting}
-          className="bg-rose-500 hover:bg-rose-600"
-        >
+        <Button type="submit" disabled={isLoading || isSubmitting}>
           {isSubmitting ? 'Salvando...' : product ? 'Atualizar' : 'Criar'}
         </Button>
         {onCancel && (

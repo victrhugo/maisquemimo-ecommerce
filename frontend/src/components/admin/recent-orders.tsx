@@ -56,7 +56,7 @@ export function RecentOrders() {
               {mockOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-accent/40 transition-colors">
                   <td className="px-6 py-3.5">
-                    <span className="font-mono text-xs font-medium text-[var(--mqm-rose-600)]">
+                    <span className="font-mono text-xs font-medium text-primary">
                       {order.number}
                     </span>
                   </td>

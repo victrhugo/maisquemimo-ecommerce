@@ -5,7 +5,7 @@ import { useProducts, useCreateProduct, useUpdateProduct } from '@/hooks/use-pro
 import { Product } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { ProductTable } from '@/components/admin/product-table';
-import { ProductForm } from '@/components/admin/product-form';
+import { ProductForm, type ProductFormData } from '@/components/admin/product-form';
 import {
   Dialog,
   DialogContent,
@@ -25,12 +25,12 @@ export default function AdminProductsPage() {
   const { mutateAsync: createProduct, isPending: isCreating } = useCreateProduct();
   const { mutateAsync: updateProduct, isPending: isUpdating } = useUpdateProduct();
 
-  const handleCreate = async (formData: any) => {
+  const handleCreate = async (formData: ProductFormData) => {
     await createProduct(formData);
     setIsDialogOpen(false);
   };
 
-  const handleUpdate = async (formData: any) => {
+  const handleUpdate = async (formData: ProductFormData) => {
     if (editingProduct) {
       await updateProduct({ id: editingProduct.id, data: formData });
       setIsDialogOpen(false);
@@ -53,13 +53,10 @@ export default function AdminProductsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Produtos</h1>
+          <h1 className="font-display text-3xl font-medium text-foreground">Produtos</h1>
           <p className="text-muted-foreground">Gerencie o catálogo de produtos</p>
         </div>
-        <Button
-          onClick={() => setIsDialogOpen(true)}
-          className="bg-rose-500 hover:bg-rose-600"
-        >
+        <Button onClick={() => setIsDialogOpen(true)}>
           <PlusIcon className="w-4 h-4 mr-2" />
           Novo Produto
         </Button>
@@ -77,7 +74,7 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-card border rounded-lg">
+      <div className="rounded-[var(--radius-xl)] border border-border/80 bg-card shadow-[var(--shadow-sm)]">
         <ProductTable
           products={data?.content || []}
           onEdit={handleEdit}

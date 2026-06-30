@@ -20,15 +20,18 @@ export function StoreHeader() {
   const itemCount = useCartStore((s) => s.itemCount);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/92 backdrop-blur-xl supports-[backdrop-filter]:bg-background/85">
+      <div className="container mx-auto flex h-[4.4rem] items-center justify-between px-4 sm:px-6">
         {/* Logo */}
-        <Link href="/" className="flex flex-col leading-none">
-          <span className="font-display text-xl font-semibold text-[var(--mqm-rose-600)] tracking-tight">
-            mais que mimo
-          </span>
-          <span className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase">
-            papelaria afetiva
+        <Link href="/" className="flex items-center gap-3 leading-none">
+          <span className="hidden h-9 w-9 rounded-full border border-border/70 bg-[var(--gradient-brand)] sm:block" />
+          <span className="flex flex-col">
+            <span className="font-display text-xl font-medium text-primary tracking-tight">
+              mais que mimo
+            </span>
+            <span className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase">
+              papelaria boutique
+            </span>
           </span>
         </Link>
 
@@ -38,7 +41,7 @@ export function StoreHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="text-sm font-medium text-muted-foreground transition-colors duration-[var(--motion-fast)] hover:text-foreground"
             >
               {link.label}
             </Link>
@@ -69,7 +72,7 @@ export function StoreHeader() {
             <Link href="/carrinho">
               <ShoppingBag className="size-5" />
               {itemCount > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">
                   {itemCount > 9 ? "9+" : itemCount}
                 </span>
               )}
@@ -98,14 +101,14 @@ export function StoreHeader() {
         )}
       >
         <nav
-          className="flex flex-col gap-1 bg-background px-4 py-3"
+          className="flex flex-col gap-1 bg-background/95 px-4 py-3"
           aria-label="Navegação mobile"
         >
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-accent"
+              className="rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium text-foreground hover:bg-accent/80"
               onClick={() => setMenuOpen(false)}
             >
               {link.label}

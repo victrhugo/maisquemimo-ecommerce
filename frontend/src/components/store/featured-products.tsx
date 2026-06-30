@@ -37,22 +37,22 @@ const curatedProducts = [
 
 export function FeaturedProducts() {
   return (
-    <section className="bg-[#EEE3DA] py-16 sm:py-24">
+    <section className="mqm-section bg-[var(--mqm-paper-100)]/75">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
-            <p className="text-xs uppercase tracking-[0.2em] text-[#6C6763]">Seleção da semana</p>
-            <h2 className="mt-3 font-display text-3xl font-medium text-[#2E2A28] sm:text-4xl">
+            <p className="mqm-eyebrow">Seleção da semana</p>
+            <h2 className="mqm-title mt-3 text-3xl font-medium sm:text-4xl">
               Curadoria para uma rotina mais bonita
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-[#6C6763]">
+            <p className="mqm-copy mt-4 text-base">
               Peças com estética atemporal e materiais de alta qualidade para acompanhar
               seus projetos pessoais e profissionais.
             </p>
           </div>
           <Link
             href="/produtos"
-            className="inline-flex items-center gap-2 rounded-full border border-[#2E2A28]/12 bg-white px-5 py-2 text-sm font-medium text-[#2E2A28] transition-all duration-500 hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2 text-sm font-medium text-foreground transition-all duration-[var(--motion-base)] ease-[var(--ease-brand)] hover:scale-[1.02] hover:border-primary/35"
           >
             Ver catálogo completo
             <ArrowRight className="size-4" />
@@ -63,7 +63,7 @@ export function FeaturedProducts() {
           {curatedProducts.map((product) => (
             <article
               key={product.id}
-              className="group overflow-hidden rounded-3xl border border-[#2E2A28]/10 bg-[#F8F5F2] shadow-[0_12px_24px_-20px_rgba(46,42,40,0.35)] transition-all duration-500 hover:scale-[1.02]"
+              className="mqm-interactive group overflow-hidden rounded-[var(--radius-xl)] border border-border/80 bg-card shadow-[var(--shadow-sm)]"
             >
               <div className="relative h-64 overflow-hidden">
                 <img
@@ -72,18 +72,18 @@ export function FeaturedProducts() {
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="lazy"
                 />
-                <span className="absolute left-4 top-4 rounded-full border border-white/55 bg-white/75 px-3 py-1 text-[11px] uppercase tracking-[0.13em] text-[#2E2A28] backdrop-blur-sm">
+                <span className="absolute left-4 top-4 rounded-full border border-border/70 bg-background/90 px-3 py-1 text-[11px] uppercase tracking-[0.13em] text-foreground backdrop-blur-sm">
                   {product.label}
                 </span>
               </div>
               <div className="space-y-4 p-6">
-                <h3 className="font-display text-2xl text-[#2E2A28]">{product.name}</h3>
-                <p className="text-sm leading-relaxed text-[#6C6763]">{product.description}</p>
-                <div className="flex items-center justify-between border-t border-[#2E2A28]/10 pt-4">
-                  <p className="text-xl font-medium text-[#2E2A28]">{formatCurrency(product.price / 100)}</p>
+                <h3 className="mqm-title text-2xl">{product.name}</h3>
+                <p className="mqm-copy text-sm">{product.description}</p>
+                <div className="flex items-center justify-between border-t border-border/75 pt-4">
+                  <p className="text-xl font-medium text-foreground">{formatCurrency(product.price / 100)}</p>
                   <Link
                     href={`/produto/${product.slug}`}
-                    className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.15em] text-[#B8758E] transition-colors duration-500 hover:text-[#2E2A28]"
+                    className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.15em] text-primary transition-colors duration-[var(--motion-fast)] hover:text-foreground"
                   >
                     Ver produto
                     <ArrowRight className="size-3.5" />

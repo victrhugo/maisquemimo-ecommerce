@@ -21,7 +21,7 @@ export function SalesChart() {
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">Receita mensal</CardTitle>
-          <span className="text-sm font-semibold text-[var(--mqm-rose-600)]">
+          <span className="text-sm font-semibold text-primary">
             {formatCurrency(salesData[salesData.length - 1].revenue)}
           </span>
         </div>
@@ -49,8 +49,8 @@ export function SalesChart() {
                   <div
                     className={`h-full w-full rounded-t-md ${
                       isLast
-                        ? "bg-gradient-to-t from-[var(--mqm-rose-500)] to-[var(--mqm-rose-400)]"
-                        : "bg-[var(--mqm-rose-200)] group-hover:bg-[var(--mqm-rose-300)]"
+                        ? "bg-gradient-to-t from-[var(--mqm-olive-700)] to-[var(--mqm-olive-500)]"
+                        : "bg-[var(--mqm-blush-200)] group-hover:bg-[var(--mqm-blush-300)]"
                     } transition-colors`}
                   />
                   <div className="absolute inset-x-0 top-0 hidden -translate-y-7 text-center group-hover:block">

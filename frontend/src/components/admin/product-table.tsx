@@ -47,7 +47,7 @@ export const ProductTable: FC<ProductTableProps> = ({ products, onEdit, isLoadin
   };
 
   if (isLoading) {
-    return <div className="p-4">Carregando...</div>;
+    return <div className="p-4 text-muted-foreground">Carregando...</div>;
   }
 
   if (products.length === 0) {
@@ -62,7 +62,7 @@ export const ProductTable: FC<ProductTableProps> = ({ products, onEdit, isLoadin
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
         <thead>
-          <tr className="border-b bg-muted/50">
+          <tr className="border-b bg-muted/35">
             <th className="px-4 py-3 text-left font-semibold text-sm">Nome</th>
             <th className="px-4 py-3 text-left font-semibold text-sm">SKU</th>
             <th className="px-4 py-3 text-right font-semibold text-sm">Preço</th>
@@ -73,7 +73,7 @@ export const ProductTable: FC<ProductTableProps> = ({ products, onEdit, isLoadin
         </thead>
         <tbody>
           {products.map((product) => (
-            <tr key={product.id} className="border-b hover:bg-muted/50 transition-colors">
+            <tr key={product.id} className="border-b border-border/75 hover:bg-accent/45 transition-colors">
               <td className="px-4 py-3">
                 <div>
                   <p className="font-medium">{product.name}</p>

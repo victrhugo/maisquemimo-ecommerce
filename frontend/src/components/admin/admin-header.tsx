@@ -14,7 +14,7 @@ export function AdminHeader() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-border bg-card px-6">
+    <header className="flex h-16 items-center justify-between border-b border-border/80 bg-card/90 px-6 backdrop-blur-sm">
       {/* Search */}
       <div className="flex w-full max-w-xs items-center gap-2">
         <div className="relative flex-1">
@@ -46,7 +46,7 @@ export function AdminHeader() {
         <Button variant="ghost" size="icon-sm" aria-label="Notificações" className="relative">
           <Bell className="size-4" />
           <span
-            className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[var(--mqm-rose-500)]"
+            className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-primary"
             aria-label="Há notificações não lidas"
           />
         </Button>

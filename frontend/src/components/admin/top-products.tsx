@@ -23,7 +23,7 @@ export function TopProducts() {
             <li key={product.id} className="space-y-1.5">
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--mqm-rose-100)] text-[10px] font-bold text-[var(--mqm-rose-600)]">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">
                     {index + 1}
                   </span>
                   <span className="font-medium text-foreground line-clamp-1">
@@ -37,7 +37,7 @@ export function TopProducts() {
               {/* Progress bar */}
               <div className="h-1.5 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[var(--mqm-rose-400)] to-[var(--mqm-mauve-500)] transition-all duration-500"
+                  className="h-full rounded-full bg-gradient-to-r from-[var(--mqm-blush-400)] to-[var(--mqm-olive-500)] transition-all duration-500"
                   style={{ width: `${(product.sales / maxSales) * 100}%` }}
                   role="progressbar"
                   aria-valuenow={product.sales}

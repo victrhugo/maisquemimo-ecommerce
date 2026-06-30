@@ -31,7 +31,7 @@ export function AdminSidebar() {
   return (
     <aside
       className={cn(
-        "relative flex flex-col border-r border-border bg-card transition-all duration-300",
+        "relative flex flex-col border-r border-border/80 bg-card/90 transition-all duration-300",
         collapsed ? "w-16" : "w-60"
       )}
       aria-label="Navegação administrativa"
@@ -45,7 +45,7 @@ export function AdminSidebar() {
       >
         {!collapsed && (
           <Link href="/dashboard" className="flex flex-col leading-none">
-            <span className="font-display text-base font-semibold text-[var(--mqm-rose-600)]">
+            <span className="font-display text-base font-medium text-primary">
               mais que mimo
             </span>
             <span className="text-[9px] text-muted-foreground tracking-widest uppercase">
@@ -55,7 +55,7 @@ export function AdminSidebar() {
         )}
         {collapsed && (
           <Link href="/dashboard" aria-label="Mais que Mimo Admin">
-            <span className="font-display text-lg font-bold text-[var(--mqm-rose-500)]">M</span>
+            <span className="font-display text-lg font-bold text-primary">M</span>
           </Link>
         )}
       </div>
@@ -72,7 +72,7 @@ export function AdminSidebar() {
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
                 active
-                  ? "bg-[var(--mqm-rose-100)] text-[var(--mqm-rose-700)]"
+                  ? "bg-secondary text-secondary-foreground"
                   : "text-muted-foreground hover:bg-accent hover:text-foreground",
                 collapsed && "justify-center px-2"
               )}
@@ -91,7 +91,7 @@ export function AdminSidebar() {
       <button
         onClick={() => setCollapsed(!collapsed)}
         aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
-        className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-sm hover:text-foreground transition-colors"
+        className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-[var(--shadow-xs)] hover:text-foreground transition-colors"
       >
         {collapsed ? (
           <ChevronRight className="size-3.5" />
@@ -111,7 +111,7 @@ export function AdminSidebar() {
             collapsed && "justify-center px-2"
           )}
         >
-          <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+          <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
           {!collapsed && "Ver loja"}
         </Link>
       </div>

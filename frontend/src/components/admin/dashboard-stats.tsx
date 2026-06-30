@@ -9,32 +9,32 @@ const stats = [
     value: formatCurrency(18420.5),
     change: +12.5,
     icon: TrendingUp,
-    color: "text-[var(--mqm-rose-500)]",
-    bg: "bg-[var(--mqm-rose-100)]",
+    color: "text-primary",
+    bg: "bg-secondary",
   },
   {
     title: "Pedidos",
     value: "142",
     change: +8.1,
     icon: ShoppingBag,
-    color: "text-[var(--mqm-mauve-500)]",
-    bg: "bg-[var(--mqm-mauve-100)]",
+    color: "text-[var(--mqm-olive-700)]",
+    bg: "bg-[var(--mqm-olive-100)]",
   },
   {
     title: "Novos clientes",
     value: "38",
     change: -2.4,
     icon: Users,
-    color: "text-sky-600",
-    bg: "bg-sky-100",
+    color: "text-[var(--mqm-blush-700)]",
+    bg: "bg-[var(--mqm-blush-100)]",
   },
   {
     title: "Produtos ativos",
     value: "512",
     change: +3.7,
     icon: Package,
-    color: "text-emerald-600",
-    bg: "bg-emerald-100",
+    color: "text-[var(--mqm-olive-800)]",
+    bg: "bg-[var(--mqm-paper-200)]",
   },
 ];
 
@@ -57,13 +57,13 @@ export function DashboardStats() {
             </div>
             <div className="mt-3 flex items-center gap-1">
               {stat.change >= 0 ? (
-                <ArrowUpRight className="size-3.5 text-emerald-600" aria-hidden="true" />
+                <ArrowUpRight className="size-3.5 text-[var(--mqm-olive-700)]" aria-hidden="true" />
               ) : (
                 <ArrowDownRight className="size-3.5 text-destructive" aria-hidden="true" />
               )}
               <span
                 className={`text-xs font-medium ${
-                  stat.change >= 0 ? "text-emerald-600" : "text-destructive"
+                  stat.change >= 0 ? "text-[var(--mqm-olive-700)]" : "text-destructive"
                 }`}
               >
                 {Math.abs(stat.change)}%

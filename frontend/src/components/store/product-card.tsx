@@ -54,7 +54,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
     <article className={cn("group", className)}>
       <Link href={`/produto/${product.slug}`} className="block">
         {/* Image container */}
-        <div className="relative aspect-square overflow-hidden rounded-xl bg-[var(--mqm-cream-100)]">
+        <div className="relative aspect-square overflow-hidden rounded-xl bg-[var(--mqm-paper-100)]">
           {product.images?.[0]?.imageUrl ? (
             <Image
               src={product.images[0].imageUrl}
@@ -65,7 +65,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <Sparkles className="size-10 text-[var(--mqm-rose-300)]" aria-hidden="true" />
+              <Sparkles className="size-10 text-[var(--mqm-blush-300)]" aria-hidden="true" />
             </div>
           )}
 
@@ -91,14 +91,14 @@ export function ProductCard({ product, className }: ProductCardProps) {
               "absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200",
               "opacity-0 group-hover:opacity-100",
               favorited
-                ? "bg-[var(--mqm-rose-100)] text-[var(--mqm-rose-500)]"
-                : "bg-white/80 text-muted-foreground hover:text-[var(--mqm-rose-500)] backdrop-blur-sm"
+                ? "bg-secondary text-primary"
+                : "bg-white/80 text-muted-foreground hover:text-primary backdrop-blur-sm"
             )}
           >
             <Heart
               className={cn(
                 "size-4 transition-all",
-                favorited && "fill-[var(--mqm-rose-500)]"
+                favorited && "fill-primary"
               )}
             />
           </button>
@@ -122,14 +122,14 @@ export function ProductCard({ product, className }: ProductCardProps) {
         {/* Info */}
         <div className="mt-3 space-y-1 px-0.5">
           <p className="text-xs text-muted-foreground">{product.categoryId}</p>
-          <h3 className="line-clamp-2 text-sm font-medium leading-snug text-foreground group-hover:text-[var(--mqm-rose-600)] transition-colors">
+          <h3 className="line-clamp-2 text-sm font-medium leading-snug text-foreground group-hover:text-primary transition-colors">
             {product.name}
           </h3>
 
           {/* Rating */}
           {product.reviewCount > 0 && (
             <div className="flex items-center gap-1">
-              <Star className="size-3 fill-amber-400 text-amber-400" aria-hidden="true" />
+              <Star className="size-3 fill-primary text-primary" aria-hidden="true" />
               <span className="text-xs font-medium text-foreground">{product.rating.toFixed(1)}</span>
               <span className="text-xs text-muted-foreground">({product.reviewCount})</span>
             </div>

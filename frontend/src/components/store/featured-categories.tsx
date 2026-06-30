@@ -42,14 +42,14 @@ const categories = [
 
 export function FeaturedCategories() {
   return (
-    <section className="bg-[#F8F5F2] py-16 sm:py-24">
+    <section className="mqm-section">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#6C6763]">Curadoria</p>
-          <h2 className="mt-3 font-display text-3xl font-medium text-[#2E2A28] sm:text-4xl">
+          <p className="mqm-eyebrow">Curadoria</p>
+          <h2 className="mqm-title mt-3 text-3xl font-medium sm:text-4xl">
             Descubra por coleção
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-[#6C6763]">
+          <p className="mqm-copy mt-4 text-base">
             Cada categoria foi criada para unir funcionalidade, beleza e emoção em itens de
             papelaria feitos para durar.
           </p>
@@ -60,19 +60,19 @@ export function FeaturedCategories() {
             <Link
               key={category.slug}
               href={`/produtos?categoria=${category.slug}`}
-              className="group rounded-3xl border border-[#2E2A28]/10 bg-white p-6 transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_14px_30px_-24px_rgba(46,42,40,0.38)]"
+              className="mqm-interactive group rounded-[var(--radius-xl)] border border-border/80 bg-card p-6 shadow-[var(--shadow-sm)]"
             >
               <div className="flex items-start gap-4">
-                <div className="rounded-2xl border border-[#2E2A28]/10 bg-[#F8F5F2] p-3 text-[#B8758E]">
+                <div className="rounded-[var(--radius-md)] border border-border bg-[var(--mqm-paper-100)] p-3 text-primary">
                   <category.icon className="size-5" />
                 </div>
                 <div>
-                  <p className="text-sm uppercase tracking-[0.12em] text-[#6C6763]">Coleção</p>
-                  <h3 className="mt-1 font-display text-2xl text-[#2E2A28]">{category.label}</h3>
+                  <p className="text-sm uppercase tracking-[0.12em] text-muted-foreground">Coleção</p>
+                  <h3 className="mqm-title mt-1 text-2xl">{category.label}</h3>
                 </div>
               </div>
-              <p className="mt-6 text-sm leading-relaxed text-[#6C6763]">{category.description}</p>
-              <p className="mt-6 text-xs uppercase tracking-[0.16em] text-[#B8758E]">Explorar</p>
+              <p className="mqm-copy mt-6 text-sm">{category.description}</p>
+              <p className="mt-6 text-xs uppercase tracking-[0.16em] text-primary">Explorar</p>
             </Link>
           ))}
         </div>

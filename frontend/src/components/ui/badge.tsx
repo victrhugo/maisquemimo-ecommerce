@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
@@ -16,13 +16,13 @@ const badgeVariants = cva(
         outline:
           "border border-border text-foreground",
         rose:
-          "border-transparent bg-[var(--mqm-rose-100)] text-[var(--mqm-rose-700)]",
+          "border-transparent bg-[var(--mqm-blush-100)] text-[var(--mqm-blush-800)]",
         mauve:
-          "border-transparent bg-[var(--mqm-mauve-100)] text-[var(--mqm-mauve-700)]",
+          "border-transparent bg-[var(--mqm-olive-100)] text-[var(--mqm-olive-800)]",
         sage:
-          "border-transparent bg-emerald-100 text-emerald-700",
+          "border-transparent bg-[var(--mqm-olive-200)] text-[var(--mqm-olive-800)]",
         amber:
-          "border-transparent bg-amber-100 text-amber-700",
+          "border-transparent bg-[var(--mqm-paper-200)] text-[var(--mqm-olive-800)]",
       },
     },
     defaultVariants: {

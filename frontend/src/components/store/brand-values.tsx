@@ -25,11 +25,11 @@ const values = [
 
 export function BrandValues() {
   return (
-    <section className="bg-[#F8F5F2] py-16 sm:py-24">
+    <section className="mqm-section">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="text-xs uppercase tracking-[0.2em] text-[#6C6763]">Experiência</p>
-          <h2 className="mt-3 font-display text-3xl font-medium text-[#2E2A28] sm:text-4xl">
+          <p className="mqm-eyebrow">Experiência</p>
+          <h2 className="mqm-title mt-3 text-3xl font-medium sm:text-4xl">
             A delicadeza está em cada etapa
           </h2>
         </div>
@@ -38,13 +38,13 @@ export function BrandValues() {
           {values.map((value) => (
             <div
               key={value.title}
-              className="rounded-3xl border border-[#2E2A28]/10 bg-white p-6 text-center shadow-[0_10px_22px_-20px_rgba(46,42,40,0.35)] transition-all duration-500 hover:scale-[1.02]"
+              className="mqm-interactive rounded-[var(--radius-xl)] border border-border/80 bg-card p-6 text-center shadow-[var(--shadow-sm)]"
             >
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-[#D8A7B3]/45 bg-[#F8F5F2]">
-                <value.icon className="size-5 text-[#B8758E]" aria-hidden="true" />
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] border border-border bg-[var(--mqm-paper-100)]">
+                <value.icon className="size-5 text-primary" aria-hidden="true" />
               </div>
-              <h3 className="mt-4 font-display text-2xl text-[#2E2A28]">{value.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#6C6763]">{value.description}</p>
+              <h3 className="mqm-title mt-4 text-2xl">{value.title}</h3>
+              <p className="mqm-copy mt-2 text-sm">{value.description}</p>
             </div>
           ))}
         </div>
