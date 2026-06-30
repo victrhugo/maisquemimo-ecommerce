@@ -21,30 +21,28 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="bg-gradient-to-br from-[var(--mqm-rose-500)] to-[var(--mqm-mauve-600)] py-16 sm:py-20">
+    <section className="bg-[#F8F5F2] py-16 sm:py-24">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="mx-auto max-w-xl text-center">
+        <div className="mx-auto max-w-3xl rounded-3xl border border-[#2E2A28]/10 bg-white px-6 py-12 text-center shadow-[0_16px_34px_-28px_rgba(46,42,40,0.35)] sm:px-10">
           <div className="mb-4 flex justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20">
-              <Mail className="size-5 text-white" aria-hidden="true" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#D8A7B3]/40 bg-[#F8F5F2]">
+              <Mail className="size-5 text-[#B8758E]" aria-hidden="true" />
             </div>
           </div>
 
-          <h2 className="font-display text-2xl font-semibold text-white sm:text-3xl">
-            Fique por dentro das novidades
+          <p className="text-xs uppercase tracking-[0.2em] text-[#6C6763]">Clube Mais que Mimo</p>
+          <h2 className="mt-3 font-display text-3xl font-medium text-[#2E2A28] sm:text-4xl">
+            Receba inspirações e lançamentos exclusivos
           </h2>
-          <p className="mt-3 text-sm text-white/80 leading-relaxed">
-            Receba em primeira mão lançamentos, promoções exclusivas e conteúdo especial
-            sobre papelaria afetiva.
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-[#6C6763]">
+            Conteúdos sazonais, novidades de coleção e convites para pré-vendas selecionadas.
           </p>
 
           {submitted ? (
             <div className="mt-8 flex flex-col items-center gap-3">
-              <CheckCircle2 className="size-10 text-white" aria-hidden="true" />
-              <p className="font-medium text-white">
-                Que ótimo! Você está na lista. 🎉
-              </p>
-              <p className="text-sm text-white/70">
+              <CheckCircle2 className="size-10 text-[#B8758E]" aria-hidden="true" />
+              <p className="font-medium text-[#2E2A28]">Cadastro confirmado com sucesso.</p>
+              <p className="text-sm text-[#6C6763]">
                 Em breve você receberá nossos conteúdos mais especiais.
               </p>
             </div>
@@ -61,19 +59,19 @@ export function NewsletterSection() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 aria-label="E-mail para newsletter"
-                className="flex-1 border-white/30 bg-white/20 text-white placeholder:text-white/60 focus-visible:ring-white"
+                className="h-11 flex-1 rounded-full border-[#2E2A28]/15 bg-[#F8F5F2] text-[#2E2A28] placeholder:text-[#6C6763]/70 focus-visible:ring-[#B8758E]"
               />
               <Button
                 type="submit"
                 loading={loading}
-                className="bg-white text-[var(--mqm-rose-600)] hover:bg-white/90 font-semibold shrink-0"
+                className="h-11 rounded-full border border-[#2E2A28]/10 bg-[#2E2A28] px-6 text-[#F8F5F2] hover:bg-[#2E2A28]/90 shrink-0"
               >
                 Quero receber
               </Button>
             </form>
           )}
 
-          <p className="mt-4 text-xs text-white/50">
+          <p className="mt-4 text-xs text-[#6C6763]">
             Sem spam. Apenas conteúdo que você vai amar. Cancele quando quiser.
           </p>
         </div>

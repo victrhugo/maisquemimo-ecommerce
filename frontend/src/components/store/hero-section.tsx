@@ -1,83 +1,76 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowRight, BookOpenText, Gift, PenTool } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden">
-      {/* Background decorativo */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--mqm-cream-50)] via-[var(--mqm-rose-50)] to-[var(--mqm-mauve-50)]" />
-        {/* Círculos decorativos */}
-        <div className="absolute -right-20 -top-20 h-96 w-96 rounded-full bg-[var(--mqm-rose-100)] opacity-40 blur-3xl" />
-        <div className="absolute -bottom-20 left-10 h-64 w-64 rounded-full bg-[var(--mqm-mauve-100)] opacity-30 blur-3xl" />
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: "radial-gradient(circle, #C94F72 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-      </div>
+    <section className="bg-[#F8F5F2] py-14 sm:py-20 lg:py-24">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_1fr]">
+          <div className="max-w-xl">
+            <p className="text-xs uppercase tracking-[0.22em] text-[#6C6763]">
+              Mais que Mimo
+            </p>
+            <h1 className="mt-5 font-display text-4xl font-medium leading-tight text-[#2E2A28] sm:text-5xl lg:text-[3.5rem]">
+              Papelaria premium para mulheres que celebram os detalhes.
+            </h1>
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-[#6C6763] sm:text-lg">
+              Cadernos, planners e itens de escrita com curadoria delicada para transformar
+              sua rotina em um ritual de presença, beleza e afeto.
+            </p>
 
-      <div className="container mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:py-32">
-        <div className="mx-auto max-w-3xl text-center">
-          {/* Pill badge */}
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--mqm-rose-200)] bg-[var(--mqm-rose-50)] px-4 py-1.5">
-            <Sparkles className="size-3.5 text-[var(--mqm-rose-500)]" />
-            <span className="text-xs font-medium text-[var(--mqm-rose-600)]">
-              Novidades chegando toda semana
-            </span>
-          </div>
-
-          {/* Headline */}
-          <h1 className="font-display text-4xl font-semibold leading-tight text-foreground sm:text-5xl lg:text-6xl">
-            Papelaria que{" "}
-            <span className="relative">
-              <span className="relative z-10 text-[var(--mqm-rose-500)]">transforma</span>
-              <span
-                className="absolute -bottom-1 left-0 right-0 h-3 -z-10 rounded-sm opacity-30"
-                style={{ background: "var(--mqm-rose-200)" }}
-              />
-            </span>{" "}
-            o seu dia a dia
-          </h1>
-
-          <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-            Cadernos, adesivos, planner e muito mais — tudo com o afeto e a curadoria
-            que só o Mais que Mimo tem.
-          </p>
-
-          {/* CTAs */}
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button size="lg" variant="brand" asChild>
-              <Link href="/produtos">
-                Explorar produtos
+            <div className="mt-10 flex flex-wrap gap-3">
+              <Link
+                href="/produtos"
+                className="inline-flex items-center gap-2 rounded-full border border-[#2E2A28]/10 bg-[#2E2A28] px-6 py-2.5 text-sm font-medium text-[#F8F5F2] transition-all duration-500 hover:scale-[1.02] hover:bg-[#2E2A28]/90"
+              >
+                Explorar coleção
                 <ArrowRight className="size-4" />
               </Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/produtos?categoria=novidades">Ver novidades</Link>
-            </Button>
+              <Link
+                href="/produtos?categoria=planner"
+                className="inline-flex items-center rounded-full border border-[#2E2A28]/15 bg-white px-6 py-2.5 text-sm font-medium text-[#2E2A28] transition-all duration-500 hover:scale-[1.02]"
+              >
+                Ver planners
+              </Link>
+            </div>
+
+            <div className="mt-10 grid max-w-md grid-cols-3 gap-3 text-center">
+              {[
+                { value: "+8 mil", label: "clientes" },
+                { value: "4.9/5", label: "avaliação" },
+                { value: "48h", label: "envio" },
+              ].map((item) => (
+                <div key={item.label} className="rounded-2xl border border-[#2E2A28]/8 bg-white p-4">
+                  <p className="font-display text-2xl text-[#2E2A28]">{item.value}</p>
+                  <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[#6C6763]">{item.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Social proof */}
-          <div className="mt-12 flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-10">
-            <div className="text-center">
-              <p className="font-display text-2xl font-semibold text-foreground">+2.000</p>
-              <p className="text-xs text-muted-foreground">clientes felizes</p>
-            </div>
-            <div className="hidden h-8 w-px bg-border sm:block" />
-            <div className="text-center">
-              <p className="font-display text-2xl font-semibold text-foreground">98%</p>
-              <p className="text-xs text-muted-foreground">de satisfação</p>
-            </div>
-            <div className="hidden h-8 w-px bg-border sm:block" />
-            <div className="text-center">
-              <p className="font-display text-2xl font-semibold text-foreground">+500</p>
-              <p className="text-xs text-muted-foreground">produtos disponíveis</p>
-            </div>
+          <div className="space-y-4">
+            <article className="overflow-hidden rounded-3xl border border-[#2E2A28]/8 bg-white shadow-[0_12px_30px_-24px_rgba(46,42,40,0.45)] transition-transform duration-700 hover:scale-[1.02]">
+              <img
+                src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1600&q=80"
+                alt="Mesa com caderno elegante e caneta"
+                className="h-64 w-full object-cover sm:h-72"
+                loading="lazy"
+              />
+              <div className="grid gap-3 p-5 sm:grid-cols-3">
+                <div className="rounded-2xl border border-[#2E2A28]/8 bg-[#F8F5F2] p-3 text-[#2E2A28]">
+                  <BookOpenText className="size-4" />
+                  <p className="mt-2 text-xs uppercase tracking-[0.12em] text-[#6C6763]">Cadernos</p>
+                </div>
+                <div className="rounded-2xl border border-[#2E2A28]/8 bg-[#F8F5F2] p-3 text-[#2E2A28]">
+                  <PenTool className="size-4" />
+                  <p className="mt-2 text-xs uppercase tracking-[0.12em] text-[#6C6763]">Escrita</p>
+                </div>
+                <div className="rounded-2xl border border-[#2E2A28]/8 bg-[#F8F5F2] p-3 text-[#2E2A28]">
+                  <Gift className="size-4" />
+                  <p className="mt-2 text-xs uppercase tracking-[0.12em] text-[#6C6763]">Presentes</p>
+                </div>
+              </div>
+            </article>
           </div>
         </div>
       </div>

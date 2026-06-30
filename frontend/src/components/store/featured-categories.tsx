@@ -1,92 +1,78 @@
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { BookOpenText, NotebookPen, PackageOpen, PenTool, ScrollText, Sticker } from "lucide-react";
 
 const categories = [
   {
     slug: "cadernos",
     label: "Cadernos",
-    description: "Para registrar cada momento",
-    emoji: "📓",
-    color: "from-[var(--mqm-rose-100)] to-[var(--mqm-rose-200)]",
-    textColor: "text-[var(--mqm-rose-700)]",
+    description: "Coleções para escrita diária com acabamento sofisticado",
+    icon: BookOpenText,
   },
   {
     slug: "adesivos",
     label: "Adesivos",
-    description: "Decore com personalidade",
-    emoji: "🎨",
-    color: "from-[var(--mqm-mauve-100)] to-[var(--mqm-mauve-200)]",
-    textColor: "text-[var(--mqm-mauve-700)]",
+    description: "Detalhes delicados para personalizar seus rituais",
+    icon: Sticker,
   },
   {
     slug: "planner",
     label: "Planner",
-    description: "Organize sua vida com estilo",
-    emoji: "📅",
-    color: "from-[var(--mqm-cream-200)] to-[var(--mqm-cream-300)]",
-    textColor: "text-amber-700",
+    description: "Organização elegante para rotina, metas e autocuidado",
+    icon: ScrollText,
   },
   {
     slug: "presentes",
     label: "Presentes",
-    description: "Para quem você ama",
-    emoji: "🎁",
-    color: "from-emerald-100 to-emerald-200",
-    textColor: "text-emerald-700",
+    description: "Kits para presentear com afeto e presença",
+    icon: PackageOpen,
   },
   {
     slug: "canetas",
     label: "Canetas & Marcadores",
-    description: "Escreva com beleza",
-    emoji: "✒️",
-    color: "from-sky-100 to-sky-200",
-    textColor: "text-sky-700",
+    description: "Texturas e pigmentos para experiências de escrita",
+    icon: PenTool,
   },
   {
     slug: "kits",
     label: "Kits Especiais",
-    description: "Conjuntos pensados com afeto",
-    emoji: "✨",
-    color: "from-[var(--mqm-rose-100)] to-[var(--mqm-mauve-100)]",
-    textColor: "text-[var(--mqm-rose-600)]",
+    description: "Seleções autorais para elevar cada momento",
+    icon: NotebookPen,
   },
 ];
 
 export function FeaturedCategories() {
   return (
-    <section className="bg-background py-16 sm:py-20">
+    <section className="bg-[#F8F5F2] py-16 sm:py-24">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="mb-10 text-center">
-          <h2 className="font-display text-2xl font-semibold text-foreground sm:text-3xl">
-            Explore por categoria
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <p className="text-xs uppercase tracking-[0.2em] text-[#6C6763]">Curadoria</p>
+          <h2 className="mt-3 font-display text-3xl font-medium text-[#2E2A28] sm:text-4xl">
+            Descubra por coleção
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Encontre exatamente o que seu coração procura
+          <p className="mt-4 text-base leading-relaxed text-[#6C6763]">
+            Cada categoria foi criada para unir funcionalidade, beleza e emoção em itens de
+            papelaria feitos para durar.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((category) => (
             <Link
               key={category.slug}
               href={`/produtos?categoria=${category.slug}`}
-              className={cn(
-                "group flex flex-col items-center gap-3 rounded-2xl p-5 text-center transition-all duration-200",
-                "bg-gradient-to-b hover:shadow-md hover:-translate-y-0.5",
-                category.color
-              )}
+              className="group rounded-3xl border border-[#2E2A28]/10 bg-white p-6 transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_14px_30px_-24px_rgba(46,42,40,0.38)]"
             >
-              <span className="text-3xl transition-transform duration-200 group-hover:scale-110" role="img" aria-label={category.label}>
-                {category.emoji}
-              </span>
-              <div>
-                <p className={cn("text-sm font-semibold", category.textColor)}>
-                  {category.label}
-                </p>
-                <p className="mt-0.5 text-xs text-muted-foreground hidden sm:block">
-                  {category.description}
-                </p>
+              <div className="flex items-start gap-4">
+                <div className="rounded-2xl border border-[#2E2A28]/10 bg-[#F8F5F2] p-3 text-[#B8758E]">
+                  <category.icon className="size-5" />
+                </div>
+                <div>
+                  <p className="text-sm uppercase tracking-[0.12em] text-[#6C6763]">Coleção</p>
+                  <h3 className="mt-1 font-display text-2xl text-[#2E2A28]">{category.label}</h3>
+                </div>
               </div>
+              <p className="mt-6 text-sm leading-relaxed text-[#6C6763]">{category.description}</p>
+              <p className="mt-6 text-xs uppercase tracking-[0.16em] text-[#B8758E]">Explorar</p>
             </Link>
           ))}
         </div>

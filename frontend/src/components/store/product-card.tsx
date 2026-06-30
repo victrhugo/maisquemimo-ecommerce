@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingBag, Star } from "lucide-react";
+import { Heart, ShoppingBag, Star, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -64,9 +64,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           ) : (
-            // Placeholder elegante
             <div className="flex h-full w-full items-center justify-center">
-              <span className="text-5xl opacity-30" aria-hidden="true">🎀</span>
+              <Sparkles className="size-10 text-[var(--mqm-rose-300)]" aria-hidden="true" />
             </div>
           )}
 
