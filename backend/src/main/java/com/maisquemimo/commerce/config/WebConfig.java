@@ -8,6 +8,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Configuração CORS para permitir requests do frontend
@@ -24,18 +26,28 @@ public class WebConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Permite múltiplas origins (dev + prod)
-        config.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",           // Dev local
-                "http://localhost:3001",           // Dev alternativo
-                "http://localhost:8080",           // Backend local
-                "https://localhost:3000",          // Dev HTTPS
-                "http://127.0.0.1:3000",           // Dev 127.0.0.1
-                "http://maisquemimo.com",          // Prod
-                "https://maisquemimo.com",         // Prod HTTPS
-                "http://www.maisquemimo.com",      // Prod www
-                "https://www.maisquemimo.com"      // Prod www HTTPS
-        ));
+        // ALLOWED_ORIGINS (comma separated) sobrescreve defaults para produção.
+        String allowedOriginsEnv = System.getenv("ALLOWED_ORIGINS");
+        List<String> allowedOriginPatterns;
+
+        if (allowedOriginsEnv != null && !allowedOriginsEnv.isBlank()) {
+            allowedOriginPatterns = Arrays.stream(allowedOriginsEnv.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isBlank())
+                .collect(Collectors.toList());
+        } else {
+            allowedOriginPatterns = Arrays.asList(
+                "http://localhost:3000",          // Dev local
+                "http://localhost:3001",          // Dev alternativo
+                "http://127.0.0.1:3000",          // Dev 127.0.0.1
+                "https://localhost:3000",         // Dev HTTPS
+                "https://maisquemimo.com",        // Prod principal
+                "https://www.maisquemimo.com",    // Prod www
+                "https://*.netlify.app"           // Frontend Netlify
+            );
+        }
+
+        config.setAllowedOriginPatterns(allowedOriginPatterns);
 
         // Métodos HTTP permitidos
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));

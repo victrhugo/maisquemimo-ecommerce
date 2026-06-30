@@ -36,7 +36,7 @@ postgresql://user:password@ep-xxx.neon.tech/maisquemimo_db?sslmode=require
 Em Railway Variables, use a connection string:
 
 ```
-SPRING_DATASOURCE_URL=postgresql://user:password@ep-xxx.neon.tech/maisquemimo_db?sslmode=require&connectTimeout=10&socketTimeout=30
+SPRING_DATASOURCE_URL=jdbc:postgresql://ep-xxx.neon.tech:5432/maisquemimo_db?sslmode=require&connectTimeout=10&socketTimeout=30
 SPRING_DATASOURCE_USERNAME=postgres
 SPRING_DATASOURCE_PASSWORD=password
 ```
@@ -77,7 +77,7 @@ Neon oferece backups automáticos:
 **NUNCA** commite a senha no Git:
 ```bash
 # ❌ ERRADO
-SPRING_DATASOURCE_URL=postgresql://postgres:senha123@ep-xxx.neon.tech/db
+SPRING_DATASOURCE_URL=jdbc:postgresql://ep-xxx.neon.tech:5432/db?sslmode=require
 git add .
 git push  # ⚠️ PÚBLICO
 

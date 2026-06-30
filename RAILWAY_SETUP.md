@@ -35,7 +35,7 @@ SPRING_PROFILES_ACTIVE=prod
 SERVER_PORT=8080
 
 # Database (do Neon)
-SPRING_DATASOURCE_URL=postgresql://user:password@ep-xxx.neon.tech/database?sslmode=require&connectTimeout=10
+SPRING_DATASOURCE_URL=jdbc:postgresql://ep-xxx.neon.tech:5432/database?sslmode=require&connectTimeout=10
 SPRING_DATASOURCE_USERNAME=postgres
 SPRING_DATASOURCE_PASSWORD=seu-password
 

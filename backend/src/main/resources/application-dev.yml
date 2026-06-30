@@ -14,9 +14,9 @@ spring:
   # PostgreSQL local via Docker
   # ========================================
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/maisquemimo_db}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    url: ${SPRING_DATASOURCE_URL:${JDBC_DATABASE_URL:jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:maisquemimo_db}?sslmode=${PGSSLMODE:disable}}}
+    username: ${SPRING_DATASOURCE_USERNAME:${PGUSER:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${PGPASSWORD:postgres}}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
@@ -48,7 +48,7 @@ spring:
 # SERVER CONFIGURATION
 # ========================================
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${PORT:${SERVER_PORT:8080}}
   servlet:
     context-path: /api
   error:

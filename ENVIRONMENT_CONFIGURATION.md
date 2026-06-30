@@ -97,7 +97,7 @@ Configure estas variáveis no Dashboard do Railway:
 
 | Variável | Valor | Origem |
 |----------|-------|--------|
-| `SPRING_DATASOURCE_URL` | `postgresql://user:pass@neon.tech/db` | Neon Console |
+| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://host:5432/db?sslmode=require` | Neon Console |
 | `SPRING_DATASOURCE_USERNAME` | `postgres_user` | Neon Console (opcional se usar URL) |
 | `SPRING_DATASOURCE_PASSWORD` | `secure_password` | Neon Console (opcional se usar URL) |
 | `JWT_SECRET` | `openssl rand -base64 32` | Gere uma chave segura |
@@ -133,7 +133,7 @@ railway add --service postgresql
 
 ```bash
 # Railway CLI
-railway variables:set SPRING_DATASOURCE_URL="postgresql://user:pass@host/db"
+railway variables:set SPRING_DATASOURCE_URL="jdbc:postgresql://host:5432/db?sslmode=require"
 railway variables:set JWT_SECRET="$(openssl rand -base64 32)"
 railway variables:set JWT_EXPIRATION="86400000"
 railway variables:set JWT_REFRESH_EXPIRATION="604800000"

@@ -72,7 +72,7 @@ Configure no Railway Dashboard → Variables:
 ```
 SPRING_PROFILES_ACTIVE=prod
 SERVER_PORT=8080
-SPRING_DATASOURCE_URL=postgresql://user:pass@ep-xxx.neon.tech/db?sslmode=require&connectTimeout=10&socketTimeout=30
+SPRING_DATASOURCE_URL=jdbc:postgresql://ep-xxx.neon.tech:5432/db?sslmode=require&connectTimeout=10&socketTimeout=30
 SPRING_DATASOURCE_USERNAME=postgres
 SPRING_DATASOURCE_PASSWORD=<from-neon>
 JWT_SECRET=<generate-new>

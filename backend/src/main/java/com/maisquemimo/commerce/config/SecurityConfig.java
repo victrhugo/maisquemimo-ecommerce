@@ -29,6 +29,8 @@ public class SecurityConfig {
                 .cors(cors -> {}) // Enable CORS filter
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
+                    // CORS preflight
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Public endpoints
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
