@@ -143,19 +143,19 @@ public class ProductService {
         // Criar produto
         Product product = productMapper.toEntity(request, category);
         product.setSlug(slug);
-        product = productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
 
         // Salvar imagens
         if (request.images() != null && !request.images().isEmpty()) {
             var images = request.images().stream()
-                    .map(img -> productMapper.imageRequestToEntity(img, product))
+                    .map(img -> productMapper.imageRequestToEntity(img, savedProduct))
                     .toList();
             productImageRepository.saveAll(images);
-            product.setImages(images);
+            savedProduct.setImages(images);
         }
 
-        log.info("Produto criado com sucesso: ID={}", product.getId());
-        return productMapper.toResponse(product);
+        log.info("Produto criado com sucesso: ID={}", savedProduct.getId());
+        return productMapper.toResponse(savedProduct);
     }
 
     /**
@@ -198,8 +198,9 @@ public class ProductService {
         if (request.images() != null) {
             productImageRepository.deleteByProductId(id);
             if (!request.images().isEmpty()) {
+                Product savedProduct = product;
                 var images = request.images().stream()
-                        .map(img -> productMapper.imageRequestToEntity(img, product))
+                        .map(img -> productMapper.imageRequestToEntity(img, savedProduct))
                         .toList();
                 productImageRepository.saveAll(images);
                 product.setImages(images);

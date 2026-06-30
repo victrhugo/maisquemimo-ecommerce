@@ -8,6 +8,8 @@ import com.maisquemimo.commerce.entity.Product;
 import com.maisquemimo.commerce.entity.ProductImage;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Mapper para conversão entre Product e ProductRequest/ProductResponse
  */
@@ -55,7 +57,7 @@ public class ProductMapper {
      * Converte Product Entity em ProductResponse DTO
      */
     public ProductResponse toResponse(Product product) {
-        var images = product.getImages() != null
+        List<ProductResponse.ProductImageDTO> images = product.getImages() != null
                 ? product.getImages().stream()
                     .map(img -> new ProductResponse.ProductImageDTO(
                         img.getId(),

@@ -45,10 +45,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                logger.debug("JWT token validado para email: {}", email);
+                log.debug("JWT token validado para email: {}", email);
             }
         } catch (Exception e) {
-            logger.debug("Erro ao processar JWT token: {}", e.getMessage());
+            log.debug("Erro ao processar JWT token: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);

@@ -35,7 +35,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
       name: product.name,
       slug: product.slug,
       price: product.price,
-      imageUrl: product.imageUrl,
+      imageUrl: product.images?.[0]?.imageUrl ?? '',
     });
     toast({
       title: "Adicionado ao carrinho!",
@@ -55,9 +55,9 @@ export function ProductCard({ product, className }: ProductCardProps) {
       <Link href={`/produto/${product.slug}`} className="block">
         {/* Image container */}
         <div className="relative aspect-square overflow-hidden rounded-xl bg-[var(--mqm-cream-100)]">
-          {product.imageUrl ? (
+          {product.images?.[0]?.imageUrl ? (
             <Image
-              src={product.imageUrl}
+              src={product.images[0].imageUrl}
               alt={product.name}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -122,7 +122,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
         {/* Info */}
         <div className="mt-3 space-y-1 px-0.5">
-          <p className="text-xs text-muted-foreground">{product.category}</p>
+          <p className="text-xs text-muted-foreground">{product.categoryId}</p>
           <h3 className="line-clamp-2 text-sm font-medium leading-snug text-foreground group-hover:text-[var(--mqm-rose-600)] transition-colors">
             {product.name}
           </h3>

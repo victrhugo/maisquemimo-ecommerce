@@ -54,7 +54,7 @@ export const ProductForm: FC<ProductFormProps> = ({
     reset,
     watch,
   } = useForm<ProductFormData>({
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(productFormSchema) as any,
     defaultValues: product
       ? {
           name: product.name,
