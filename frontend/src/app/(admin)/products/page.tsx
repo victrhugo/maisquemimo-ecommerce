@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useProducts, useCreateProduct, useUpdateProduct } from '@/hooks/use-products';
+import { useProducts, useCreateProduct, useUpdateProduct, type ProductRequest } from '@/hooks/use-products';
 import { Product } from '@/types/product';
 import { Button } from '@/components/ui/button';
 import { ProductTable } from '@/components/admin/product-table';
@@ -25,14 +25,19 @@ export default function AdminProductsPage() {
   const { mutateAsync: createProduct, isPending: isCreating } = useCreateProduct();
   const { mutateAsync: updateProduct, isPending: isUpdating } = useUpdateProduct();
 
+  const toProductRequest = (formData: ProductFormData): ProductRequest => ({
+    ...formData,
+    originalPrice: formData.originalPrice ?? null,
+  });
+
   const handleCreate = async (formData: ProductFormData) => {
-    await createProduct(formData);
+    await createProduct(toProductRequest(formData));
     setIsDialogOpen(false);
   };
 
   const handleUpdate = async (formData: ProductFormData) => {
     if (editingProduct) {
-      await updateProduct({ id: editingProduct.id, data: formData });
+      await updateProduct({ id: editingProduct.id, data: toProductRequest(formData) });
       setIsDialogOpen(false);
       setEditingProduct(null);
     }

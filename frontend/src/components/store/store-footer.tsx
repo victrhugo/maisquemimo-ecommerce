@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MessageCircle, Mail, HandHeart, Instagram } from "lucide-react";
+import { MessageCircle, Mail, HandHeart, Camera } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const footerLinks = {
@@ -48,7 +48,7 @@ export function StoreFooter() {
                 aria-label="Instagram"
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary/35 hover:text-primary"
               >
-                <Instagram className="size-4" />
+                <Camera className="size-4" />
               </a>
               <a
                 href="https://wa.me/5500000000000"

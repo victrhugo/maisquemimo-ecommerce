@@ -1,7 +1,7 @@
 'use client';
 
 import { FC } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Product } from '@/types/product';
@@ -54,7 +54,7 @@ export const ProductForm: FC<ProductFormProps> = ({
     formState: { errors, isSubmitting },
     reset,
   } = useForm<ProductFormData>({
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(productFormSchema) as Resolver<ProductFormData>,
     defaultValues: product
       ? {
           name: product.name,

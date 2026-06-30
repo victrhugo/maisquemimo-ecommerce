@@ -3,7 +3,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/services/api';
 import { Product } from '@/types/product';
-import { AxiosError } from 'axios';
 
 interface PaginatedResponse<T> {
   content: T[];
@@ -13,7 +12,7 @@ interface PaginatedResponse<T> {
   pageSize: number;
 }
 
-interface ProductRequest {
+export interface ProductRequest {
   name: string;
   description: string;
   price: number;
