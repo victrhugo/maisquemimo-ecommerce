@@ -4,7 +4,6 @@ import com.maisquemimo.commerce.dto.ProductRequest;
 import com.maisquemimo.commerce.dto.ProductResponse;
 import com.maisquemimo.commerce.entity.Category;
 import com.maisquemimo.commerce.entity.Product;
-import com.maisquemimo.commerce.entity.ProductImage;
 import com.maisquemimo.commerce.exception.DuplicateProductSlugException;
 import com.maisquemimo.commerce.exception.ProductNotFoundException;
 import com.maisquemimo.commerce.mapper.ProductMapper;
@@ -19,8 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Serviço de negócio para gestão de produtos
@@ -52,8 +50,9 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<ProductResponse> findByCategory(String categoryId, Pageable pageable) {
         log.debug("Buscando produtos da categoria: {}", categoryId);
+        UUID categoryUuid = parseUuid(categoryId, "categoryId");
         return productRepository
-                .findByCategoryIdAndActive(categoryId, true, pageable)
+            .findByCategoryIdAndActive(categoryUuid, true, pageable)
                 .map(productMapper::toResponse);
     }
 
@@ -85,8 +84,9 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductResponse findById(String id) {
         log.debug("Buscando produto por ID: {}", id);
+        UUID productId = parseUuid(id, "id");
         return productRepository
-                .findById(id)
+            .findById(productId)
                 .map(productMapper::toResponse)
                 .orElseThrow(() -> ProductNotFoundException.byId(id));
     }
@@ -121,10 +121,11 @@ public class ProductService {
     @Transactional
     public ProductResponse create(ProductRequest request) {
         log.info("Criando novo produto: {}", request.name());
+        UUID categoryId = parseUuid(request.categoryId(), "categoryId");
 
         // Validar categoria
         Category category = categoryRepository
-                .findById(request.categoryId())
+            .findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
 
         // Gerar slug
@@ -164,14 +165,16 @@ public class ProductService {
     @Transactional
     public ProductResponse update(String id, ProductRequest request) {
         log.info("Atualizando produto: {}", id);
+        UUID productId = parseUuid(id, "id");
+        UUID categoryId = parseUuid(request.categoryId(), "categoryId");
 
         Product product = productRepository
-                .findById(id)
+            .findById(productId)
                 .orElseThrow(() -> ProductNotFoundException.byId(id));
 
         // Validar categoria
         Category category = categoryRepository
-                .findById(request.categoryId())
+            .findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
 
         // Verificar slug único (excluindo o próprio produto)
@@ -196,7 +199,7 @@ public class ProductService {
 
         // Atualizar imagens
         if (request.images() != null) {
-            productImageRepository.deleteByProductId(id);
+            productImageRepository.deleteByProductId(productId);
             if (!request.images().isEmpty()) {
                 Product savedProduct = product;
                 var images = request.images().stream()
@@ -217,9 +220,10 @@ public class ProductService {
     @Transactional
     public void delete(String id) {
         log.info("Deletando produto: {}", id);
+        UUID productId = parseUuid(id, "id");
 
         Product product = productRepository
-                .findById(id)
+            .findById(productId)
                 .orElseThrow(() -> ProductNotFoundException.byId(id));
 
         product.setActive(false);
@@ -237,5 +241,13 @@ public class ProductService {
                 .replaceAll("[^a-z0-9-]", "")
                 .replaceAll("-+", "-")
                 .replaceAll("^-|-$", "");
+    }
+
+    private UUID parseUuid(String raw, String fieldName) {
+        try {
+            return UUID.fromString(raw);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("%s inválido: '%s'".formatted(fieldName, raw), ex);
+        }
     }
 }

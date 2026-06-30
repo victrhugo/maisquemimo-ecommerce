@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Serviço para geração e validação de JWT
@@ -34,18 +35,18 @@ public class JwtService {
     /**
      * Gera um novo access token JWT
      */
-    public String generateToken(String email, String userId) {
+    public String generateToken(String email, UUID userId) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", userId);
+        claims.put("userId", userId.toString());
         return createToken(claims, email, expiration);
     }
 
     /**
      * Gera um novo refresh token JWT
      */
-    public String generateRefreshToken(String email, String userId) {
+    public String generateRefreshToken(String email, UUID userId) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", userId);
+        claims.put("userId", userId.toString());
         claims.put("type", "refresh");
         return createToken(claims, email, refreshExpiration);
     }

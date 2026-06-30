@@ -9,13 +9,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, String> {
+public interface ProductRepository extends JpaRepository<Product, UUID> {
     Optional<Product> findBySlug(String slug);
     Optional<Product> findBySku(String sku);
 
-    Page<Product> findByCategoryIdAndActive(String categoryId, boolean active, Pageable pageable);
+    Page<Product> findByCategoryIdAndActive(UUID categoryId, boolean active, Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE p.active = true AND p.isFeatured = true ORDER BY p.createdAt DESC")
     Page<Product> findFeaturedProducts(Pageable pageable);

@@ -60,7 +60,7 @@ public class ProductMapper {
         List<ProductResponse.ProductImageDTO> images = product.getImages() != null
                 ? product.getImages().stream()
                     .map(img -> new ProductResponse.ProductImageDTO(
-                        img.getId(),
+                        img.getId().toString(),
                         img.getImageUrl(),
                         img.getDisplayOrder()
                     ))
@@ -68,13 +68,13 @@ public class ProductMapper {
                 : java.util.List.of();
 
         return new ProductResponse(
-            product.getId(),
+            product.getId().toString(),
             product.getName(),
             product.getSlug(),
             product.getDescription(),
             product.getPrice(),
             product.getOriginalPrice(),
-            product.getCategory().getId(),
+            product.getCategory().getId().toString(),
             product.getStockQuantity(),
             product.getSku(),
             product.getRating(),

@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Classe base para todas as entidades do domínio
@@ -21,9 +23,10 @@ import java.util.Objects;
 public abstract class BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "UUID DEFAULT gen_random_uuid()")
-    private String id;
+    @GeneratedValue
+    @UuidGenerator
+    @Column(nullable = false, updatable = false)
+    private UUID id;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

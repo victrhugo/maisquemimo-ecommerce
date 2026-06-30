@@ -25,6 +25,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        type:
+          preferred_uuid_jdbc_type: UUID
     show-sql: false
 
   # ========================================
