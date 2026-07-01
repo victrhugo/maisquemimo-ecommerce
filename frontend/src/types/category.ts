@@ -5,6 +5,8 @@ export interface Category {
   description?: string | null;
   imageUrl?: string | null;
   active: boolean;
+  displayOrder?: number;
+  productsCount?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -15,4 +17,5 @@ export interface CategoryRequest {
   description?: string;
   imageUrl?: string;
   active?: boolean;
+  displayOrder?: number;
 }

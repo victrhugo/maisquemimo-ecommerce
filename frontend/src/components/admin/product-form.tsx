@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useMemo, useRef, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -15,7 +15,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { useAdminCategories } from '@/hooks/use-categories';
 import { useToast } from '@/hooks/use-toast';
 import { formatCurrency, slugify, truncate } from '@/lib/utils';
-import { ArrowDown, ArrowUp, GripVertical, ImagePlus, Trash2 } from 'lucide-react';
+import { uploadImages } from '@/services/image-upload';
+import { ArrowDown, ArrowUp, GripVertical, ImagePlus, Link as LinkIcon, Star, Trash2 } from 'lucide-react';
 
 const productFormSchema = z.object({
   name: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres').max(150),
@@ -44,6 +45,7 @@ const productFormSchema = z.object({
         displayOrder: z.coerce.number().min(0),
       })
     )
+    .min(1, 'Adicione pelo menos uma imagem do produto')
     .default([]),
 });
 
@@ -67,6 +69,9 @@ export const ProductForm: FC<ProductFormProps> = ({
   const { data: categories, isLoading: isLoadingCategories } = useAdminCategories();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [manualProductSlug, setManualProductSlug] = useState("");
+  const [isProductSlugDirty, setIsProductSlugDirty] = useState(false);
 
   const {
     register,
@@ -107,11 +112,19 @@ export const ProductForm: FC<ProductFormProps> = ({
   }, [categories, values.categoryId]);
 
   const seoSlug = useMemo(() => slugify(values.name || ''), [values.name]);
+  const productSlugPreview = isProductSlugDirty ? manualProductSlug : seoSlug;
   const seoTitle = useMemo(() => {
     const base = (values.name || '').trim();
     return base ? `${base} | Mais que Mimo` : 'Mais que Mimo';
   }, [values.name]);
   const seoDescription = useMemo(() => truncate(values.description || '', 155), [values.description]);
+
+  useEffect(() => {
+    if (isProductSlugDirty) {
+      return;
+    }
+    setManualProductSlug(seoSlug);
+  }, [seoSlug, isProductSlugDirty]);
 
   const previewPrice = Number(values.price || 0);
   const previewOriginalPrice = Number(values.originalPrice || 0);
@@ -128,15 +141,6 @@ export const ProductForm: FC<ProductFormProps> = ({
       shouldDirty: true,
       shouldTouch: true,
       shouldValidate: true,
-    });
-  }
-
-  async function fileToDataUrl(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.onerror = () => reject(new Error('Falha ao ler arquivo'));
-      reader.readAsDataURL(file);
     });
   }
 
@@ -158,7 +162,8 @@ export const ProductForm: FC<ProductFormProps> = ({
     }
 
     try {
-      const uploaded = await Promise.all(imageFiles.map(fileToDataUrl));
+      setIsUploadingImages(true);
+      const uploaded = await uploadImages(imageFiles);
       const current = getValues('images') ?? [];
       const next = [
         ...current,
@@ -174,6 +179,8 @@ export const ProductForm: FC<ProductFormProps> = ({
         description: 'Não foi possível processar uma ou mais imagens.',
         variant: 'destructive',
       });
+    } finally {
+      setIsUploadingImages(false);
     }
   }
 
@@ -192,6 +199,17 @@ export const ProductForm: FC<ProductFormProps> = ({
     const temp = current[index];
     current[index] = current[target];
     current[target] = temp;
+    updateImages(current);
+  }
+
+  function setMainImage(index: number) {
+    if (index === 0) {
+      return;
+    }
+
+    const current = [...(getValues('images') ?? [])];
+    const [selected] = current.splice(index, 1);
+    current.unshift(selected);
     updateImages(current);
   }
 
@@ -215,7 +233,7 @@ export const ProductForm: FC<ProductFormProps> = ({
     } catch {
       toast({
         title: 'Erro',
-        description: 'Falha ao salvar produto',
+        description: 'Não foi possível salvar agora. Revise os campos e tente novamente.',
         variant: 'destructive',
       });
     }
@@ -327,7 +345,7 @@ export const ProductForm: FC<ProductFormProps> = ({
                 multiple
                 className="hidden"
                 onChange={(event) => void handleFiles(event.target.files)}
-                disabled={isLoading || isSubmitting}
+                disabled={isLoading || isSubmitting || isUploadingImages}
               />
 
               <div
@@ -349,9 +367,9 @@ export const ProductForm: FC<ProductFormProps> = ({
                   variant="outline"
                   className="mt-4"
                   onClick={() => fileInputRef.current?.click()}
-                  disabled={isLoading || isSubmitting}
+                  disabled={isLoading || isSubmitting || isUploadingImages}
                 >
-                  Selecionar imagens
+                  {isUploadingImages ? 'Enviando imagens...' : 'Selecionar imagens'}
                 </Button>
               </div>
 
@@ -373,8 +391,19 @@ export const ProductForm: FC<ProductFormProps> = ({
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium text-foreground">Imagem {index + 1}</p>
                         <p className="truncate text-xs text-muted-foreground">{(image.imageUrl ?? '').startsWith('data:') ? 'Upload local' : image.imageUrl}</p>
+                        {index === 0 && <p className="mt-0.5 text-[11px] font-semibold text-[var(--mqm-olive-700)]">Imagem principal</p>}
                       </div>
                       <div className="flex items-center gap-1">
+                        <Button
+                          type="button"
+                          size="icon-sm"
+                          variant="ghost"
+                          onClick={() => setMainImage(index)}
+                          disabled={index === 0 || isLoading || isSubmitting}
+                          title="Definir como imagem principal"
+                        >
+                          <Star className="size-3.5" />
+                        </Button>
                         <Button
                           type="button"
                           size="icon-sm"
@@ -417,24 +446,36 @@ export const ProductForm: FC<ProductFormProps> = ({
             <CardContent className="space-y-4">
               <div>
                 <Label>Categoria *</Label>
-                <Select
-                  value={values.categoryId || ''}
-                  onValueChange={(value) =>
-                    setValue('categoryId', value, { shouldDirty: true, shouldTouch: true, shouldValidate: true })
-                  }
-                  disabled={isLoading || isSubmitting || isLoadingCategories}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={isLoadingCategories ? 'Carregando categorias...' : 'Selecione uma categoria'} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(categories ?? []).map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {(categories ?? []).length === 0 && !isLoadingCategories ? (
+                  <div className="rounded-[var(--radius-lg)] border border-dashed border-border p-4">
+                    <p className="text-sm text-muted-foreground">Nenhuma categoria cadastrada.</p>
+                    <Button type="button" variant="outline" className="mt-3" asChild>
+                      <a href="/admin/categorias">
+                        <LinkIcon className="size-3.5" />
+                        Criar categoria
+                      </a>
+                    </Button>
+                  </div>
+                ) : (
+                  <Select
+                    value={values.categoryId || ''}
+                    onValueChange={(value) =>
+                      setValue('categoryId', value, { shouldDirty: true, shouldTouch: true, shouldValidate: true })
+                    }
+                    disabled={isLoading || isSubmitting || isLoadingCategories}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={isLoadingCategories ? 'Carregando categorias...' : 'Selecione uma categoria'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(categories ?? []).map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
                 {errors.categoryId && <p className="mt-1 text-sm text-destructive">{errors.categoryId.message}</p>}
               </div>
 
@@ -466,7 +507,16 @@ export const ProductForm: FC<ProductFormProps> = ({
                     <div className="space-y-3 pt-2">
                       <div>
                         <Label htmlFor="seoSlug">Slug sugerido</Label>
-                        <Input id="seoSlug" value={seoSlug} readOnly disabled />
+                        <Input
+                          id="seoSlug"
+                          value={productSlugPreview}
+                          onChange={(event) => {
+                            setManualProductSlug(slugify(event.target.value));
+                            setIsProductSlugDirty(true);
+                          }}
+                          disabled={isLoading || isSubmitting}
+                        />
+                        <p className="mt-1 text-xs text-muted-foreground">Gerado automaticamente a partir do nome, com edição opcional.</p>
                       </div>
                       <div>
                         <Label htmlFor="seoTitle">Meta title sugerido</Label>

@@ -26,6 +26,9 @@ export interface ProductRequest {
   images: Array<{ imageUrl: string; displayOrder: number }>;
 }
 
+const ADMIN_PRODUCTS_PAGE_SIZE = 200;
+const ADMIN_PRODUCTS_MAX_PAGES = 30;
+
 /**
  * Hook para listar todos os produtos
  */
@@ -189,5 +192,30 @@ export const useDeleteProduct = () => {
       // Invalidar lista de produtos
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
+  });
+};
+
+export const useAllProductsAdmin = () => {
+  return useQuery({
+    queryKey: ['products', 'admin', 'all'],
+    queryFn: async () => {
+      let page = 0;
+      let totalPages = 1;
+      const allProducts: Product[] = [];
+
+      while (page < totalPages && page < ADMIN_PRODUCTS_MAX_PAGES) {
+        const response = await api.get<PaginatedResponse<Product>>('/products', {
+          params: { page, size: ADMIN_PRODUCTS_PAGE_SIZE },
+        });
+
+        const payload = response.data;
+        allProducts.push(...payload.content);
+        totalPages = payload.totalPages;
+        page += 1;
+      }
+
+      return allProducts;
+    },
+    staleTime: 1000 * 60,
   });
 };
