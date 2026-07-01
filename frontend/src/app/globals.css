@@ -238,6 +238,19 @@ a {
   animation: mqm-fade-up 680ms var(--ease-brand) both;
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 450ms ease-out both;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

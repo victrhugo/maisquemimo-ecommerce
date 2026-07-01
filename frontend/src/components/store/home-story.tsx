@@ -47,84 +47,77 @@ export function HomeStory() {
 
   return (
     <div className="flex flex-col bg-[var(--background)]">
-      <section className="border-b border-[color-mix(in_srgb,var(--border)_55%,transparent)] px-4 py-12 sm:px-6 sm:py-16">
-        <div className="mx-auto grid max-w-6xl items-center gap-8 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.17em] text-[var(--mqm-olive-500)]">Loja Mais que Mimo</p>
-            <h1 className="mt-3 font-display text-[2.2rem] leading-[1.02] text-[var(--mqm-olive-800)] sm:text-[2.8rem]">
-              Papelaria artesanal para comprar rapido e sem ruido.
-            </h1>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-[var(--mqm-olive-700)]/85 sm:text-base">
-              Selecione por categoria, veja os produtos em destaque e finalize sua escolha com facilidade.
-            </p>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              <Link
-                href="/produtos"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--mqm-olive-700)] px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-white transition-colors hover:bg-[var(--mqm-olive-800)]"
-              >
-                Ver loja
-                <ArrowRight className="size-3.5" />
-              </Link>
-              <Link
-                href="#lancamentos"
-                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-[var(--mqm-olive-700)] transition-colors hover:text-[var(--mqm-blush-700)]"
-              >
-                Ver lancamentos
-              </Link>
-            </div>
-          </div>
-
-          <div className="lg:col-span-7">
-            <div className="relative aspect-[16/8] overflow-hidden rounded-[1.5rem] bg-[var(--mqm-warm-100)]">
-              <Image
-                src="/images/placeholder-hero.svg"
-                alt="Mesa com papelaria artesanal organizada"
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 60vw"
-              />
-            </div>
+      {/* Hero Section - Centered and compact */}
+      <section className="px-4 py-14 sm:px-6 sm:py-20 bg-[var(--mqm-warm-50)] text-center border-b border-[color-mix(in_srgb,var(--border)_45%,transparent)] select-none">
+        <div className="mx-auto max-w-3xl">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--mqm-olive-500)] font-sans">
+            Feito à mão • Papelaria Afetiva
+          </p>
+          <h1 className="mt-4 font-display text-[2.2rem] leading-[1.08] text-[var(--mqm-olive-800)] sm:text-[3.2rem] font-bold">
+            Organize a rotina com delicadeza.
+          </h1>
+          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[var(--mqm-olive-700)]/85 font-sans">
+            Produtos artesanais com design minimalista criados para trazer leveza, afeto e inspiração ao seu dia a dia.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link
+              href="/produtos"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-[var(--mqm-olive-700)] px-6 text-[10px] font-bold uppercase tracking-[0.15em] text-white transition-colors hover:bg-[var(--mqm-olive-800)] shadow-[var(--shadow-xs)] font-sans active:scale-[0.98]"
+            >
+              Explorar produtos
+            </Link>
+            <Link
+              href="/produtos?categoria=planner"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-[var(--mqm-olive-400)] bg-[var(--mqm-warm-50)] px-6 text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--mqm-olive-700)] transition-colors hover:bg-[var(--mqm-blush-100)]/60 hover:text-[var(--mqm-blush-700)] hover:border-[var(--mqm-blush-300)] shadow-[var(--shadow-xs)] font-sans active:scale-[0.98]"
+            >
+              Ver Planners
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 sm:py-14" id="categorias">
+      {/* Categories Section - Circular elegant items */}
+      <section className="px-4 py-12 sm:px-6 sm:py-16 border-b border-[color-mix(in_srgb,var(--border)_45%,transparent)] bg-[var(--background)]" id="categorias">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex items-end justify-between gap-4">
-            <h2 className="font-display text-3xl text-[var(--mqm-olive-800)]">Categorias</h2>
-            <Link href="/produtos" className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--mqm-olive-600)] hover:text-[var(--mqm-blush-700)]">
-              Ver tudo
+          <div className="mb-10 flex items-center justify-between">
+            <h2 className="font-display text-[1.45rem] sm:text-[1.65rem] font-bold text-[var(--mqm-olive-800)] uppercase tracking-wider">
+              Categorias
+            </h2>
+            <Link href="/produtos" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--mqm-olive-600)] hover:text-[var(--mqm-blush-700)] transition-colors font-sans">
+              Ver tudo →
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-3 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {storeCategories.map((category) => (
-              <Link key={category.id} href={category.href} className="group">
-                <article className="space-y-2.5">
-                  <div className="relative aspect-square overflow-hidden rounded-[1.1rem] bg-[var(--mqm-warm-100)]">
-                    <Image
-                      src={category.imageSrc}
-                      alt={category.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                    />
-                  </div>
-                  <p className="text-sm font-semibold text-[var(--mqm-olive-800)]">{category.name}</p>
-                </article>
-              </Link>
+               <Link key={category.id} href={category.href} className="group flex flex-col items-center">
+                 <div className="relative aspect-square w-full max-w-[100px] sm:max-w-[120px] overflow-hidden rounded-full border border-[color-mix(in_srgb,var(--border)_45%,transparent)] bg-[var(--mqm-warm-50)] shadow-[var(--shadow-xs)] transition-transform duration-500 group-hover:scale-[1.05] group-hover:shadow-[var(--shadow-sm)]">
+                   <Image
+                     src={category.imageSrc}
+                     alt={category.name}
+                     fill
+                     className="object-cover p-1 rounded-full"
+                     sizes="(max-width: 640px) 33vw, (max-width: 1024px) 20vw, 10vw"
+                   />
+                 </div>
+                 <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--mqm-olive-800)] group-hover:text-[var(--mqm-blush-700)] transition-colors text-center font-sans">
+                   {category.name}
+                 </p>
+               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 sm:py-14" id="lancamentos">
+      {/* Lançamentos Section - 4 columns layout */}
+      <section className="px-4 py-12 sm:px-6 sm:py-16 border-b border-[color-mix(in_srgb,var(--border)_45%,transparent)] bg-[var(--background)]" id="lancamentos">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex items-end justify-between gap-4">
-            <h2 className="font-display text-3xl text-[var(--mqm-olive-800)]">Lancamentos</h2>
-            <Link href="/produtos?sort=novidades" className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--mqm-olive-600)] hover:text-[var(--mqm-blush-700)]">
-              Ver todos
+          <div className="mb-10 flex items-center justify-between">
+            <h2 className="font-display text-[1.45rem] sm:text-[1.65rem] font-bold text-[var(--mqm-olive-800)] uppercase tracking-wider">
+              Lançamentos
+            </h2>
+            <Link href="/produtos?sort=new" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--mqm-olive-600)] hover:text-[var(--mqm-blush-700)] transition-colors font-sans">
+              Ver todos →
             </Link>
           </div>
 
@@ -136,12 +129,15 @@ export function HomeStory() {
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 sm:py-14" id="mais-vendidos">
+      {/* Mais vendidos Section - 4 columns layout */}
+      <section className="px-4 py-12 sm:px-6 sm:py-16 border-b border-[color-mix(in_srgb,var(--border)_45%,transparent)] bg-[var(--background)]" id="mais-vendidos">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex items-end justify-between gap-4">
-            <h2 className="font-display text-3xl text-[var(--mqm-olive-800)]">Mais vendidos</h2>
-            <Link href="/produtos?sort=mais-vendidos" className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--mqm-olive-600)] hover:text-[var(--mqm-blush-700)]">
-              Ver todos
+          <div className="mb-10 flex items-center justify-between">
+            <h2 className="font-display text-[1.45rem] sm:text-[1.65rem] font-bold text-[var(--mqm-olive-800)] uppercase tracking-wider">
+              Mais vendidos
+            </h2>
+            <Link href="/produtos?sort=mais-vendidos" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--mqm-olive-600)] hover:text-[var(--mqm-blush-700)] transition-colors font-sans">
+              Ver todos →
             </Link>
           </div>
 
@@ -153,20 +149,23 @@ export function HomeStory() {
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 sm:py-14" id="colecoes">
+      {/* Coleções Section - 3 columns clean grid */}
+      <section className="px-4 py-12 sm:px-6 sm:py-16 border-b border-[color-mix(in_srgb,var(--border)_45%,transparent)] bg-[var(--background)]" id="colecoes">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex items-end justify-between gap-4">
-            <h2 className="font-display text-3xl text-[var(--mqm-olive-800)]">Colecoes</h2>
-            <Link href="/produtos" className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--mqm-olive-600)] hover:text-[var(--mqm-blush-700)]">
-              Explorar
+          <div className="mb-10 flex items-center justify-between">
+            <h2 className="font-display text-[1.45rem] sm:text-[1.65rem] font-bold text-[var(--mqm-olive-800)] uppercase tracking-wider">
+              Coleções
+            </h2>
+            <Link href="/produtos" className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--mqm-olive-600)] hover:text-[var(--mqm-blush-700)] transition-colors font-sans">
+              Explorar →
             </Link>
           </div>
 
-          <div className="grid gap-4 lg:grid-cols-3">
+          <div className="grid gap-6 lg:grid-cols-3">
             {storeCollections.map((collection) => (
               <Link key={collection.id} href={collection.href} className="group block">
-                <article className="overflow-hidden rounded-[1.2rem] border border-[color-mix(in_srgb,var(--border)_75%,transparent)] bg-[var(--mqm-warm-50)]">
-                  <div className="relative aspect-[16/10] overflow-hidden">
+                <article className="overflow-hidden rounded-[1.2rem] border border-[color-mix(in_srgb,var(--border)_45%,transparent)] bg-[var(--mqm-warm-50)] shadow-[var(--shadow-xs)] transition-all duration-300 hover:shadow-[var(--shadow-sm)] hover:border-[var(--mqm-blush-300)] flex flex-col h-full">
+                  <div className="relative aspect-[16/10] overflow-hidden border-b border-[color-mix(in_srgb,var(--border)_35%,transparent)] shrink-0">
                     <Image
                       src={collection.imageSrc}
                       alt={collection.name}
@@ -175,9 +174,13 @@ export function HomeStory() {
                       sizes="(max-width: 1024px) 100vw, 33vw"
                     />
                   </div>
-                  <div className="p-4">
-                    <h3 className="text-base font-semibold text-[var(--mqm-olive-800)]">{collection.name}</h3>
-                    <p className="mt-1 text-sm text-[var(--mqm-olive-700)]/80">{collection.description}</p>
+                  <div className="p-5 text-center flex-1 flex flex-col justify-center">
+                    <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--mqm-olive-800)] group-hover:text-[var(--mqm-blush-700)] transition-colors font-sans">
+                      {collection.name}
+                    </h3>
+                    <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground font-sans">
+                      {collection.description}
+                    </p>
                   </div>
                 </article>
               </Link>
@@ -186,61 +189,37 @@ export function HomeStory() {
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 sm:py-14" id="instagram">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex items-end justify-between gap-4">
-            <h2 className="font-display text-3xl text-[var(--mqm-olive-800)]">Instagram</h2>
-            <a
-              href="https://www.instagram.com/_maisquemimo/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--mqm-olive-600)] hover:text-[var(--mqm-blush-700)]"
-            >
-              @_maisquemimo
-            </a>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
-            {instagramShots.map((shot) => (
-              <article key={shot.id} className="relative aspect-square overflow-hidden rounded-[1rem] bg-[var(--mqm-warm-100)]">
-                <Image
-                  src={shot.src}
-                  alt={shot.alt}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                />
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t border-[color-mix(in_srgb,var(--border)_55%,transparent)] px-4 py-12 sm:px-6 sm:py-16" id="newsletter">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-display text-3xl text-[var(--mqm-olive-800)]">Newsletter</h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-[var(--mqm-olive-700)]/80 sm:text-base">
-            Novidades da loja, reposicoes e novas colecoes em um envio leve e objetivo.
+      {/* Newsletter Section - Clean, centered */}
+      <section className="px-4 py-16 sm:px-6 sm:py-20 bg-[var(--mqm-warm-50)]" id="newsletter">
+        <div className="mx-auto max-w-2xl text-center select-none">
+          <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--mqm-blush-600)] font-sans">
+            Fique por dentro
+          </p>
+          <h2 className="mt-3 font-display text-[1.85rem] font-bold text-[var(--mqm-olive-800)] uppercase tracking-wider">
+            Assine nossa Newsletter
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-xs leading-relaxed text-[var(--mqm-olive-700)]/80 font-sans">
+            Receba novidades exclusivas, lançamentos de coleções e mimos direto na sua caixa de entrada.
           </p>
 
           {newsletterSubscribed ? (
-            <div className="mx-auto mt-6 flex max-w-lg items-center justify-center gap-2 rounded-[1rem] border border-[color-mix(in_srgb,var(--mqm-olive-300)_45%,transparent)] bg-[var(--mqm-olive-50)] px-4 py-3 text-sm font-semibold text-[var(--mqm-olive-800)]">
-              <Check className="size-4" />
-              Cadastro confirmado
+            <div className="mx-auto mt-8 flex max-w-md items-center justify-center gap-2 rounded-full border border-[var(--mqm-olive-200)] bg-[var(--mqm-olive-50)] px-4 py-3 text-xs font-bold uppercase tracking-[0.11em] text-[var(--mqm-olive-800)] shadow-[var(--shadow-xs)] font-sans">
+              <Check className="size-3.5" />
+              Inscrição Confirmada!
             </div>
           ) : (
-            <form onSubmit={handleSubscribe} className="mx-auto mt-6 flex max-w-lg flex-col gap-2 sm:flex-row">
+            <form onSubmit={handleSubscribe} className="mx-auto mt-8 flex max-w-md flex-col gap-2 sm:flex-row">
               <input
                 type="email"
                 required
-                placeholder="Seu e-mail"
+                placeholder="Seu melhor e-mail"
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
-                className="h-11 flex-1 rounded-full border border-[color-mix(in_srgb,var(--border)_90%,transparent)] bg-[var(--mqm-warm-50)] px-4 text-sm text-[var(--mqm-olive-900)] outline-none transition-colors focus:border-[var(--mqm-blush-300)]"
+                className="h-11 flex-1 rounded-full border border-[color-mix(in_srgb,var(--border)_80%,transparent)] bg-[var(--mqm-warm-50)] px-5 text-xs text-[var(--mqm-olive-900)] outline-none transition-all focus:border-[var(--mqm-blush-400)] focus:ring-1 focus:ring-[var(--mqm-blush-300)] placeholder:text-muted-foreground/50 font-sans"
               />
               <button
                 type="submit"
-                className="h-11 rounded-full bg-[var(--mqm-olive-700)] px-5 text-xs font-semibold uppercase tracking-[0.14em] text-white transition-colors hover:bg-[var(--mqm-olive-800)]"
+                className="h-11 rounded-full bg-[var(--mqm-olive-700)] px-6 text-[10px] font-bold uppercase tracking-[0.15em] text-white transition-colors hover:bg-[var(--mqm-olive-800)] shadow-[var(--shadow-xs)] active:scale-[0.98] cursor-pointer font-sans"
               >
                 Inscrever
               </button>

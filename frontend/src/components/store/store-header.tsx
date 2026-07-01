@@ -9,7 +9,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "/produtos", label: "Loja" },
+  { href: "/produtos", label: "Todos os produtos" },
   { href: "/produtos?categoria=cadernos", label: "Cadernos" },
   { href: "/produtos?categoria=planner", label: "Planners" },
   { href: "/produtos?categoria=presentes", label: "Presentes" },
@@ -22,27 +22,38 @@ export function StoreHeader() {
   const itemCount = useCartStore((s) => s.itemCount);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[color-mix(in_srgb,var(--mqm-olive-200)_45%,transparent)] bg-[color-mix(in_srgb,var(--mqm-warm-50)_96%,white)]/95 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-[color-mix(in_srgb,var(--mqm-olive-200)_35%,transparent)] bg-[color-mix(in_srgb,var(--mqm-warm-50)_96%,white)]/95 backdrop-blur-md">
+      {/* Announcement Bar */}
+      <div className="w-full bg-[color-mix(in_srgb,var(--mqm-blush-100)_80%,white)] py-2 px-4 text-center text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--mqm-olive-800)] border-b border-[color-mix(in_srgb,var(--border)_35%,transparent)] select-none">
+        DETALHES QUE TRAZEM LEVEZA E CARINHO AO SEU DIA A DIA ♡
+      </div>
+
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="flex h-18 items-center justify-between md:hidden">
-          <Link href="/" className="group flex items-center gap-2.5 leading-none sm:gap-3">
+        {/* Mobile Header */}
+        <div className="flex h-20 items-center justify-between md:hidden">
+          <Link href="/" className="group flex items-center gap-2.5 leading-none select-none">
             <Image
               src="/images.png"
               alt="Logo Mais que Mimo"
-              width={46}
-              height={46}
+              width={48}
+              height={48}
               priority
-              className="h-11 w-11 rounded-full object-cover"
+              className="h-11 w-11 rounded-full object-cover border border-[color-mix(in_srgb,var(--border)_45%,transparent)]"
             />
-            <span className="font-display text-[1.35rem] font-semibold text-primary tracking-[0.01em]">
-              mais que mimo
-            </span>
+            <div className="flex flex-col">
+              <span className="font-display text-[1.15rem] font-bold text-[var(--mqm-olive-800)] tracking-[0.01em] uppercase">
+                mais que mimo
+              </span>
+              <span className="font-cursive text-[10px] text-[var(--mqm-blush-600)] leading-none mt-0.5 font-semibold">
+                papelaria afetiva
+              </span>
+            </div>
           </Link>
 
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon-sm" asChild aria-label="Buscar produtos">
               <Link href="/produtos">
-                <Search className="size-5" />
+                <Search className="size-4.5 text-[var(--mqm-olive-800)]" />
               </Link>
             </Button>
 
@@ -54,9 +65,9 @@ export function StoreHeader() {
               className="relative"
             >
               <Link href="/carrinho">
-                <ShoppingBag className="size-5" />
+                <ShoppingBag className="size-4.5 text-[var(--mqm-olive-800)]" />
                 {itemCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--mqm-blush-300)] text-[10px] font-bold text-[var(--mqm-olive-800)]">
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--mqm-blush-600)] text-[8px] font-bold text-white shadow-[var(--shadow-xs)]">
                     {itemCount > 9 ? "9+" : itemCount}
                   </span>
                 )}
@@ -70,48 +81,56 @@ export function StoreHeader() {
               aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
               aria-expanded={menuOpen}
             >
-              {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+              {menuOpen ? <X className="size-4.5 text-[var(--mqm-olive-800)]" /> : <Menu className="size-4.5 text-[var(--mqm-olive-800)]" />}
             </Button>
           </div>
         </div>
 
-        <div className="hidden h-20 items-center justify-between gap-7 md:flex">
-          <Link href="/" className="group flex items-center gap-3 leading-none">
+        {/* Desktop Header */}
+        <div className="hidden h-24 items-center justify-between gap-6 md:flex">
+          <Link href="/" className="group flex items-center gap-3.5 leading-none select-none shrink-0">
             <Image
               src="/images.png"
               alt="Logo Mais que Mimo"
-              width={52}
-              height={52}
+              width={64}
+              height={64}
               priority
-              className="h-12 w-12 rounded-full object-cover"
+              className="h-[52px] w-[52px] rounded-full object-cover border border-[color-mix(in_srgb,var(--border)_45%,transparent)] transition-transform duration-500 group-hover:scale-[1.03]"
             />
-            <span className="font-display text-[1.55rem] font-semibold text-primary tracking-[0.01em]">
-              mais que mimo
-            </span>
+            <div className="flex flex-col">
+              <span className="font-display text-[1.4rem] font-bold text-[var(--mqm-olive-800)] tracking-[0.02em] uppercase group-hover:text-[var(--mqm-olive-600)] transition-colors duration-200">
+                mais que mimo
+              </span>
+              <span className="font-cursive text-xs text-[var(--mqm-blush-600)] leading-none mt-0.5 font-semibold">
+                papelaria afetiva
+              </span>
+            </div>
           </Link>
 
-          <nav className="flex flex-1 items-center justify-center gap-1" aria-label="Navegação principal">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors duration-[var(--motion-fast)] hover:bg-[var(--mqm-blush-100)] hover:text-primary"
-                >
-                  {link.label}
-                </Link>
-              ))}
+          {/* Navigation links - uppercase, tracking-wider, clean */}
+          <nav className="flex flex-1 items-center justify-center gap-1.5 flex-wrap" aria-label="Navegação principal">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded-full px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--mqm-olive-800)] transition-colors duration-[var(--motion-fast)] hover:bg-[var(--mqm-blush-100)]/60 hover:text-[var(--mqm-blush-700)]"
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
 
-          <div className="flex items-center gap-0.5">
+          {/* Action Icons */}
+          <div className="flex items-center gap-1 shrink-0">
             <Button variant="ghost" size="icon-sm" asChild aria-label="Buscar produtos">
-              <Link href="/produtos">
-                <Search className="size-5" />
+              <Link href="/produtos" className="hover:scale-105 transition-transform">
+                <Search className="size-4.5 text-[var(--mqm-olive-800)]" />
               </Link>
             </Button>
 
-            <Button variant="ghost" size="icon-sm" asChild aria-label="Minha conta" className="inline-flex">
+            <Button variant="ghost" size="icon-sm" asChild aria-label="Minha conta" className="inline-flex hover:scale-105 transition-transform">
               <Link href="/conta">
-                <User className="size-5" />
+                <User className="size-4.5 text-[var(--mqm-olive-800)]" />
               </Link>
             </Button>
 
@@ -120,12 +139,12 @@ export function StoreHeader() {
               size="icon-sm"
               asChild
               aria-label={`Carrinho (${itemCount} itens)`}
-              className="relative"
+              className="relative hover:scale-105 transition-transform"
             >
               <Link href="/carrinho">
-                <ShoppingBag className="size-5" />
+                <ShoppingBag className="size-4.5 text-[var(--mqm-olive-800)]" />
                 {itemCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--mqm-blush-300)] text-[10px] font-bold text-[var(--mqm-olive-800)]">
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--mqm-blush-600)] text-[8px] font-bold text-white shadow-[var(--shadow-xs)]">
                     {itemCount > 9 ? "9+" : itemCount}
                   </span>
                 )}
@@ -135,21 +154,22 @@ export function StoreHeader() {
         </div>
       </div>
 
+      {/* Mobile Drawer Menu */}
       <div
         className={cn(
-          "overflow-hidden transition-all duration-300 md:hidden",
+          "overflow-hidden transition-all duration-300 md:hidden bg-[var(--mqm-warm-100)] border-t border-[color-mix(in_srgb,var(--border)_45%,transparent)]",
           menuOpen ? "max-h-96" : "max-h-0"
         )}
       >
         <nav
-          className="mx-4 mb-3 mt-1 flex flex-col gap-1 rounded-[var(--radius-lg)] bg-[var(--mqm-warm-50)] p-2 shadow-[var(--shadow-sm)]"
+          className="mx-4 my-3 flex flex-col gap-0.5 rounded-[var(--radius-md)] bg-[var(--mqm-warm-50)] p-2 border border-[color-mix(in_srgb,var(--border)_35%,transparent)] shadow-[var(--shadow-xs)]"
           aria-label="Navegação mobile"
         >
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-semibold text-foreground hover:bg-[var(--mqm-blush-100)]"
+              className="rounded-[var(--radius-sm)] px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--mqm-olive-800)] hover:bg-[var(--mqm-blush-100)]/60 hover:text-[var(--mqm-blush-700)]"
               onClick={() => setMenuOpen(false)}
             >
               {link.label}
