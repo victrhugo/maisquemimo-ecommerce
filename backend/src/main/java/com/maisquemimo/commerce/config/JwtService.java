@@ -33,18 +33,20 @@ public class JwtService {
     /**
      * Gera um novo access token JWT
      */
-    public String generateToken(String email, UUID userId) {
+    public String generateToken(String email, UUID userId, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId.toString());
+        claims.put("role", role);
         return createToken(claims, email, expiration);
     }
 
     /**
      * Gera um novo refresh token JWT
      */
-    public String generateRefreshToken(String email, UUID userId) {
+    public String generateRefreshToken(String email, UUID userId, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId.toString());
+        claims.put("role", role);
         claims.put("type", "refresh");
         return createToken(claims, email, refreshExpiration);
     }

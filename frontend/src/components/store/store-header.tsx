@@ -4,7 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { ShoppingBag, Search, Menu, X, User } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useAuthSession } from "@/hooks/use-auth";
 import { useCartStore } from "@/stores/cart-store";
 import { useUIStore } from "@/stores/ui-store";
 import { cn } from "@/lib/utils";
@@ -20,8 +22,15 @@ const navLinks = [
 
 export function StoreHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
+  const { isAuthenticated, isAdmin, logout } = useAuthSession();
   const itemCount = useCartStore((s) => s.itemCount);
   const { setCartOpen } = useUIStore();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[color-mix(in_srgb,var(--mqm-olive-200)_35%,transparent)] bg-[color-mix(in_srgb,var(--mqm-warm-50)_96%,white)]/95 backdrop-blur-md">
@@ -129,7 +138,7 @@ export function StoreHeader() {
             </Button>
 
             <Button variant="ghost" size="icon-sm" asChild aria-label="Minha conta" className="inline-flex hover:scale-105 transition-transform">
-              <Link href="/conta">
+              <Link href={isAuthenticated ? '/conta' : '/login'}>
                 <User className="size-4.5 text-[var(--mqm-olive-800)]" />
               </Link>
             </Button>
@@ -173,7 +182,82 @@ export function StoreHeader() {
               {link.label}
             </Link>
           ))}
+
+          <div className="my-2 h-px bg-[color-mix(in_srgb,var(--border)_55%,transparent)]" />
+
+          {!isAuthenticated ? (
+            <>
+              <Link
+                href="/login"
+                className="rounded-[var(--radius-sm)] px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--mqm-olive-800)] hover:bg-[var(--mqm-blush-100)]/60 hover:text-[var(--mqm-blush-700)]"
+                onClick={() => setMenuOpen(false)}
+              >
+                Entrar
+              </Link>
+              <Link
+                href="/cadastro"
+                className="rounded-[var(--radius-sm)] px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--mqm-olive-800)] hover:bg-[var(--mqm-blush-100)]/60 hover:text-[var(--mqm-blush-700)]"
+                onClick={() => setMenuOpen(false)}
+              >
+                Cadastrar
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/conta"
+                className="rounded-[var(--radius-sm)] px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--mqm-olive-800)] hover:bg-[var(--mqm-blush-100)]/60 hover:text-[var(--mqm-blush-700)]"
+                onClick={() => setMenuOpen(false)}
+              >
+                Minha Conta
+              </Link>
+              <Link
+                href="/conta"
+                className="rounded-[var(--radius-sm)] px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--mqm-olive-800)] hover:bg-[var(--mqm-blush-100)]/60 hover:text-[var(--mqm-blush-700)]"
+                onClick={() => setMenuOpen(false)}
+              >
+                Meus Pedidos
+              </Link>
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="rounded-[var(--radius-sm)] px-3 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--mqm-olive-800)] hover:bg-[var(--mqm-blush-100)]/60 hover:text-[var(--mqm-blush-700)]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Painel Administrativo
+                </Link>
+              )}
+              <button
+                type="button"
+                className="rounded-[var(--radius-sm)] px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--mqm-olive-800)] hover:bg-[var(--mqm-blush-100)]/60 hover:text-[var(--mqm-blush-700)]"
+                onClick={() => {
+                  setMenuOpen(false);
+                  handleLogout();
+                }}
+              >
+                Sair
+              </button>
+            </>
+          )}
         </nav>
+      </div>
+
+      <div className="hidden border-t border-[color-mix(in_srgb,var(--border)_45%,transparent)] bg-[color-mix(in_srgb,var(--mqm-warm-50)_92%,white)] px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--mqm-olive-700)] md:block">
+        <div className="container mx-auto flex items-center justify-end gap-4 px-4 sm:px-6">
+          {!isAuthenticated ? (
+            <>
+              <Link href="/login" className="hover:text-[var(--mqm-blush-700)]">Entrar</Link>
+              <Link href="/cadastro" className="hover:text-[var(--mqm-blush-700)]">Cadastrar</Link>
+            </>
+          ) : (
+            <>
+              <Link href="/conta" className="hover:text-[var(--mqm-blush-700)]">Minha Conta</Link>
+              <Link href="/conta" className="hover:text-[var(--mqm-blush-700)]">Meus Pedidos</Link>
+              {isAdmin && <Link href="/admin" className="hover:text-[var(--mqm-blush-700)]">Painel Administrativo</Link>}
+              <button type="button" className="hover:text-[var(--mqm-blush-700)]" onClick={handleLogout}>Sair</button>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

@@ -1,5 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
+const AUTH_TOKEN_KEY = 'auth_token';
+
 /**
  * Cliente HTTP com interceptadores para JWT
  */
@@ -32,7 +34,8 @@ api.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       // Token expirado - redirecionar para login
-      localStorage.removeItem('auth_token');
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      document.cookie = `${AUTH_TOKEN_KEY}=; path=/; max-age=0; samesite=lax`;
       window.location.href = '/login';
     }
     return Promise.reject(error);
