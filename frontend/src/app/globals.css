@@ -129,6 +129,7 @@
   --radius-xl: var(--radius-xl);
   --font-sans: var(--font-nunito);
   --font-display: var(--font-baloo);
+  --font-cursive: var(--font-caveat);
 }
 
 * {

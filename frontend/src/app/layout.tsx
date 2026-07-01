@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito, Baloo_2 } from "next/font/google";
+import { Nunito, Baloo_2, Caveat } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -16,6 +16,13 @@ const baloo = Baloo_2({
   variable: "--font-baloo",
   subsets: ["latin"],
   weight: ["500", "600", "700"],
+  display: "swap",
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -43,7 +50,7 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       suppressHydrationWarning
-      className={`${nunito.variable} ${baloo.variable} h-full`}
+      className={`${nunito.variable} ${baloo.variable} ${caveat.variable} h-full`}
     >
       <body className="mqm-shell min-h-full flex flex-col antialiased font-sans">
         <ThemeProvider
