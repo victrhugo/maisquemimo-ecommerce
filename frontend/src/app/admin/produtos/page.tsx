@@ -25,6 +25,19 @@ export default function AdminProductsPage() {
   const { mutateAsync: createProduct, isPending: isCreating } = useCreateProduct();
   const { mutateAsync: updateProduct, isPending: isUpdating } = useUpdateProduct();
 
+  const filteredProducts = (data?.content || []).filter((product) => {
+    const query = searchTerm.trim().toLowerCase();
+    if (!query) {
+      return true;
+    }
+
+    return (
+      product.name.toLowerCase().includes(query) ||
+      product.sku.toLowerCase().includes(query) ||
+      product.slug.toLowerCase().includes(query)
+    );
+  });
+
   const toProductRequest = (formData: ProductFormData): ProductRequest => ({
     ...formData,
     originalPrice: formData.originalPrice ?? null,
@@ -136,7 +149,7 @@ export default function AdminProductsPage() {
       {/* Table */}
       <div className="rounded-[var(--radius-xl)] border border-border/80 bg-card shadow-[var(--shadow-sm)]">
         <ProductTable
-          products={data?.content || []}
+          products={filteredProducts}
           onEdit={handleEdit}
           onDuplicate={handleDuplicate}
           onToggleActive={handleToggleActive}
@@ -172,7 +185,7 @@ export default function AdminProductsPage() {
 
       {/* Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {editingProduct && editingProduct.id ? 'Editar Produto' : editingProduct ? 'Duplicar Produto' : 'Criar Novo Produto'}
