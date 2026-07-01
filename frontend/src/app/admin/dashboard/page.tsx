@@ -2,6 +2,7 @@ import { DashboardStats } from "@/components/admin/dashboard-stats";
 import { RecentOrders } from "@/components/admin/recent-orders";
 import { TopProducts } from "@/components/admin/top-products";
 import { SalesChart } from "@/components/admin/sales-chart";
+import { LowStock } from "@/components/admin/low-stock";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -29,7 +30,14 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <RecentOrders />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <RecentOrders />
+        </div>
+        <div>
+          <LowStock />
+        </div>
+      </div>
     </div>
   );
 }

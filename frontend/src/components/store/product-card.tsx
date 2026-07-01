@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useCartStore } from "@/stores/cart-store";
+import { useUIStore } from "@/stores/ui-store";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency, cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
@@ -14,6 +15,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, className }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
+  const setCartOpen = useUIStore((s) => s.setCartOpen);
   const { toast } = useToast();
 
   function handleAddToCart(e: React.MouseEvent) {
@@ -29,6 +31,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
       price: product.price,
       imageUrl: imageUrl,
     });
+    
+    setCartOpen(true);
     
     toast({
       title: "Adicionado ao carrinho!",

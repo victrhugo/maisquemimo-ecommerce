@@ -1,5 +1,6 @@
 import { StoreHeader } from "@/components/store/store-header";
 import { StoreFooter } from "@/components/store/store-footer";
+import { CartDrawer } from "@/components/store/cart-drawer";
 import type { ReactNode } from "react";
 
 export default function StoreLayout({ children }: { children: ReactNode }) {
@@ -8,6 +9,7 @@ export default function StoreLayout({ children }: { children: ReactNode }) {
       <StoreHeader />
       <main className="flex-1 pb-12 sm:pb-16">{children}</main>
       <StoreFooter />
+      <CartDrawer />
     </div>
   );
 }

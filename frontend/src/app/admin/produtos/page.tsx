@@ -36,7 +36,7 @@ export default function AdminProductsPage() {
   };
 
   const handleUpdate = async (formData: ProductFormData) => {
-    if (editingProduct) {
+    if (editingProduct && editingProduct.id) {
       await updateProduct({ id: editingProduct.id, data: toProductRequest(formData) });
       setIsDialogOpen(false);
       setEditingProduct(null);
@@ -46,6 +46,61 @@ export default function AdminProductsPage() {
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
     setIsDialogOpen(true);
+  };
+
+  const handleDuplicate = (product: Product) => {
+    const duplicateProduct: Product = {
+      ...product,
+      id: "", // Clear ID so it is created as a new item
+      name: `${product.name} (Cópia)`,
+      sku: `${product.sku}-COPIA`,
+    };
+    setEditingProduct(duplicateProduct);
+    setIsDialogOpen(true);
+  };
+
+  const handleToggleActive = async (product: Product) => {
+    await updateProduct({
+      id: product.id,
+      data: {
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        sku: product.sku,
+        categoryId: product.categoryId,
+        stockQuantity: product.stockQuantity,
+        isNew: product.isNew,
+        isFeatured: product.isFeatured,
+        active: !product.active,
+        images: product.images.map((img) => ({
+          imageUrl: img.imageUrl,
+          displayOrder: img.displayOrder,
+        })),
+      },
+    });
+  };
+
+  const handleToggleFeatured = async (product: Product) => {
+    await updateProduct({
+      id: product.id,
+      data: {
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        sku: product.sku,
+        categoryId: product.categoryId,
+        stockQuantity: product.stockQuantity,
+        isNew: product.isNew,
+        isFeatured: !product.isFeatured,
+        active: product.active,
+        images: product.images.map((img) => ({
+          imageUrl: img.imageUrl,
+          displayOrder: img.displayOrder,
+        })),
+      },
+    });
   };
 
   const handleCloseDialog = () => {
@@ -59,9 +114,9 @@ export default function AdminProductsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-3xl font-medium text-foreground">Produtos</h1>
-          <p className="text-muted-foreground">Gerencie o catálogo de produtos</p>
+          <p className="text-muted-foreground text-sm">Gerencie o catálogo de produtos</p>
         </div>
-        <Button onClick={() => setIsDialogOpen(true)}>
+        <Button onClick={() => setIsDialogOpen(true)} className="cursor-pointer">
           <PlusIcon className="w-4 h-4 mr-2" />
           Novo Produto
         </Button>
@@ -83,6 +138,9 @@ export default function AdminProductsPage() {
         <ProductTable
           products={data?.content || []}
           onEdit={handleEdit}
+          onDuplicate={handleDuplicate}
+          onToggleActive={handleToggleActive}
+          onToggleFeatured={handleToggleFeatured}
           isLoading={isLoading}
         />
       </div>
@@ -117,13 +175,13 @@ export default function AdminProductsPage() {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingProduct ? 'Editar Produto' : 'Criar Novo Produto'}
+              {editingProduct && editingProduct.id ? 'Editar Produto' : editingProduct ? 'Duplicar Produto' : 'Criar Novo Produto'}
             </DialogTitle>
           </DialogHeader>
           <ProductForm
             product={editingProduct || undefined}
             isLoading={isCreating || isUpdating}
-            onSubmit={editingProduct ? handleUpdate : handleCreate}
+            onSubmit={editingProduct && editingProduct.id ? handleUpdate : handleCreate}
             onCancel={handleCloseDialog}
           />
         </DialogContent>

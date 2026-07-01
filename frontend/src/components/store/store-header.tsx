@@ -6,6 +6,7 @@ import { ShoppingBag, Search, Menu, X, User } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cart-store";
+import { useUIStore } from "@/stores/ui-store";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -20,6 +21,7 @@ const navLinks = [
 export function StoreHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const itemCount = useCartStore((s) => s.itemCount);
+  const { setCartOpen } = useUIStore();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[color-mix(in_srgb,var(--mqm-olive-200)_35%,transparent)] bg-[color-mix(in_srgb,var(--mqm-warm-50)_96%,white)]/95 backdrop-blur-md">
@@ -60,18 +62,16 @@ export function StoreHeader() {
             <Button
               variant="ghost"
               size="icon-sm"
-              asChild
+              onClick={() => setCartOpen(true)}
               aria-label={`Carrinho (${itemCount} itens)`}
-              className="relative"
+              className="relative cursor-pointer"
             >
-              <Link href="/carrinho">
-                <ShoppingBag className="size-4.5 text-[var(--mqm-olive-800)]" />
-                {itemCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--mqm-blush-600)] text-[8px] font-bold text-white shadow-[var(--shadow-xs)]">
-                    {itemCount > 9 ? "9+" : itemCount}
-                  </span>
-                )}
-              </Link>
+              <ShoppingBag className="size-4.5 text-[var(--mqm-olive-800)]" />
+              {itemCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--mqm-blush-600)] text-[8px] font-bold text-white shadow-[var(--shadow-xs)]">
+                  {itemCount > 9 ? "9+" : itemCount}
+                </span>
+              )}
             </Button>
 
             <Button
@@ -137,18 +137,16 @@ export function StoreHeader() {
             <Button
               variant="ghost"
               size="icon-sm"
-              asChild
+              onClick={() => setCartOpen(true)}
               aria-label={`Carrinho (${itemCount} itens)`}
-              className="relative hover:scale-105 transition-transform"
+              className="relative hover:scale-105 transition-transform cursor-pointer"
             >
-              <Link href="/carrinho">
-                <ShoppingBag className="size-4.5 text-[var(--mqm-olive-800)]" />
-                {itemCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--mqm-blush-600)] text-[8px] font-bold text-white shadow-[var(--shadow-xs)]">
-                    {itemCount > 9 ? "9+" : itemCount}
-                  </span>
-                )}
-              </Link>
+              <ShoppingBag className="size-4.5 text-[var(--mqm-olive-800)]" />
+              {itemCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--mqm-blush-600)] text-[8px] font-bold text-white shadow-[var(--shadow-xs)]">
+                  {itemCount > 9 ? "9+" : itemCount}
+                </span>
+              )}
             </Button>
           </div>
         </div>

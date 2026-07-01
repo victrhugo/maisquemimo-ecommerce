@@ -5,10 +5,15 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Package,
+  FolderTree,
   ShoppingBag,
   Users,
-  Warehouse,
+  Ticket,
+  Home,
+  Image as ImageIcon,
   Settings,
+  UserCog,
+  BarChart3,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -16,12 +21,17 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/admin/produtos", icon: Package, label: "Produtos" },
+  { href: "/admin/categorias", icon: FolderTree, label: "Categorias" },
   { href: "/admin/pedidos", icon: ShoppingBag, label: "Pedidos" },
   { href: "/admin/clientes", icon: Users, label: "Clientes" },
-  { href: "/admin/estoque", icon: Warehouse, label: "Estoque" },
+  { href: "/admin/cupons", icon: Ticket, label: "Cupons" },
+  { href: "/admin/homepage", icon: Home, label: "Homepage" },
+  { href: "/admin/banners", icon: ImageIcon, label: "Banners" },
   { href: "/admin/configuracoes", icon: Settings, label: "Configurações" },
+  { href: "/admin/usuarios", icon: UserCog, label: "Usuários" },
+  { href: "/admin/relatorios", icon: BarChart3, label: "Relatórios" },
 ];
 
 export function AdminSidebar() {
@@ -44,7 +54,7 @@ export function AdminSidebar() {
         )}
       >
         {!collapsed && (
-          <Link href="/dashboard" className="flex flex-col leading-none">
+          <Link href="/admin/dashboard" className="flex flex-col leading-none">
             <span className="font-display text-base font-medium text-primary">
               mais que mimo
             </span>
@@ -54,7 +64,7 @@ export function AdminSidebar() {
           </Link>
         )}
         {collapsed && (
-          <Link href="/dashboard" aria-label="Mais que Mimo Admin">
+          <Link href="/admin/dashboard" aria-label="Mais que Mimo Admin">
             <span className="font-display text-lg font-bold text-primary">M</span>
           </Link>
         )}

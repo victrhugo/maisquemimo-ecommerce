@@ -22,6 +22,7 @@ export interface ProductRequest {
   sku: string;
   isNew: boolean;
   isFeatured: boolean;
+  active?: boolean;
   images: Array<{ imageUrl: string; displayOrder: number }>;
 }
 
