@@ -1,17 +1,14 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
-
-const topProducts = [
-  { id: "1", name: "Caderno Floral Rosé A5", sales: 89, revenue: 444110 },
-  { id: "2", name: "Kit Adesivos Botanical", sales: 134, revenue: 252260 },
-  { id: "3", name: "Planner Mensal 2025", sales: 45, revenue: 404550 },
-  { id: "4", name: "Canetas Pastel — Kit 8", sales: 67, revenue: 234030 },
-  { id: "5", name: "Caderno Dot Grid A4", sales: 52, revenue: 311220 },
-];
-
-const maxSales = Math.max(...topProducts.map((p) => p.sales));
+import { useDashboard } from "@/hooks/use-admin";
 
 export function TopProducts() {
+  const { data } = useDashboard();
+  const topProducts = data?.topProducts ?? [];
+  const maxSales = Math.max(...topProducts.map((p) => p.sales), 1);
+
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">

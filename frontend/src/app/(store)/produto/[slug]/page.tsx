@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useProductBySlug } from "@/hooks/use-products";
-import { fallbackProducts } from "@/components/store/catalog-data";
 import { useCartStore } from "@/stores/cart-store";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/utils";
@@ -14,8 +13,7 @@ export default function ProductDetailPage() {
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
 
   const { data } = useProductBySlug(slug || "");
-  const fallbackProduct = fallbackProducts.find((item) => item.slug === slug);
-  const product = data ?? fallbackProduct;
+  const product = data;
 
   const addItem = useCartStore((state) => state.addItem);
   const { toast } = useToast();
@@ -80,9 +78,9 @@ export default function ProductDetailPage() {
           </h1>
 
           <div className="mt-5 flex items-baseline gap-2">
-            <p className="text-2xl font-bold text-[var(--mqm-olive-800)]">{formatCurrency(selectedProduct.price / 100)}</p>
+            <p className="text-2xl font-bold text-[var(--mqm-olive-800)]">{formatCurrency(selectedProduct.price)}</p>
             {selectedProduct.originalPrice && (
-              <p className="text-sm text-muted-foreground line-through">{formatCurrency(selectedProduct.originalPrice / 100)}</p>
+              <p className="text-sm text-muted-foreground line-through">{formatCurrency(selectedProduct.originalPrice)}</p>
             )}
           </div>
 

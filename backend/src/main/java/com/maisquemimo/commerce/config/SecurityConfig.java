@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtService jwtService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/content/**").permitAll()
                         // Swagger/OpenAPI docs
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         // Health check
@@ -47,7 +48,7 @@ public class SecurityConfig {
                         // Proteger todas as outras rotas
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

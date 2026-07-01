@@ -32,21 +32,12 @@ public class AuthController {
     private long tokenExpiration;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<Object> register(@Valid @RequestBody RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(new ErrorResponse("Este email já está cadastrado"));
+            return error(HttpStatus.CONFLICT, "Este email já está cadastrado");
         }
 
-        User user = User.builder()
-                .name(request.name())
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
-                .role(User.Role.CUSTOMER)
-                .build();
-
-        user = userRepository.save(user);
+        User user = userRepository.save(buildCustomerUser(request));
         log.info("Novo usuário registrado: {}", user.getEmail());
 
         String token = jwtService.generateToken(user.getEmail(), user.getId());
@@ -56,26 +47,35 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginRequest request) {
         User user = userRepository.findByEmail(request.email())
                 .orElse(null);
 
         if (user == null || !passwordEncoder.matches(request.password(), user.getPassword())) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(new ErrorResponse("Email ou senha inválidos"));
+            return error(HttpStatus.UNAUTHORIZED, "Email ou senha inválidos");
         }
 
         if (!user.getEnabled()) {
-            return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
-                    .body(new ErrorResponse("Usuário desativado"));
+            return error(HttpStatus.FORBIDDEN, "Usuário desativado");
         }
 
         String token = jwtService.generateToken(user.getEmail(), user.getId());
         log.info("Login bem-sucedido: {}", user.getEmail());
 
         return ResponseEntity.ok(new AuthTokenResponse(token, tokenExpiration / 1000));
+    }
+
+    private User buildCustomerUser(RegisterRequest request) {
+        return User.builder()
+                .name(request.name())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .role(User.Role.CUSTOMER)
+                .build();
+    }
+
+    private ResponseEntity<Object> error(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(new ErrorResponse(message));
     }
 
     record ErrorResponse(String message) {}

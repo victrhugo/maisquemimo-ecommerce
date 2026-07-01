@@ -15,76 +15,11 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { useAdminOrders, useUpdateOrderStatus } from "@/hooks/use-admin";
 import { Search, Eye, ShoppingBag, Check } from "lucide-react";
 import type { OrderStatus } from "@/types/order";
 import { ORDER_STATUS_LABELS } from "@/types/order";
-
-interface MockOrder {
-  id: string;
-  number: string;
-  customerName: string;
-  customerEmail: string;
-  status: OrderStatus;
-  total: number;
-  createdAt: string;
-  items: Array<{ name: string; quantity: number; price: number }>;
-}
-
-const initialOrders: MockOrder[] = [
-  {
-    id: "1",
-    number: "MQM-001234",
-    customerName: "Ana Lima",
-    customerEmail: "ana@email.com",
-    status: "SHIPPED",
-    total: 8990,
-    createdAt: "2026-06-28T10:00:00Z",
-    items: [{ name: "Planner Semanal Amanhecer", quantity: 1, price: 8990 }],
-  },
-  {
-    id: "2",
-    number: "MQM-001235",
-    customerName: "Carla Souza",
-    customerEmail: "carla@email.com",
-    status: "PROCESSING",
-    total: 4990,
-    createdAt: "2026-06-28T11:30:00Z",
-    items: [{ name: "Caderno Costura Manual Blush", quantity: 1, price: 4990 }],
-  },
-  {
-    id: "3",
-    number: "MQM-001236",
-    customerName: "Fernanda Melo",
-    customerEmail: "fer@email.com",
-    status: "CONFIRMED",
-    total: 12890,
-    createdAt: "2026-06-28T13:00:00Z",
-    items: [
-      { name: "Kit Escrita Calmaria", quantity: 1, price: 7990 },
-      { name: "Caderno Costura Manual Blush", quantity: 1, price: 4990 },
-    ],
-  },
-  {
-    id: "4",
-    number: "MQM-001237",
-    customerName: "Juliana Costa",
-    customerEmail: "ju@email.com",
-    status: "PENDING",
-    total: 3490,
-    createdAt: "2026-06-29T08:00:00Z",
-    items: [{ name: "Bloco Notas Botanic", quantity: 1, price: 3490 }],
-  },
-  {
-    id: "5",
-    number: "MQM-001238",
-    customerName: "Marina Reis",
-    customerEmail: "marina@email.com",
-    status: "DELIVERED",
-    total: 6990,
-    createdAt: "2026-06-27T14:20:00Z",
-    items: [{ name: "Planner Semanal Amanhecer", quantity: 1, price: 6990 }],
-  },
-];
+import type { AdminOrder } from "@/types/admin";
 
 const statusVariant: Record<OrderStatus, "amber" | "mauve" | "rose" | "sage" | "secondary" | "default"> = {
   PENDING: "amber",
@@ -98,11 +33,14 @@ const statusVariant: Record<OrderStatus, "amber" | "mauve" | "rose" | "sage" | "
 
 export default function AdminOrdersPage() {
   const { toast } = useToast();
-  const [orders, setOrders] = useState<MockOrder[]>(initialOrders);
   const [search, setSearch] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
-  const [selectedOrder, setSelectedOrder] = useState<MockOrder | null>(null);
+  const { data: ordersData } = useAdminOrders(selectedStatus);
+  const { mutateAsync: updateOrderStatus } = useUpdateOrderStatus();
+  const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const orders = ordersData ?? [];
 
   const filteredOrders = orders.filter((o) => {
     const matchesSearch =
@@ -112,14 +50,14 @@ export default function AdminOrdersPage() {
     return matchesSearch && matchesStatus;
   });
 
-  function openOrderDetail(order: MockOrder) {
+  function openOrderDetail(order: AdminOrder) {
     setSelectedOrder(order);
     setIsDetailOpen(true);
   }
 
-  function handleStatusChange(id: string, newStatus: OrderStatus) {
-    setOrders(orders.map((o) => (o.id === id ? { ...o, status: newStatus } : o)));
-    if (selectedOrder && selectedOrder.id === id) {
+  async function handleStatusChange(id: string, newStatus: OrderStatus) {
+    await updateOrderStatus({ id, status: newStatus });
+    if (selectedOrder?.id === id) {
       setSelectedOrder({ ...selectedOrder, status: newStatus });
     }
     toast({
@@ -177,7 +115,9 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filteredOrders.map((order) => (
+              {filteredOrders.map((order) => {
+                const orderStatus = order.status as OrderStatus;
+                return (
                 <tr key={order.id} className="hover:bg-accent/45 transition-colors duration-150">
                   <td className="px-6 py-4">
                     <span className="font-mono text-xs font-bold text-[var(--mqm-olive-700)]">
@@ -194,8 +134,8 @@ export default function AdminOrdersPage() {
                     {formatDate(order.createdAt)}
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <Badge variant={statusVariant[order.status]}>
-                      {ORDER_STATUS_LABELS[order.status]}
+                    <Badge variant={statusVariant[orderStatus]}>
+                      {ORDER_STATUS_LABELS[orderStatus]}
                     </Badge>
                   </td>
                   <td className="px-6 py-4 text-right font-bold text-foreground text-sm font-mono">
@@ -215,7 +155,8 @@ export default function AdminOrdersPage() {
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
               {filteredOrders.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-8 text-center text-muted-foreground text-sm">

@@ -5,7 +5,9 @@ import com.maisquemimo.commerce.dto.ProductResponse;
 import com.maisquemimo.commerce.entity.Category;
 import com.maisquemimo.commerce.entity.Product;
 import com.maisquemimo.commerce.exception.DuplicateProductSlugException;
+import com.maisquemimo.commerce.exception.DuplicateProductSkuException;
 import com.maisquemimo.commerce.exception.ProductNotFoundException;
+import com.maisquemimo.commerce.exception.CategoryNotFoundException;
 import com.maisquemimo.commerce.mapper.ProductMapper;
 import com.maisquemimo.commerce.repository.CategoryRepository;
 import com.maisquemimo.commerce.repository.ProductImageRepository;
@@ -121,39 +123,15 @@ public class ProductService {
     @Transactional
     public ProductResponse create(ProductRequest request) {
         log.info("Criando novo produto: {}", request.name());
-        UUID categoryId = parseUuid(request.categoryId(), "categoryId");
-
-        // Validar categoria
-        Category category = categoryRepository
-            .findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
-
-        // Gerar slug
+        Category category = findCategoryById(request.categoryId());
         String slug = generateSlug(request.name());
+        validateUniqueSlug(slug, null);
+        validateUniqueSku(request.sku(), null);
 
-        // Verificar duplicação de slug
-        if (productRepository.findBySlug(slug).isPresent()) {
-            throw new DuplicateProductSlugException(slug);
-        }
-
-        // Verificar duplicação de SKU
-        if (productRepository.findBySku(request.sku()).isPresent()) {
-            throw new IllegalArgumentException("SKU '%s' já existe".formatted(request.sku()));
-        }
-
-        // Criar produto
         Product product = productMapper.toEntity(request, category);
         product.setSlug(slug);
         Product savedProduct = productRepository.save(product);
-
-        // Salvar imagens
-        if (request.images() != null && !request.images().isEmpty()) {
-            var images = request.images().stream()
-                    .map(img -> productMapper.imageRequestToEntity(img, savedProduct))
-                    .toList();
-            productImageRepository.saveAll(images);
-            savedProduct.setImages(images);
-        }
+        replaceProductImages(savedProduct, request);
 
         log.info("Produto criado com sucesso: ID={}", savedProduct.getId());
         return productMapper.toResponse(savedProduct);
@@ -166,49 +144,22 @@ public class ProductService {
     public ProductResponse update(String id, ProductRequest request) {
         log.info("Atualizando produto: {}", id);
         UUID productId = parseUuid(id, "id");
-        UUID categoryId = parseUuid(request.categoryId(), "categoryId");
+        Product product = findProductById(id, productId);
+        Category category = findCategoryById(request.categoryId());
 
-        Product product = productRepository
-            .findById(productId)
-                .orElseThrow(() -> ProductNotFoundException.byId(id));
-
-        // Validar categoria
-        Category category = categoryRepository
-            .findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("Categoria não encontrada"));
-
-        // Verificar slug único (excluindo o próprio produto)
         String newSlug = generateSlug(request.name());
-        if (!product.getSlug().equals(newSlug)) {
-            if (productRepository.findBySlug(newSlug).isPresent()) {
-                throw new DuplicateProductSlugException(newSlug);
-            }
+        if (!newSlug.equals(product.getSlug())) {
+            validateUniqueSlug(newSlug, product.getId());
             product.setSlug(newSlug);
         }
 
-        // Verificar SKU único (excluindo o próprio produto)
         if (!product.getSku().equals(request.sku())) {
-            if (productRepository.findBySku(request.sku()).isPresent()) {
-                throw new IllegalArgumentException("SKU '%s' já existe".formatted(request.sku()));
-            }
+            validateUniqueSku(request.sku(), product.getId());
         }
 
-        // Atualizar campos
         productMapper.updateEntityFromRequest(request, product, category);
         product = productRepository.save(product);
-
-        // Atualizar imagens
-        if (request.images() != null) {
-            productImageRepository.deleteByProductId(productId);
-            if (!request.images().isEmpty()) {
-                Product savedProduct = product;
-                var images = request.images().stream()
-                        .map(img -> productMapper.imageRequestToEntity(img, savedProduct))
-                        .toList();
-                productImageRepository.saveAll(images);
-                product.setImages(images);
-            }
-        }
+        replaceProductImages(product, request);
 
         log.info("Produto atualizado com sucesso: ID={}", id);
         return productMapper.toResponse(product);
@@ -221,10 +172,7 @@ public class ProductService {
     public void delete(String id) {
         log.info("Deletando produto: {}", id);
         UUID productId = parseUuid(id, "id");
-
-        Product product = productRepository
-            .findById(productId)
-                .orElseThrow(() -> ProductNotFoundException.byId(id));
+        Product product = findProductById(id, productId);
 
         product.setActive(false);
         productRepository.save(product);
@@ -249,5 +197,53 @@ public class ProductService {
         } catch (IllegalArgumentException ex) {
             throw new IllegalArgumentException("%s inválido: '%s'".formatted(fieldName, raw), ex);
         }
+    }
+
+    private Product findProductById(String rawId, UUID productId) {
+        return productRepository
+                .findById(productId)
+                .orElseThrow(() -> ProductNotFoundException.byId(rawId));
+    }
+
+    private Category findCategoryById(String rawCategoryId) {
+        UUID categoryId = parseUuid(rawCategoryId, "categoryId");
+        return categoryRepository
+                .findById(categoryId)
+                .orElseThrow(CategoryNotFoundException::new);
+    }
+
+    private void validateUniqueSlug(String slug, UUID currentProductId) {
+        productRepository.findBySlug(slug)
+                .filter(existing -> currentProductId == null || !existing.getId().equals(currentProductId))
+                .ifPresent(existing -> {
+                    throw new DuplicateProductSlugException(slug);
+                });
+    }
+
+    private void validateUniqueSku(String sku, UUID currentProductId) {
+        productRepository.findBySku(sku)
+                .filter(existing -> currentProductId == null || !existing.getId().equals(currentProductId))
+                .ifPresent(existing -> {
+                    throw new DuplicateProductSkuException(sku);
+                });
+    }
+
+    private void replaceProductImages(Product product, ProductRequest request) {
+        if (request.images() == null) {
+            return;
+        }
+
+        productImageRepository.deleteByProductId(product.getId());
+
+        if (request.images().isEmpty()) {
+            product.setImages(java.util.List.of());
+            return;
+        }
+
+        var images = request.images().stream()
+                .map(img -> productMapper.imageRequestToEntity(img, product))
+                .toList();
+        productImageRepository.saveAll(images);
+        product.setImages(images);
     }
 }

@@ -65,7 +65,7 @@ export default function CartPage() {
 
                   <div className="min-w-0">
                     <p className="line-clamp-2 text-sm font-semibold text-[var(--mqm-olive-800)] sm:text-base">{item.name}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{formatCurrency(item.price / 100)}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{formatCurrency(item.price)}</p>
 
                     <div className="mt-3 inline-flex items-center rounded-full border border-[color-mix(in_srgb,var(--border)_80%,transparent)] bg-white/70">
                       <button
@@ -87,7 +87,7 @@ export default function CartPage() {
                   </div>
 
                   <div className="col-span-2 flex items-center justify-between sm:col-span-1 sm:flex-col sm:items-end sm:justify-center sm:gap-3">
-                    <p className="text-sm font-semibold text-[var(--mqm-olive-800)]">{formatCurrency((item.price * item.quantity) / 100)}</p>
+                    <p className="text-sm font-semibold text-[var(--mqm-olive-800)]">{formatCurrency(item.price * item.quantity)}</p>
                     <button
                       onClick={() => removeItem(item.productId)}
                       className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.11em] text-muted-foreground hover:text-[var(--mqm-blush-700)]"
@@ -105,18 +105,18 @@ export default function CartPage() {
               <div className="mt-4 space-y-2 text-sm text-[var(--mqm-olive-800)]">
                 <div className="flex items-center justify-between">
                   <span>Subtotal</span>
-                  <span>{formatCurrency(subtotal / 100)}</span>
+                  <span>{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Frete</span>
-                  <span>{shipping === 0 ? "Gratis" : formatCurrency(shipping / 100)}</span>
+                  <span>{shipping === 0 ? "Gratis" : formatCurrency(shipping)}</span>
                 </div>
               </div>
 
               <div className="mt-4 border-t border-[color-mix(in_srgb,var(--border)_70%,transparent)] pt-4">
                 <div className="flex items-center justify-between text-base font-semibold text-[var(--mqm-olive-800)]">
                   <span>Total</span>
-                  <span>{formatCurrency(total / 100)}</span>
+                  <span>{formatCurrency(total)}</span>
                 </div>
               </div>
 

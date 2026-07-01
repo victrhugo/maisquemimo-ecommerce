@@ -79,11 +79,11 @@ export function ProductCard({ product, className }: ProductCardProps) {
           <div className="mt-2.5 flex items-baseline justify-center gap-2">
             {product.originalPrice && product.originalPrice > product.price && (
               <span className="text-xs text-muted-foreground line-through decoration-[var(--mqm-blush-400)]">
-                {formatCurrency(product.originalPrice / 100)}
+                {formatCurrency(product.originalPrice)}
               </span>
             )}
             <span className="text-[0.95rem] font-bold text-[var(--mqm-blush-800)]">
-              {formatCurrency(product.price / 100)}
+              {formatCurrency(product.price)}
             </span>
           </div>
         </div>

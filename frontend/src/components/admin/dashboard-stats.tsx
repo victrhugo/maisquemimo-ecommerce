@@ -1,44 +1,48 @@
+"use client";
+
 import { ShoppingBag, Users, Package, TrendingUp, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
-
-// TODO: dados reais via React Query
-const stats = [
-  {
-    title: "Receita do mês",
-    value: formatCurrency(18420.5),
-    change: +12.5,
-    icon: TrendingUp,
-    color: "text-primary",
-    bg: "bg-secondary",
-  },
-  {
-    title: "Pedidos",
-    value: "142",
-    change: +8.1,
-    icon: ShoppingBag,
-    color: "text-[var(--mqm-olive-700)]",
-    bg: "bg-[var(--mqm-olive-100)]",
-  },
-  {
-    title: "Novos clientes",
-    value: "38",
-    change: -2.4,
-    icon: Users,
-    color: "text-[var(--mqm-blush-700)]",
-    bg: "bg-[var(--mqm-blush-100)]",
-  },
-  {
-    title: "Produtos ativos",
-    value: "512",
-    change: +3.7,
-    icon: Package,
-    color: "text-[var(--mqm-olive-800)]",
-    bg: "bg-[var(--mqm-warm-200)]",
-  },
-];
+import { useDashboard } from "@/hooks/use-admin";
 
 export function DashboardStats() {
+  const { data } = useDashboard();
+
+  const stats = [
+    {
+      title: "Receita do mês",
+      value: formatCurrency((Number(data?.monthRevenue ?? 0) || 0)),
+      change: 0,
+      icon: TrendingUp,
+      color: "text-primary",
+      bg: "bg-secondary",
+    },
+    {
+      title: "Pedidos",
+      value: String(data?.ordersCount ?? 0),
+      change: 0,
+      icon: ShoppingBag,
+      color: "text-[var(--mqm-olive-700)]",
+      bg: "bg-[var(--mqm-olive-100)]",
+    },
+    {
+      title: "Clientes",
+      value: String(data?.customersCount ?? 0),
+      change: 0,
+      icon: Users,
+      color: "text-[var(--mqm-blush-700)]",
+      bg: "bg-[var(--mqm-blush-100)]",
+    },
+    {
+      title: "Produtos ativos",
+      value: String(data?.activeProductsCount ?? 0),
+      change: 0,
+      icon: Package,
+      color: "text-[var(--mqm-olive-800)]",
+      bg: "bg-[var(--mqm-warm-200)]",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (

@@ -32,21 +32,27 @@ public class Order extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private OrderStatus status = OrderStatus.PENDING;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<OrderItem> items = new ArrayList<>();
 
     @Column(nullable = false, precision = 10, scale = 2)
+    @Builder.Default
     private BigDecimal subtotal = BigDecimal.ZERO;
 
     @Column(precision = 10, scale = 2)
+    @Builder.Default
     private BigDecimal discount = BigDecimal.ZERO;
 
     @Column(precision = 10, scale = 2)
+    @Builder.Default
     private BigDecimal shippingCost = BigDecimal.ZERO;
 
     @Column(nullable = false, precision = 10, scale = 2)
+    @Builder.Default
     private BigDecimal total = BigDecimal.ZERO;
 
     @Column(name = "tracking_code")

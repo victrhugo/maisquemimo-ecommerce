@@ -34,6 +34,7 @@ public class User extends BaseEntity {
     private String avatarUrl;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean enabled = true;
 
     public enum Role {

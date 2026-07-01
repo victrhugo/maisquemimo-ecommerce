@@ -9,7 +9,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Configuração CORS para permitir requests do frontend
@@ -17,6 +16,16 @@ import java.util.stream.Collectors;
  */
 @Configuration
 public class WebConfig {
+
+    private static final List<String> DEFAULT_ALLOWED_ORIGIN_PATTERNS = List.of(
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://127.0.0.1:3000",
+            "https://localhost:3000",
+            "https://maisquemimo.com",
+            "https://www.maisquemimo.com",
+            "https://*.netlify.app"
+    );
 
     /**
      * Configurar CORS via CorsConfigurationSource
@@ -27,25 +36,7 @@ public class WebConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // ALLOWED_ORIGINS (comma separated) sobrescreve defaults para produção.
-        String allowedOriginsEnv = System.getenv("ALLOWED_ORIGINS");
-        List<String> allowedOriginPatterns;
-
-        if (allowedOriginsEnv != null && !allowedOriginsEnv.isBlank()) {
-            allowedOriginPatterns = Arrays.stream(allowedOriginsEnv.split(","))
-                .map(String::trim)
-                .filter(origin -> !origin.isBlank())
-                .collect(Collectors.toList());
-        } else {
-            allowedOriginPatterns = Arrays.asList(
-                "http://localhost:3000",          // Dev local
-                "http://localhost:3001",          // Dev alternativo
-                "http://127.0.0.1:3000",          // Dev 127.0.0.1
-                "https://localhost:3000",         // Dev HTTPS
-                "https://maisquemimo.com",        // Prod principal
-                "https://www.maisquemimo.com",    // Prod www
-                "https://*.netlify.app"           // Frontend Netlify
-            );
-        }
+        List<String> allowedOriginPatterns = resolveAllowedOriginPatterns();
 
         config.setAllowedOriginPatterns(allowedOriginPatterns);
 
@@ -74,5 +65,17 @@ public class WebConfig {
         source.registerCorsConfiguration("/**", config);
 
         return source;
+    }
+
+    private List<String> resolveAllowedOriginPatterns() {
+        String allowedOriginsEnv = System.getenv("ALLOWED_ORIGINS");
+        if (allowedOriginsEnv == null || allowedOriginsEnv.isBlank()) {
+            return DEFAULT_ALLOWED_ORIGIN_PATTERNS;
+        }
+
+        return Arrays.stream(allowedOriginsEnv.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isBlank())
+                .toList();
     }
 }

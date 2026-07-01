@@ -1,13 +1,13 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
-
-const lowStockItems = [
-  { id: "prd-8", name: "Planner Mensal Sereno", stock: 0 },
-  { id: "prd-6", name: "Caixa Presente Afeto", stock: 4 },
-  { id: "prd-3", name: "Kit Escrita Calmaria", stock: 6 },
-];
+import { useDashboard } from "@/hooks/use-admin";
 
 export function LowStock() {
+  const { data } = useDashboard();
+  const lowStockItems = data?.lowStock ?? [];
+
   return (
     <Card className="h-full">
       <CardHeader className="pb-4">

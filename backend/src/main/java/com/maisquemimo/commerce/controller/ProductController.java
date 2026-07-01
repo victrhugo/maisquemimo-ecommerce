@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  * Privado: POST, PUT, DELETE (requer autenticação)
  */
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 @Slf4j
 public class ProductController {

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/utils";
+import { useAdminCustomers } from "@/hooks/use-admin";
 import { Search, Mail, Phone, MapPin, Eye } from "lucide-react";
 import {
   Dialog,
@@ -15,81 +16,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-interface MockCustomer {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  city: string;
-  state: string;
-  ordersCount: number;
-  totalSpent: number;
-  lastOrderDate: string;
-}
-
-const mockCustomers: MockCustomer[] = [
-  {
-    id: "1",
-    name: "Ana Lima",
-    email: "ana@email.com",
-    phone: "(11) 98765-4321",
-    city: "São Paulo",
-    state: "SP",
-    ordersCount: 3,
-    totalSpent: 24870,
-    lastOrderDate: "2026-06-28",
-  },
-  {
-    id: "2",
-    name: "Carla Souza",
-    email: "carla@email.com",
-    phone: "(21) 97654-3210",
-    city: "Rio de Janeiro",
-    state: "RJ",
-    ordersCount: 1,
-    totalSpent: 4990,
-    lastOrderDate: "2026-06-28",
-  },
-  {
-    id: "3",
-    name: "Fernanda Melo",
-    email: "fer@email.com",
-    phone: "(31) 96543-2109",
-    city: "Belo Horizonte",
-    state: "MG",
-    ordersCount: 4,
-    totalSpent: 38450,
-    lastOrderDate: "2026-06-28",
-  },
-  {
-    id: "4",
-    name: "Juliana Costa",
-    email: "ju@email.com",
-    phone: "(41) 95432-1098",
-    city: "Curitiba",
-    state: "PR",
-    ordersCount: 2,
-    totalSpent: 12480,
-    lastOrderDate: "2026-06-29",
-  },
-  {
-    id: "5",
-    name: "Marina Reis",
-    email: "marina@email.com",
-    phone: "(51) 94321-0987",
-    city: "Porto Alegre",
-    state: "RS",
-    ordersCount: 1,
-    totalSpent: 6990,
-    lastOrderDate: "2026-06-27",
-  },
-];
+import type { AdminCustomer } from "@/types/admin";
 
 export default function AdminCustomersPage() {
   const { toast } = useToast();
-  const [customers, setCustomers] = useState<MockCustomer[]>(mockCustomers);
+  const { data: customersData } = useAdminCustomers();
+  const customers = customersData ?? [];
   const [search, setSearch] = useState("");
-  const [selectedCustomer, setSelectedCustomer] = useState<MockCustomer | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<AdminCustomer | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const filteredCustomers = customers.filter(
@@ -99,7 +33,7 @@ export default function AdminCustomersPage() {
       c.city.toLowerCase().includes(search.toLowerCase())
   );
 
-  function viewDetails(customer: MockCustomer) {
+  function viewDetails(customer: AdminCustomer) {
     setSelectedCustomer(customer);
     setIsDetailOpen(true);
   }

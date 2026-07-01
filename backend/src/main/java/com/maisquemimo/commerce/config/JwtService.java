@@ -1,12 +1,11 @@
 package com.maisquemimo.commerce.config;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -20,7 +19,6 @@ import java.util.UUID;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class JwtService {
 
     @Value("${jwt.secret}")
@@ -56,10 +54,7 @@ public class JwtService {
      */
     public boolean isTokenValid(String token) {
         try {
-            Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
-                    .build()
-                    .parseSignedClaims(token);
+            buildParser().parseSignedClaims(token);
             return true;
         } catch (Exception e) {
             log.debug("Token validation failed: {}", e.getMessage());
@@ -93,9 +88,7 @@ public class JwtService {
      * Extrai todas as claims do token
      */
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
-                .build()
+        return buildParser()
                 .parseSignedClaims(token)
                 .getPayload();
     }
@@ -108,12 +101,18 @@ public class JwtService {
         Date expiryDate = new Date(now.getTime() + expirationTime);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
+            .claims(claims)
+            .subject(subject)
+            .issuedAt(now)
+            .expiration(expiryDate)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
                 .compact();
+    }
+
+    private JwtParser buildParser() {
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
+                .build();
     }
 
 }

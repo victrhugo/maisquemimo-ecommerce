@@ -14,39 +14,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminUsers, useCreateAdminUser, useDeleteAdminUser, useUpdateAdminUser } from "@/hooks/use-admin";
+import type { AdminUser } from "@/types/admin";
 import { Plus, Search, Pencil, Trash2, Shield, Eye, EyeOff } from "lucide-react";
 
-interface MockAdmin {
-  id: string;
-  name: string;
-  email: string;
-  role: "SUPER_ADMIN" | "MANAGER" | "EDITOR";
-  isActive: boolean;
-}
-
-const initialAdmins: MockAdmin[] = [
-  {
-    id: "1",
-    name: "Victor Hugo",
-    email: "victor@maisquemimo.com.br",
-    role: "SUPER_ADMIN",
-    isActive: true,
-  },
-  {
-    id: "2",
-    name: "Maria Flor",
-    email: "maria@maisquemimo.com.br",
-    role: "MANAGER",
-    isActive: true,
-  },
-  {
-    id: "3",
-    name: "Ana Design",
-    email: "ana.design@email.com",
-    role: "EDITOR",
-    isActive: false,
-  },
-];
+type MockAdmin = AdminUser & { role: "SUPER_ADMIN" | "MANAGER" | "EDITOR" };
 
 const roleLabels: Record<MockAdmin["role"], string> = {
   SUPER_ADMIN: "Administrador Geral",
@@ -62,7 +34,16 @@ const roleVariant: Record<MockAdmin["role"], "default" | "secondary" | "outline"
 
 export default function AdminUsersPage() {
   const { toast } = useToast();
-  const [admins, setAdmins] = useState<MockAdmin[]>(initialAdmins);
+  const { data: usersData } = useAdminUsers();
+  const { mutateAsync: createUser } = useCreateAdminUser();
+  const { mutateAsync: updateUser } = useUpdateAdminUser();
+  const { mutateAsync: deleteUser } = useDeleteAdminUser();
+
+  const admins: MockAdmin[] = (usersData ?? []).map((user) => ({
+    ...user,
+    role: user.role === "ADMIN" ? "SUPER_ADMIN" : "EDITOR",
+  }));
+
   const [search, setSearch] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAdmin, setEditingAdmin] = useState<MockAdmin | null>(null);
@@ -97,7 +78,7 @@ export default function AdminUsersPage() {
     setIsDialogOpen(true);
   }
 
-  function handleSave(e: React.FormEvent) {
+  async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim() || !email.trim()) {
       toast({
@@ -109,41 +90,47 @@ export default function AdminUsersPage() {
     }
 
     if (editingAdmin) {
-      // Edit
-      setAdmins(
-        admins.map((a) =>
-          a.id === editingAdmin.id ? { ...a, name, email, role, isActive } : a
-        )
-      );
+      await updateUser({
+        id: editingAdmin.id,
+        payload: {
+          name,
+          email,
+          role,
+          isActive,
+        },
+      });
       toast({ title: "Sucesso", description: "Usuário atualizado com sucesso!" });
     } else {
-      // Create
-      const newAdmin: MockAdmin = {
-        id: (admins.length + 1).toString(),
-        name,
-        email,
-        role,
-        isActive,
-      };
-      setAdmins([...admins, newAdmin]);
+      await createUser({ name, email, role, isActive });
       toast({ title: "Sucesso", description: "Usuário criado com sucesso!" });
     }
 
     setIsDialogOpen(false);
   }
 
-  function handleDelete(id: string) {
+  async function handleDelete(id: string) {
     if (confirm("Tem certeza que deseja remover este administrador?")) {
-      setAdmins(admins.filter((a) => a.id !== id));
+      await deleteUser(id);
       toast({ title: "Sucesso", description: "Usuário removido com sucesso!" });
     }
   }
 
-  function toggleStatus(id: string) {
-    setAdmins(
-      admins.map((a) => (a.id === id ? { ...a, isActive: !a.isActive } : a))
-    );
+  async function toggleStatus(id: string) {
     const updated = admins.find((a) => a.id === id);
+    if (!updated) {
+      return;
+    }
+
+    await updateUser({
+      id,
+      payload: {
+        name: updated.name,
+        email: updated.email,
+        role: updated.role,
+        isActive: !updated.isActive,
+      },
+    });
+
     toast({
       title: "Usuário atualizado",
       description: `Status de ${updated?.name} alterado para ${!updated?.isActive ? "Ativo" : "Inativo"}.`,

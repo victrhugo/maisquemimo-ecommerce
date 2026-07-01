@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useContent, useSaveContent } from "@/hooks/use-admin";
 import { Plus, Search, Pencil, Trash2, ImageIcon, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 
@@ -30,34 +31,12 @@ interface MockBanner {
   isActive: boolean;
 }
 
-const initialBanners: MockBanner[] = [
-  {
-    id: "1",
-    title: "Papelaria Afetiva",
-    text: "Feito à mão para trazer afeto e organização.",
-    desktopImage: "/images/placeholder-hero.svg",
-    mobileImage: "/images/placeholder-hero.svg",
-    buttonText: "Ver Cadernos",
-    link: "/produtos?categoria=cadernos",
-    order: 1,
-    isActive: true,
-  },
-  {
-    id: "2",
-    title: "Coleção Calmaria",
-    text: "Organize seus dias com leveza e suavidade.",
-    desktopImage: "/images/hero-detail.svg",
-    mobileImage: "/images/hero-detail.svg",
-    buttonText: "Ver Planners",
-    link: "/produtos?categoria=planner",
-    order: 2,
-    isActive: true,
-  },
-];
-
 export default function AdminBannersPage() {
   const { toast } = useToast();
-  const [banners, setBanners] = useState<MockBanner[]>(initialBanners);
+  const { data: content } = useContent("banners");
+  const { mutateAsync: saveContent } = useSaveContent("banners");
+
+  const [banners, setBanners] = useState<MockBanner[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingBanner, setEditingBanner] = useState<MockBanner | null>(null);
 
@@ -70,6 +49,24 @@ export default function AdminBannersPage() {
   const [link, setLink] = useState("");
   const [order, setOrder] = useState(1);
   const [isActive, setIsActive] = useState(true);
+
+  useEffect(() => {
+    if (!content) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(content.payload);
+      setBanners(Array.isArray(parsed.banners) ? parsed.banners : []);
+    } catch {
+      setBanners([]);
+    }
+  }, [content]);
+
+  async function persist(nextBanners: MockBanner[]) {
+    setBanners(nextBanners);
+    await saveContent(JSON.stringify({ banners: nextBanners }));
+  }
 
   function openCreateDialog() {
     setEditingBanner(null);
@@ -97,7 +94,7 @@ export default function AdminBannersPage() {
     setIsDialogOpen(true);
   }
 
-  function handleSave(e: React.FormEvent) {
+  async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!title.trim() || !desktopImage.trim()) {
       toast({
@@ -110,13 +107,12 @@ export default function AdminBannersPage() {
 
     if (editingBanner) {
       // Edit
-      setBanners(
-        banners.map((b) =>
+      const next = banners.map((b) =>
           b.id === editingBanner.id
             ? { ...b, title, text, desktopImage, mobileImage, buttonText, link, order, isActive }
             : b
-        )
-      );
+        );
+      await persist(next);
       toast({ title: "Sucesso", description: "Banner atualizado com sucesso!" });
     } else {
       // Create
@@ -131,24 +127,23 @@ export default function AdminBannersPage() {
         order,
         isActive,
       };
-      setBanners([...banners, newBanner]);
+      await persist([...banners, newBanner]);
       toast({ title: "Sucesso", description: "Banner criado com sucesso!" });
     }
 
     setIsDialogOpen(false);
   }
 
-  function handleDelete(id: string) {
+  async function handleDelete(id: string) {
     if (confirm("Tem certeza que deseja excluir este banner?")) {
-      setBanners(banners.filter((b) => b.id !== id));
+      await persist(banners.filter((b) => b.id !== id));
       toast({ title: "Sucesso", description: "Banner excluído com sucesso!" });
     }
   }
 
-  function toggleStatus(id: string) {
-    setBanners(
-      banners.map((b) => (b.id === id ? { ...b, isActive: !b.isActive } : b))
-    );
+  async function toggleStatus(id: string) {
+    const next = banners.map((b) => (b.id === id ? { ...b, isActive: !b.isActive } : b));
+    await persist(next);
     const updated = banners.find((b) => b.id === id);
     toast({
       title: "Banner atualizado",
@@ -172,7 +167,7 @@ export default function AdminBannersPage() {
 
       {/* Banners Grid */}
       <div className="grid gap-6 sm:grid-cols-2">
-        {banners.sort((a, b) => a.order - b.order).map((banner) => (
+        {[...banners].sort((a, b) => a.order - b.order).map((banner) => (
           <Card key={banner.id} className={!banner.isActive ? "opacity-60 bg-muted/20" : ""}>
             <div className="relative aspect-[16/8] w-full overflow-hidden rounded-t-[var(--radius-xl)] bg-[var(--mqm-warm-100)] border-b">
               <Image

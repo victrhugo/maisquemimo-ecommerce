@@ -23,6 +23,7 @@ public class ProductImage extends BaseEntity {
     private String imageUrl;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer displayOrder = 0;
 
 }

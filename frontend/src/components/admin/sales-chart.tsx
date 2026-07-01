@@ -1,31 +1,38 @@
 "use client";
 
+import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
-
-// Dados mock do gráfico de vendas — será substituído por dados reais
-const salesData = [
-  { month: "Jan", revenue: 9840 },
-  { month: "Fev", revenue: 11200 },
-  { month: "Mar", revenue: 10350 },
-  { month: "Abr", revenue: 14800 },
-  { month: "Mai", revenue: 13200 },
-  { month: "Jun", revenue: 18420 },
-];
-
-const maxRevenue = Math.max(...salesData.map((d) => d.revenue));
+import { useDashboard } from "@/hooks/use-admin";
 
 export function SalesChart() {
+  const { data } = useDashboard();
+
+  const salesData = useMemo(() => {
+    const formatter = new Intl.DateTimeFormat("pt-BR", { month: "short" });
+    const monthMap = new Map<string, number>();
+
+    (data?.recentOrders ?? []).forEach((order) => {
+      const month = formatter.format(new Date(order.createdAt));
+      monthMap.set(month, (monthMap.get(month) ?? 0) + order.total / 100);
+    });
+
+    const entries = Array.from(monthMap.entries()).map(([month, revenue]) => ({ month, revenue }));
+    return entries.length > 0 ? entries : [{ month: "Atual", revenue: 0 }];
+  }, [data?.recentOrders]);
+
+  const maxRevenue = Math.max(...salesData.map((d) => d.revenue), 1);
+
   return (
     <Card>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">Receita mensal</CardTitle>
           <span className="text-sm font-semibold text-primary">
-            {formatCurrency(salesData[salesData.length - 1].revenue)}
+            {formatCurrency(salesData[salesData.length - 1]?.revenue ?? 0)}
           </span>
         </div>
-        <p className="text-xs text-muted-foreground">Últimos 6 meses</p>
+        <p className="text-xs text-muted-foreground">Dados recentes</p>
       </CardHeader>
       <CardContent>
         {/* Bar chart simples em CSS — será substituído por Recharts ou Chart.js */}

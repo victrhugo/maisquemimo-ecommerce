@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useContent, useSaveContent } from "@/hooks/use-admin";
 import { Save, Settings, ShieldAlert, Truck, MapPin } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const { toast } = useToast();
+  const { data: content } = useContent("settings");
+  const { mutateAsync: saveContent } = useSaveContent("settings");
 
   // General Settings
   const [storeName, setStoreName] = useState("Mais que Mimo");
@@ -27,8 +30,43 @@ export default function AdminSettingsPage() {
   const [state, setState] = useState("SP");
   const [zipCode, setZipCode] = useState("01234-567");
 
-  function handleSave(e: React.FormEvent) {
+  useEffect(() => {
+    if (!content) {
+      return;
+    }
+
+    try {
+      const payload = JSON.parse(content.payload);
+      setStoreName(payload.storeName ?? "");
+      setEmail(payload.email ?? "");
+      setPhone(payload.phone ?? "");
+      setCnpj(payload.cnpj ?? "");
+      setFreeShippingLimit(payload.freeShippingLimit ?? 0);
+      setMinShippingFee(payload.minShippingFee ?? 0);
+      setStreet(payload.street ?? "");
+      setCity(payload.city ?? "");
+      setState(payload.state ?? "");
+      setZipCode(payload.zipCode ?? "");
+    } catch {
+      // keep defaults
+    }
+  }, [content]);
+
+  async function handleSave(e: React.FormEvent) {
     e.preventDefault();
+    await saveContent(JSON.stringify({
+      storeName,
+      email,
+      phone,
+      cnpj,
+      freeShippingLimit,
+      minShippingFee,
+      street,
+      city,
+      state,
+      zipCode,
+    }));
+
     toast({
       title: "Configurações Salvas",
       description: "As preferências da loja foram atualizadas com sucesso.",

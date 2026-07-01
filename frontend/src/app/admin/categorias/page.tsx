@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { storeCategories as initialCategories, type StoreCategory } from "@/components/store/catalog-data";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -15,15 +13,21 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, Pencil, Trash2, FolderTree } from "lucide-react";
+import { useAdminCategories, useCreateCategory, useDeleteCategory, useUpdateCategory } from "@/hooks/use-categories";
+import type { Category } from "@/types/category";
+import { Plus, Search, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 
 export default function AdminCategoriesPage() {
   const { toast } = useToast();
-  const [categories, setCategories] = useState<StoreCategory[]>(initialCategories);
+  const { data: categoriesData } = useAdminCategories();
+  const { mutateAsync: createCategory } = useCreateCategory();
+  const { mutateAsync: updateCategory } = useUpdateCategory();
+  const { mutateAsync: deleteCategory } = useDeleteCategory();
+
   const [search, setSearch] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<StoreCategory | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   // Form states
   const [name, setName] = useState("");
@@ -31,6 +35,8 @@ export default function AdminCategoriesPage() {
   const [slug, setSlug] = useState("");
   const [imageSrc, setImageSrc] = useState("");
   const [order, setOrder] = useState(0);
+
+  const categories = categoriesData ?? [];
 
   const filteredCategories = categories.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
@@ -46,17 +52,17 @@ export default function AdminCategoriesPage() {
     setIsDialogOpen(true);
   }
 
-  function openEditDialog(category: StoreCategory) {
+  function openEditDialog(category: Category) {
     setEditingCategory(category);
     setName(category.name);
-    setDescription("Categoria de produtos de papelaria artesanal.");
-    setSlug(category.id);
-    setImageSrc(category.imageSrc);
+    setDescription(category.description || "");
+    setSlug(category.slug);
+    setImageSrc(category.imageUrl || "/images/placeholder-hero.svg");
     setOrder(categories.indexOf(category) + 1);
     setIsDialogOpen(true);
   }
 
-  function handleSave(e: React.FormEvent) {
+  async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim() || !slug.trim()) {
       toast({
@@ -68,33 +74,22 @@ export default function AdminCategoriesPage() {
     }
 
     if (editingCategory) {
-      // Edit
-      setCategories(
-        categories.map((c) =>
-          c.id === editingCategory.id
-            ? { ...c, id: slug, name, imageSrc, href: `/produtos?categoria=${slug}` }
-            : c
-        )
-      );
+      await updateCategory({
+        id: editingCategory.id,
+        payload: { name, slug, description, imageUrl: imageSrc, active: editingCategory.active },
+      });
       toast({ title: "Sucesso", description: "Categoria atualizada com sucesso!" });
     } else {
-      // Create
-      const newCat: StoreCategory = {
-        id: slug,
-        name,
-        href: `/produtos?categoria=${slug}`,
-        imageSrc: imageSrc || "/images/placeholder-hero.svg",
-      };
-      setCategories([...categories, newCat]);
+      await createCategory({ name, slug, description, imageUrl: imageSrc, active: true });
       toast({ title: "Sucesso", description: "Categoria criada com sucesso!" });
     }
 
     setIsDialogOpen(false);
   }
 
-  function handleDelete(id: string) {
+  async function handleDelete(id: string) {
     if (confirm("Tem certeza que deseja remover esta categoria?")) {
-      setCategories(categories.filter((c) => c.id !== id));
+      await deleteCategory(id);
       toast({ title: "Sucesso", description: "Categoria excluída com sucesso!" });
     }
   }
@@ -143,7 +138,7 @@ export default function AdminCategoriesPage() {
                   <td className="px-6 py-4">
                     <div className="relative h-12 w-12 overflow-hidden rounded-lg border border-[color-mix(in_srgb,var(--border)_45%,transparent)] bg-[var(--mqm-warm-100)]">
                       <Image
-                        src={c.imageSrc}
+                        src={c.imageUrl || "/images/placeholder-hero.svg"}
                         alt={c.name}
                         fill
                         className="object-cover"
@@ -155,12 +150,12 @@ export default function AdminCategoriesPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className="font-mono text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded">
-                      {c.id}
+                      {c.slug}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-center">
                     <span className="text-xs font-semibold text-[var(--mqm-olive-700)] hover:underline cursor-pointer">
-                      {c.href}
+                      {`/produtos?categoria=${c.id}`}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">

@@ -94,10 +94,10 @@ export const ProductTable: FC<ProductTableProps> = ({
               </td>
               <td className="px-4 py-3 text-xs font-mono">{product.sku}</td>
               <td className="px-4 py-3 text-right">
-                <p className="font-medium text-sm">{formatCurrency(product.price / 100)}</p>
+                <p className="font-medium text-sm">{formatCurrency(product.price)}</p>
                 {product.originalPrice && (
                   <p className="text-xs text-muted-foreground line-through">
-                    {formatCurrency(product.originalPrice / 100)}
+                    {formatCurrency(product.originalPrice)}
                   </p>
                 )}
               </td>

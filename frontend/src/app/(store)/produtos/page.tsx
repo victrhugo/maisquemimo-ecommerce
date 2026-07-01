@@ -4,8 +4,8 @@ import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ProductCard } from "@/components/store/product-card";
-import { fallbackProducts, storeCategories } from "@/components/store/catalog-data";
 import { useProducts } from "@/hooks/use-products";
+import { usePublicCategories } from "@/hooks/use-categories";
 import type { Product } from "@/types/product";
 
 type SortOption = "featured" | "price-asc" | "price-desc" | "new";
@@ -33,10 +33,24 @@ function ProductsCatalog() {
   const router = useRouter();
   const selectedCategory = searchParams.get("categoria")?.toLowerCase() ?? "";
 
+  const { data: categoriesData } = usePublicCategories();
   const [sort, setSort] = useState<SortOption>("featured");
   const { data } = useProducts(0, 48);
 
-  const products = data?.content?.length ? data.content : fallbackProducts;
+  const products = data?.content ?? [];
+
+  const categories = useMemo(() => {
+    if (!categoriesData?.length) {
+      return [];
+    }
+
+    return categoriesData.map((c) => ({
+      id: c.id,
+      name: c.name,
+      href: `/produtos?categoria=${c.id}`,
+      imageSrc: c.imageUrl || "/images/product-card-placeholder.svg",
+    }));
+  }, [categoriesData]);
 
   const filteredProducts = useMemo(() => {
     const byCategory = selectedCategory
@@ -47,7 +61,7 @@ function ProductsCatalog() {
   }, [products, selectedCategory, sort]);
 
   const activeCategoryName =
-    storeCategories.find((category) => category.id.toLowerCase() === selectedCategory)?.name ?? "Todos";
+    categories.find((category) => category.id.toLowerCase() === selectedCategory)?.name ?? "Todos";
 
   return (
     <div className="px-4 py-12 sm:px-6 sm:py-16 bg-[var(--background)]">
@@ -82,7 +96,7 @@ function ProductsCatalog() {
                 className="h-9 rounded-full border border-[color-mix(in_srgb,var(--border)_80%,transparent)] bg-[var(--mqm-warm-50)] px-4 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--mqm-olive-800)] outline-none cursor-pointer focus:border-[var(--mqm-blush-400)] transition-colors font-sans"
               >
                 <option value="">Todas</option>
-                {storeCategories.map((c) => (
+                {categories.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
                   </option>
@@ -116,11 +130,17 @@ function ProductsCatalog() {
         </div>
 
         {/* Product Grid */}
-        <section className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 animate-fade-in" aria-label="Lista de produtos">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </section>
+        {filteredProducts.length === 0 ? (
+          <div className="rounded-[1.2rem] border border-[color-mix(in_srgb,var(--border)_70%,transparent)] bg-[var(--mqm-warm-50)] px-6 py-10 text-center">
+            <p className="text-sm text-muted-foreground">Nenhum produto encontrado.</p>
+          </div>
+        ) : (
+          <section className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 animate-fade-in" aria-label="Lista de produtos">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </section>
+        )}
       </div>
     </div>
   );

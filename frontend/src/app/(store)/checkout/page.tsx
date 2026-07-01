@@ -112,17 +112,17 @@ export default function CheckoutPage() {
               <div className="mt-4 space-y-2 text-sm text-[var(--mqm-olive-800)]">
                 <div className="flex items-center justify-between">
                   <span>Subtotal</span>
-                  <span>{formatCurrency(subtotal / 100)}</span>
+                  <span>{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Frete</span>
-                  <span>{shipping === 0 ? "Gratis" : formatCurrency(shipping / 100)}</span>
+                  <span>{shipping === 0 ? "Gratis" : formatCurrency(shipping)}</span>
                 </div>
               </div>
               <div className="mt-4 border-t border-[color-mix(in_srgb,var(--border)_70%,transparent)] pt-4 text-base font-semibold text-[var(--mqm-olive-800)]">
                 <div className="flex items-center justify-between">
                   <span>Total</span>
-                  <span>{formatCurrency(total / 100)}</span>
+                  <span>{formatCurrency(total)}</span>
                 </div>
               </div>
             </aside>

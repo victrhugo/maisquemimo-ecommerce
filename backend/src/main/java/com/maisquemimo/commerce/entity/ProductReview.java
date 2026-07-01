@@ -30,9 +30,11 @@ public class ProductReview extends BaseEntity {
     private String comment;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean verified = false;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean approved = false;
 
 }

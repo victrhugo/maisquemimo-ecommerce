@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useContent, useSaveContent } from "@/hooks/use-admin";
 import { Plus, Search, Pencil, Trash2, Ticket } from "lucide-react";
 
 interface MockCoupon {
@@ -27,39 +28,12 @@ interface MockCoupon {
   usageCount: number;
 }
 
-const initialCoupons: MockCoupon[] = [
-  {
-    id: "1",
-    code: "MIMO10",
-    type: "PERCENTAGE",
-    value: 10,
-    isActive: true,
-    usageLimit: 100,
-    usageCount: 42,
-  },
-  {
-    id: "2",
-    code: "BOASVINDAS",
-    type: "FIXED",
-    value: 1500, // R$ 15,00
-    isActive: true,
-    usageLimit: 50,
-    usageCount: 18,
-  },
-  {
-    id: "3",
-    code: "FRETEGRATIS",
-    type: "PERCENTAGE",
-    value: 100, // 100% discount on shipping
-    isActive: false,
-    usageLimit: 200,
-    usageCount: 115,
-  },
-];
-
 export default function AdminCouponsPage() {
   const { toast } = useToast();
-  const [coupons, setCoupons] = useState<MockCoupon[]>(initialCoupons);
+  const { data: content } = useContent("coupons");
+  const { mutateAsync: saveContent } = useSaveContent("coupons");
+
+  const [coupons, setCoupons] = useState<MockCoupon[]>([]);
   const [search, setSearch] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<MockCoupon | null>(null);
@@ -70,6 +44,24 @@ export default function AdminCouponsPage() {
   const [value, setValue] = useState(0);
   const [isActive, setIsActive] = useState(true);
   const [usageLimit, setUsageLimit] = useState(100);
+
+  useEffect(() => {
+    if (!content) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(content.payload);
+      setCoupons(Array.isArray(parsed.coupons) ? parsed.coupons : []);
+    } catch {
+      setCoupons([]);
+    }
+  }, [content]);
+
+  async function persist(nextCoupons: MockCoupon[]) {
+    setCoupons(nextCoupons);
+    await saveContent(JSON.stringify({ coupons: nextCoupons }));
+  }
 
   const filteredCoupons = coupons.filter((c) =>
     c.code.toLowerCase().includes(search.toLowerCase())
@@ -95,7 +87,7 @@ export default function AdminCouponsPage() {
     setIsDialogOpen(true);
   }
 
-  function handleSave(e: React.FormEvent) {
+  async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     if (!code.trim() || value <= 0) {
       toast({
@@ -110,13 +102,12 @@ export default function AdminCouponsPage() {
 
     if (editingCoupon) {
       // Edit
-      setCoupons(
-        coupons.map((c) =>
+      const next = coupons.map((c) =>
           c.id === editingCoupon.id
             ? { ...c, code: code.toUpperCase(), type, value: calculatedValue, isActive, usageLimit }
             : c
-        )
-      );
+        );
+      await persist(next);
       toast({ title: "Sucesso", description: "Cupom atualizado com sucesso!" });
     } else {
       // Create
@@ -129,24 +120,23 @@ export default function AdminCouponsPage() {
         usageLimit,
         usageCount: 0,
       };
-      setCoupons([...coupons, newCoupon]);
+      await persist([...coupons, newCoupon]);
       toast({ title: "Sucesso", description: "Cupom criado com sucesso!" });
     }
 
     setIsDialogOpen(false);
   }
 
-  function handleDelete(id: string) {
+  async function handleDelete(id: string) {
     if (confirm("Tem certeza que deseja excluir este cupom?")) {
-      setCoupons(coupons.filter((c) => c.id !== id));
+      await persist(coupons.filter((c) => c.id !== id));
       toast({ title: "Sucesso", description: "Cupom excluído com sucesso!" });
     }
   }
 
-  function toggleStatus(id: string) {
-    setCoupons(
-      coupons.map((c) => (c.id === id ? { ...c, isActive: !c.isActive } : c))
-    );
+  async function toggleStatus(id: string) {
+    const next = coupons.map((c) => (c.id === id ? { ...c, isActive: !c.isActive } : c));
+    await persist(next);
     const updated = coupons.find((c) => c.id === id);
     toast({
       title: "Cupom atualizado",

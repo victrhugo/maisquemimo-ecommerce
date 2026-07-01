@@ -177,7 +177,7 @@ export function CartDrawer() {
                   {/* Subtotal Item Price */}
                   <div className="text-right shrink-0">
                     <span className="text-xs font-bold text-[var(--mqm-blush-800)]">
-                      {formatCurrency((item.price * item.quantity) / 100)}
+                      {formatCurrency(item.price * item.quantity)}
                     </span>
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export function CartDrawer() {
                 Subtotal
               </span>
               <span className="text-base font-bold text-[var(--mqm-blush-800)]">
-                {formatCurrency(subtotal / 100)}
+                {formatCurrency(subtotal)}
               </span>
             </div>
             

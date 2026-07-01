@@ -4,14 +4,13 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { ProductCard } from "@/components/store/product-card";
-import { fallbackProducts } from "@/components/store/catalog-data";
 import { useProducts } from "@/hooks/use-products";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
   const { data } = useProducts(0, 80);
 
-  const products = data?.content?.length ? data.content : fallbackProducts;
+  const products = data?.content ?? [];
 
   const results = useMemo(() => {
     const normalized = query.trim().toLowerCase();

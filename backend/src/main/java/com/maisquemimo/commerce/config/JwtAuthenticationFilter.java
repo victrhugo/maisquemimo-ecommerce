@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
  * Filtro JWT para extrair e validar tokens na requisição
  */
 @Slf4j
+@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -32,9 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = extractTokenFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && jwtService.isTokenValid(jwt)) {
+            if (StringUtils.hasText(jwt)
+                    && SecurityContextHolder.getContext().getAuthentication() == null
+                    && jwtService.isTokenValid(jwt)) {
                 String email = jwtService.extractEmail(jwt);
-                String userId = jwtService.extractUserId(jwt);
 
                 // Criar autenticação simples — em produção integrar com UserService
                 var authentication = new UsernamePasswordAuthenticationToken(

@@ -31,9 +31,11 @@ public class Category extends BaseEntity {
     private String imageUrl;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean active = true;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Product> products = new ArrayList<>();
 
 }

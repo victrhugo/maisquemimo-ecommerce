@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
-
-// TODO: substituir pelo usuário real do contexto de auth
-const mockUser = { name: "Admin Mimo", email: "admin@maisquemimo.com.br" };
+import { useAdminUsers } from "@/hooks/use-admin";
 
 export function AdminHeader() {
   const { theme, setTheme } = useTheme();
+  const { data: users } = useAdminUsers();
+  const adminUser = users?.find((u) => u.role === "ADMIN") || users?.[0] || { name: "", email: "" };
 
   return (
     <header className="flex h-16 items-center justify-between border-b border-border/80 bg-card/90 px-6 backdrop-blur-sm">
@@ -54,11 +54,11 @@ export function AdminHeader() {
         {/* User avatar */}
         <div className="flex items-center gap-2 pl-2">
           <Avatar className="h-8 w-8">
-            <AvatarFallback>{getInitials(mockUser.name)}</AvatarFallback>
+            <AvatarFallback>{getInitials(adminUser.name)}</AvatarFallback>
           </Avatar>
           <div className="hidden sm:flex flex-col leading-none">
-            <span className="text-xs font-medium text-foreground">{mockUser.name}</span>
-            <span className="text-[10px] text-muted-foreground">{mockUser.email}</span>
+            <span className="text-xs font-medium text-foreground">{adminUser.name}</span>
+            <span className="text-[10px] text-muted-foreground">{adminUser.email}</span>
           </div>
         </div>
       </div>

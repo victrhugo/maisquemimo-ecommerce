@@ -49,27 +49,35 @@ public class Product extends BaseEntity {
     private Category category;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer stockQuantity = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isNew = false;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isFeatured = false;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean active = true;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer rating = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer reviewCount = 0;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<ProductImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<ProductReview> reviews = new ArrayList<>();
 
     public boolean isInStock() {

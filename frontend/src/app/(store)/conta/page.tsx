@@ -1,78 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import { ORDER_STATUS_LABELS, type Order } from "@/types/order";
 import { formatCurrency, formatDate } from "@/lib/utils";
-
-const mockOrders: Order[] = [
-  {
-    id: "ord-1",
-    number: "MQM-120531",
-    status: "SHIPPED",
-    items: [
-      {
-        productId: "prd-1",
-        name: "Planner Semanal Amanhecer",
-        imageUrl: null,
-        price: 8990,
-        quantity: 1,
-        total: 8990,
-      },
-    ],
-    subtotal: 8990,
-    discount: 0,
-    shipping: 1900,
-    total: 10890,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    customer: {
-      name: "Cliente Mais que Mimo",
-      email: "cliente@maisquemimo.com.br",
-    },
-    shippingAddress: {
-      street: "Rua das Flores",
-      number: "120",
-      neighborhood: "Centro",
-      city: "Sao Paulo",
-      state: "SP",
-      zipCode: "01000-000",
-    },
-    trackingCode: "BR123456789",
-  },
-  {
-    id: "ord-2",
-    number: "MQM-114208",
-    status: "DELIVERED",
-    items: [
-      {
-        productId: "prd-2",
-        name: "Caderno Costura Manual Blush",
-        imageUrl: null,
-        price: 4990,
-        quantity: 2,
-        total: 9980,
-      },
-    ],
-    subtotal: 9980,
-    discount: 0,
-    shipping: 0,
-    total: 9980,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 8).toISOString(),
-    updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 6).toISOString(),
-    customer: {
-      name: "Cliente Mais que Mimo",
-      email: "cliente@maisquemimo.com.br",
-    },
-    shippingAddress: {
-      street: "Rua das Flores",
-      number: "120",
-      neighborhood: "Centro",
-      city: "Sao Paulo",
-      state: "SP",
-      zipCode: "01000-000",
-    },
-  },
-];
+import { useOrders } from "@/hooks/use-orders";
 
 export default function AccountPage() {
+  const { data: ordersData } = useOrders();
+  const orders = ordersData ?? [];
+  const customer = orders[0]?.customer;
+
   return (
     <div className="px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-6xl">
@@ -85,8 +22,8 @@ export default function AccountPage() {
           <aside className="space-y-4 lg:col-span-4">
             <article className="rounded-[1.2rem] border border-[color-mix(in_srgb,var(--border)_70%,transparent)] bg-[var(--mqm-warm-50)] p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--mqm-olive-500)]">Perfil</p>
-              <p className="mt-3 text-base font-semibold text-[var(--mqm-olive-800)]">Cliente Mais que Mimo</p>
-              <p className="text-sm text-muted-foreground">cliente@maisquemimo.com.br</p>
+              <p className="mt-3 text-base font-semibold text-[var(--mqm-olive-800)]">{customer?.name || "Cliente"}</p>
+              <p className="text-sm text-muted-foreground">{customer?.email || ""}</p>
             </article>
 
             <article className="rounded-[1.2rem] border border-[color-mix(in_srgb,var(--border)_70%,transparent)] bg-[var(--mqm-warm-50)] p-5">
@@ -106,7 +43,7 @@ export default function AccountPage() {
           </aside>
 
           <section className="space-y-4 lg:col-span-8" aria-label="Pedidos recentes">
-            {mockOrders.map((order) => (
+            {orders.map((order) => (
               <article
                 key={order.id}
                 className="rounded-[1.2rem] border border-[color-mix(in_srgb,var(--border)_70%,transparent)] bg-[var(--mqm-warm-50)] p-5"

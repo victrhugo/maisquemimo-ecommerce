@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { fallbackProducts } from "@/components/store/catalog-data";
+import { useProducts } from "@/hooks/use-products";
+import { useContent, useSaveContent } from "@/hooks/use-admin";
 import { ArrowUp, ArrowDown, Eye, EyeOff, Save, Image as ImageIcon } from "lucide-react";
 
 interface HomepageSection {
@@ -20,7 +21,7 @@ interface HomepageSection {
   selectedProductIds?: string[];
 }
 
-const initialSections: HomepageSection[] = [
+const emptySections: HomepageSection[] = [
   {
     id: "hero",
     name: "Destaque (Hero)",
@@ -70,12 +71,31 @@ const initialSections: HomepageSection[] = [
 
 export default function AdminHomepageEditor() {
   const { toast } = useToast();
-  const [sections, setSections] = useState<HomepageSection[]>(initialSections);
+  const { data: productsData } = useProducts(0, 100);
+  const { data: content } = useContent("homepage");
+  const { mutateAsync: saveContent } = useSaveContent("homepage");
+  const [sections, setSections] = useState<HomepageSection[]>([]);
 
-  function handleSave() {
+  const products = productsData?.content ?? [];
+
+  useEffect(() => {
+    if (!content) {
+      return;
+    }
+
+    try {
+      const parsed = JSON.parse(content.payload);
+      setSections(Array.isArray(parsed.sections) ? parsed.sections : emptySections);
+    } catch {
+      setSections(emptySections);
+    }
+  }, [content]);
+
+  async function handleSave() {
+    await saveContent(JSON.stringify({ sections }));
     toast({
       title: "Homepage Salva",
-      description: "As alterações da página inicial foram salvas e preparadas para sincronização futura.",
+      description: "As alterações da página inicial foram salvas com sucesso.",
     });
   }
 
@@ -223,7 +243,7 @@ export default function AdminHomepageEditor() {
                 <div className="space-y-2 border-t pt-4">
                   <Label className="text-xs">Produtos Exibidos nesta Seção</Label>
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 max-h-48 overflow-y-auto border p-3 rounded-lg bg-background">
-                    {fallbackProducts.map((p) => {
+                    {products.map((p) => {
                       const isSelected = section.selectedProductIds?.includes(p.id);
                       return (
                         <label
