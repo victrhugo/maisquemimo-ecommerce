@@ -143,37 +143,6 @@ export function HomeStory() {
 
   return (
     <div className="flex flex-col bg-[var(--background)]">
-      {/* Hero Section - Centered and compact */}
-      {(heroSection?.isVisible ?? true) && (
-      <section className="px-4 py-14 sm:px-6 sm:py-20 bg-[var(--mqm-warm-50)] text-center border-b border-[color-mix(in_srgb,var(--border)_45%,transparent)] select-none">
-        <div className="mx-auto max-w-3xl">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--mqm-olive-500)] font-sans">
-            Feito à mão • Papelaria Afetiva
-          </p>
-          <h1 className="mt-4 font-display text-[2.2rem] leading-[1.08] text-[var(--mqm-olive-800)] sm:text-[3.2rem] font-bold">
-            {topBanner?.title || heroSection?.title || "Organize a rotina com delicadeza."}
-          </h1>
-          <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-[var(--mqm-olive-700)]/85 font-sans">
-            {topBanner?.text || heroSection?.subtitle || "Produtos artesanais com design minimalista criados para trazer leveza, afeto e inspiração ao seu dia a dia."}
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              href={topBanner?.link || "/produtos"}
-              className="inline-flex h-11 items-center justify-center rounded-full bg-[var(--mqm-olive-700)] px-6 text-[10px] font-bold uppercase tracking-[0.15em] text-white transition-colors hover:bg-[var(--mqm-olive-800)] shadow-[var(--shadow-xs)] font-sans active:scale-[0.98]"
-            >
-              {topBanner?.buttonText || "Explorar produtos"}
-            </Link>
-            <Link
-              href="/produtos?categoria=planner"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-[var(--mqm-olive-400)] bg-[var(--mqm-warm-50)] px-6 text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--mqm-olive-700)] transition-colors hover:bg-[var(--mqm-blush-100)]/60 hover:text-[var(--mqm-blush-700)] hover:border-[var(--mqm-blush-300)] shadow-[var(--shadow-xs)] font-sans active:scale-[0.98]"
-            >
-              Ver Planners
-            </Link>
-          </div>
-        </div>
-      </section>
-      )}
-
       {/* Categories Section - Circular elegant items */}
       {(categoriasSection?.isVisible ?? true) && (
       <section className="px-4 py-12 sm:px-6 sm:py-16 border-b border-[color-mix(in_srgb,var(--border)_45%,transparent)] bg-[var(--background)]" id="categorias">
