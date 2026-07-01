@@ -262,3 +262,197 @@ a {
   background: var(--mqm-blush-200);
   color: var(--mqm-olive-900);
 }
+
+/* ==========================================================================
+   DESIGN SYSTEM UTILITIES (Mais que Mimo)
+   ========================================================================== */
+
+/* Spacing Scale Helpers (Múltiplos de 4px) */
+:root {
+  --space-16: 4rem; /* 64px */
+}
+
+/* Escala Tipográfica Padronizada */
+.ds-display {
+  font-family: var(--font-baloo), serif;
+  font-size: clamp(2.25rem, 6vw, 3.75rem);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.ds-h1 {
+  font-family: var(--font-baloo), serif;
+  font-size: clamp(1.85rem, 5vw, 2.5rem);
+  line-height: 1.15;
+  font-weight: 600;
+}
+
+.ds-h2 {
+  font-family: var(--font-baloo), serif;
+  font-size: clamp(1.35rem, 4vw, 1.75rem);
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+.ds-h3 {
+  font-family: var(--font-baloo), serif;
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.ds-body-large {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.ds-body {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 1rem; /* 16px */
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.ds-body-small {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.ds-caption {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ds-label {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.ds-price {
+  font-family: var(--font-baloo), serif;
+  font-size: 1.25rem; /* 20px */
+  line-height: 1;
+  font-weight: 600;
+  color: var(--mqm-olive-800);
+}
+
+.ds-price-small {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1;
+  font-weight: 400;
+  text-decoration: line-through;
+  color: var(--muted-foreground);
+}
+
+.ds-button {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.75rem; /* 12px */
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Padronização dos Botões */
+.ds-btn-base {
+  display: inline-flex;
+  height: 2.75rem; /* 44px (h-11) */
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  padding-inline: 1.5rem; /* 24px */
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.75rem; /* 12px */
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: all var(--motion-base) var(--ease-brand);
+}
+
+/* Padrão para Cards de Produto Rigorosamente Alinhados */
+.ds-product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.ds-product-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 1.8rem;
+  background-color: var(--mqm-warm-100);
+  border: 1px solid color-mix(in srgb, var(--border) 45%, transparent);
+  transition: all 500ms var(--ease-brand);
+}
+
+.ds-product-card-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-top: 1rem; /* 16px */
+  gap: 0.5rem; /* 8px */
+  padding-inline: 0.25rem; /* 4px */
+}
+
+.ds-product-card-category {
+  height: 0.875rem; /* 14px */
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.75rem; /* 12px */
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mqm-blush-600);
+  display: flex;
+  align-items: center;
+}
+
+.ds-product-card-title {
+  height: 2.75rem; /* 44px - Espaço exato para 2 linhas com 1.25 line-height */
+  font-family: var(--font-baloo), serif;
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--mqm-olive-800);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color var(--motion-fast) var(--ease-brand);
+}
+
+.ds-product-card-description {
+  height: 2.25rem; /* 36px - Espaço exato para 2 linhas com 1.35 line-height */
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--mqm-olive-700) 65%, var(--muted-foreground));
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ds-product-card-price-area {
+  height: 1.5rem; /* 24px */
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem; /* 8px */
+  margin-top: auto; /* Empurra para o fim e fixa alinhamento */
+  padding-top: 0.25rem; /* 4px */
+}

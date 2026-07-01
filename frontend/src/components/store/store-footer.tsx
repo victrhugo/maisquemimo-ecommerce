@@ -1,16 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MessageCircle, Mail, HandHeart, Camera } from "lucide-react";
-import { PhotoSlot } from "@/components/store/photo-slot";
+import { MessageCircle, Mail, Camera } from "lucide-react";
 
 const footerLinks = {
-  jornada: [
-    { href: "/produtos", label: "Explorar coleção" },
-    { href: "/produtos?categoria=presentes", label: "Presentes com afeto" },
-    { href: "/produtos?categoria=planner", label: "Organização diária" },
+  loja: [
+    { href: "/produtos", label: "Todos os produtos" },
+    { href: "/produtos?categoria=cadernos", label: "Cadernos" },
+    { href: "/produtos?categoria=planner", label: "Planners" },
+    { href: "/produtos?categoria=presentes", label: "Presentes" },
   ],
-  casa: [
-    { href: "/paginas/sobre", label: "Sobre a Mais que Mimo" },
+  ajuda: [
+    { href: "/paginas/sobre", label: "Sobre" },
     { href: "/paginas/faq", label: "Perguntas frequentes" },
     { href: "/paginas/politica-privacidade", label: "Privacidade" },
   ],
@@ -18,10 +18,10 @@ const footerLinks = {
 
 export function StoreFooter() {
   return (
-    <footer className="bg-[color-mix(in_srgb,var(--mqm-warm-200)_48%,white)]">
-      <div className="container mx-auto px-4 py-16 sm:px-6 sm:py-20">
-        <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
-          <div className="space-y-7 lg:col-span-5">
+    <footer className="border-t border-[color-mix(in_srgb,var(--border)_55%,transparent)] bg-[color-mix(in_srgb,var(--mqm-warm-200)_40%,white)]">
+      <div className="container mx-auto px-4 py-14 sm:px-6 sm:py-16">
+        <div className="grid gap-10 lg:grid-cols-12">
+          <div className="space-y-6 lg:col-span-5">
             <Link href="/" className="flex items-center gap-3 leading-none">
               <Image
                 src="/images.png"
@@ -34,9 +34,9 @@ export function StoreFooter() {
                 mais que mimo
               </span>
             </Link>
-            <p className="max-w-sm text-sm text-muted-foreground leading-relaxed">
-              A nossa loja existe para transformar detalhes cotidianos em momentos lembrados.
-              Cada coleção nasce da mesma intenção: criar beleza útil para uma rotina mais gentil.
+            <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
+              Papelaria artesanal brasileira para organizar a rotina com leveza.
+              Produtos, colecoes e presentes em uma navegacao simples.
             </p>
 
             <div className="flex items-center gap-3">
@@ -69,9 +69,9 @@ export function StoreFooter() {
           </div>
 
           <div className="lg:col-span-3">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground">Jornada</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground">Loja</h3>
             <ul className="mt-4 space-y-2.5">
-              {footerLinks.jornada.map((link) => (
+              {footerLinks.loja.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
                     {link.label}
@@ -81,10 +81,10 @@ export function StoreFooter() {
             </ul>
           </div>
 
-          <div className="lg:col-span-2">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground">A casa</h3>
+          <div className="lg:col-span-3">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground">Ajuda</h3>
             <ul className="mt-4 space-y-2.5">
-              {footerLinks.casa.map((link) => (
+              {footerLinks.ajuda.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
                     {link.label}
@@ -94,21 +94,14 @@ export function StoreFooter() {
             </ul>
           </div>
 
-          <article className="relative overflow-hidden rounded-[var(--radius-xl)] lg:col-span-2">
-            <PhotoSlot
-              className="h-48 sm:h-64"
-              label="Fotografia real da loja sera inserida aqui"
-            />
-          </article>
+          <div className="lg:col-span-1" />
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 pt-6 text-center sm:flex-row sm:text-left">
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-[color-mix(in_srgb,var(--border)_55%,transparent)] pt-6 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Mais que Mimo. Todos os direitos reservados.
           </p>
-          <p className="flex items-center gap-1 text-xs text-muted-foreground">
-            Feito com <HandHeart className="size-3 text-primary" /> para quem ama papelaria
-          </p>
+          <p className="text-xs text-muted-foreground">Pagamento seguro e envio para todo o Brasil.</p>
         </div>
       </div>
     </footer>
