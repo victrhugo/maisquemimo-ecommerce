@@ -1,2 +1,10 @@
-export { metadata } from "./(store)/page";
-export { default } from "./(store)/page";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+	title: "Início",
+};
+
+export default function RootPage() {
+	redirect("/produtos");
+}
