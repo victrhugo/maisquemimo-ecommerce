@@ -1,79 +1,97 @@
 import Link from "next/link";
-import { BookOpenText, NotebookPen, PackageOpen, PenTool, ScrollText, Sticker } from "lucide-react";
+import Image from "next/image";
 
-const categories = [
+const storeJourney = [
   {
-    slug: "cadernos",
-    label: "Cadernos",
-    description: "Coleções para escrita diária com acabamento sofisticado",
-    icon: BookOpenText,
+    title: "Logo na entrada",
+    description:
+      "Capas em tecido, papéis de gramatura alta e cores suaves em uma mesa que convida ao toque.",
+    image:
+      "https://images.unsplash.com/photo-1463320726281-696a485928c7?auto=format&fit=crop&w=1600&q=80",
+    links: [
+      { href: "/produtos?categoria=cadernos", label: "Cadernos" },
+      { href: "/produtos?categoria=planner", label: "Planners" },
+    ],
   },
   {
-    slug: "adesivos",
-    label: "Adesivos",
-    description: "Detalhes delicados para personalizar seus rituais",
-    icon: Sticker,
+    title: "No centro da loja",
+    description:
+      "Canetas, fitas e papéis especiais organizados para quem gosta de escrever com presença.",
+    image:
+      "https://images.unsplash.com/photo-1513267048331-5611cad62e41?auto=format&fit=crop&w=1600&q=80",
+    links: [
+      { href: "/produtos?categoria=canetas", label: "Canetas e marcadores" },
+      { href: "/produtos?categoria=adesivos", label: "Adesivos" },
+    ],
   },
   {
-    slug: "planner",
-    label: "Planner",
-    description: "Organização elegante para rotina, metas e autocuidado",
-    icon: ScrollText,
-  },
-  {
-    slug: "presentes",
-    label: "Presentes",
-    description: "Kits para presentear com afeto e presença",
-    icon: PackageOpen,
-  },
-  {
-    slug: "canetas",
-    label: "Canetas & Marcadores",
-    description: "Texturas e pigmentos para experiências de escrita",
-    icon: PenTool,
-  },
-  {
-    slug: "kits",
-    label: "Kits Especiais",
-    description: "Seleções autorais para elevar cada momento",
-    icon: NotebookPen,
+    title: "Antes de sair",
+    description:
+      "Embalagens e conjuntos para presentear com intenção, como quem escreve um bilhete à mão.",
+    image:
+      "https://images.unsplash.com/photo-1481391032119-d89fee407e44?auto=format&fit=crop&w=1600&q=80",
+    links: [
+      { href: "/produtos?categoria=presentes", label: "Presentes" },
+      { href: "/produtos?categoria=kits", label: "Kits" },
+    ],
   },
 ];
 
 export function FeaturedCategories() {
   return (
-    <section className="mqm-section">
+    <section className="mqm-section pt-10 sm:pt-14">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="mqm-eyebrow">Curadoria</p>
-          <h2 className="mqm-title mt-3 text-3xl font-medium sm:text-4xl">
-            Descubra por coleção
+        <div className="mx-auto mb-16 max-w-3xl text-center">
+          <p className="mqm-eyebrow">Percurso</p>
+          <h2 className="mqm-title mt-3 text-3xl font-medium leading-tight sm:text-4xl lg:text-5xl">
+            Como entrar em uma pequena loja de bairro,
+            <br className="hidden sm:block" />
+            onde cada mesa conta uma história.
           </h2>
-          <p className="mqm-copy mt-4 text-base">
-            Cada categoria foi criada para unir funcionalidade, beleza e emoção em itens de
-            papelaria feitos para durar.
+          <p className="mqm-copy mx-auto mt-5 max-w-2xl text-base">
+            Da escrita ao presente: um caminho calmo, feito de texturas, luz natural e escolhas com intenção.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => (
-            <Link
-              key={category.slug}
-              href={`/produtos?categoria=${category.slug}`}
-              className="mqm-interactive group rounded-[var(--radius-xl)] border border-border/80 bg-card p-6 shadow-[var(--shadow-sm)]"
-            >
-              <div className="flex items-start gap-4">
-                <div className="rounded-[var(--radius-md)] border border-border bg-[var(--mqm-paper-100)] p-3 text-primary">
-                  <category.icon className="size-5" />
-                </div>
-                <div>
-                  <p className="text-sm uppercase tracking-[0.12em] text-muted-foreground">Coleção</p>
-                  <h3 className="mqm-title mt-1 text-2xl">{category.label}</h3>
+        <div className="space-y-20 lg:space-y-24">
+          {storeJourney.map((step, index) => (
+            <article key={step.title} className="mqm-reveal grid items-center gap-9 lg:grid-cols-12 lg:gap-12">
+              <div className={`lg:col-span-7 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
+                <div className="relative overflow-hidden rounded-[var(--radius-xl)]">
+                  <Image
+                    src={step.image}
+                    alt={step.description}
+                    width={1400}
+                    height={900}
+                    className={`w-full object-cover ${index === 1 ? "h-[26rem] sm:h-[34rem]" : "h-[22rem] sm:h-[29rem]"}`}
+                  />
+                  {index !== 1 && (
+                    <div className="mqm-caption-chip absolute bottom-4 right-4 px-4 py-3">
+                      <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Mais que Mimo</p>
+                      <p className="text-sm text-foreground">Escolhas com calma</p>
+                    </div>
+                  )}
                 </div>
               </div>
-              <p className="mqm-copy mt-6 text-sm">{category.description}</p>
-              <p className="mt-6 text-xs uppercase tracking-[0.16em] text-primary">Explorar</p>
-            </Link>
+
+              <div className={`lg:col-span-5 ${index % 2 === 1 ? "lg:order-1" : ""}`}>
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{step.title}</p>
+                <p className="mqm-title mt-3 text-3xl leading-[1.22] sm:text-4xl">
+                  {step.description}
+                </p>
+                <div className="mt-7 flex flex-wrap gap-3">
+                  {step.links.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="inline-flex items-center text-xs uppercase tracking-[0.14em] text-primary transition-colors hover:text-foreground"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </article>
           ))}
         </div>
       </div>

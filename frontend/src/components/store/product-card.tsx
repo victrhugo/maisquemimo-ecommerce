@@ -2,10 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingBag, Star, Sparkles } from "lucide-react";
+import { Heart, ShoppingBag, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cart-store";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency, cn } from "@/lib/utils";
@@ -20,11 +19,6 @@ export function ProductCard({ product, className }: ProductCardProps) {
   const [favorited, setFavorited] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
   const { toast } = useToast();
-
-  const discount =
-    product.originalPrice
-      ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-      : null;
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
@@ -54,13 +48,13 @@ export function ProductCard({ product, className }: ProductCardProps) {
     <article className={cn("group", className)}>
       <Link href={`/produto/${product.slug}`} className="block">
         {/* Image container */}
-        <div className="relative aspect-square overflow-hidden rounded-xl bg-[var(--mqm-paper-100)]">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-lg)] bg-[var(--mqm-paper-100)]">
           {product.images?.[0]?.imageUrl ? (
             <Image
               src={product.images[0].imageUrl}
               alt={product.name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           ) : (
@@ -69,19 +63,6 @@ export function ProductCard({ product, className }: ProductCardProps) {
             </div>
           )}
 
-          {/* Badges */}
-          <div className="absolute left-2 top-2 flex flex-col gap-1">
-            {product.isNew && (
-              <Badge variant="rose" className="text-[10px]">Novo</Badge>
-            )}
-            {discount && (
-              <Badge variant="sage" className="text-[10px]">-{discount}%</Badge>
-            )}
-            {!product.inStock && (
-              <Badge variant="secondary" className="text-[10px]">Esgotado</Badge>
-            )}
-          </div>
-
           {/* Favorite button */}
           <button
             onClick={handleFavorite}
@@ -89,10 +70,10 @@ export function ProductCard({ product, className }: ProductCardProps) {
             aria-pressed={favorited}
             className={cn(
               "absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200",
-              "opacity-0 group-hover:opacity-100",
+              "opacity-100",
               favorited
                 ? "bg-secondary text-primary"
-                : "bg-white/80 text-muted-foreground hover:text-primary backdrop-blur-sm"
+                : "bg-[var(--mqm-paper-50)]/86 text-muted-foreground hover:text-primary backdrop-blur-sm"
             )}
           >
             <Heart
@@ -103,12 +84,17 @@ export function ProductCard({ product, className }: ProductCardProps) {
             />
           </button>
 
-          {/* Add to cart button — hover reveal */}
-          <div className="absolute inset-x-2 bottom-2 translate-y-2 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
+          <div className="absolute bottom-2 left-2">
+            <span className="mqm-caption-chip px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+              {product.inStock ? "Em estoque" : "Indisponível"}
+            </span>
+          </div>
+
+          <div className="absolute bottom-2 right-2">
             <Button
               size="sm"
               variant="brand"
-              className="w-full shadow-lg"
+              className="h-8 rounded-full px-3 text-[11px]"
               onClick={handleAddToCart}
               disabled={!product.inStock}
               aria-label={`Adicionar ${product.name} ao carrinho`}
@@ -126,15 +112,6 @@ export function ProductCard({ product, className }: ProductCardProps) {
             {product.name}
           </h3>
 
-          {/* Rating */}
-          {product.reviewCount > 0 && (
-            <div className="flex items-center gap-1">
-              <Star className="size-3 fill-primary text-primary" aria-hidden="true" />
-              <span className="text-xs font-medium text-foreground">{product.rating.toFixed(1)}</span>
-              <span className="text-xs text-muted-foreground">({product.reviewCount})</span>
-            </div>
-          )}
-
           {/* Price */}
           <div className="flex items-baseline gap-2 pt-0.5">
             <span className="text-base font-semibold text-foreground">
@@ -146,6 +123,10 @@ export function ProductCard({ product, className }: ProductCardProps) {
               </span>
             )}
           </div>
+
+          {!product.inStock && (
+            <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Indisponível no momento</p>
+          )}
         </div>
       </Link>
     </article>

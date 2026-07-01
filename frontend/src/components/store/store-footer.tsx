@@ -1,46 +1,40 @@
 import Link from "next/link";
+import Image from "next/image";
 import { MessageCircle, Mail, HandHeart, Camera } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 const footerLinks = {
-  loja: [
-    { href: "/produtos", label: "Todos os produtos" },
-    { href: "/produtos?categoria=novidades", label: "Novidades" },
-    { href: "/produtos?categoria=promocoes", label: "Promoções" },
-    { href: "/produtos?destaque=mais-vendidos", label: "Mais vendidos" },
+  jornada: [
+    { href: "/produtos", label: "Explorar coleção" },
+    { href: "/produtos?categoria=presentes", label: "Presentes com afeto" },
+    { href: "/produtos?categoria=planner", label: "Organização diária" },
   ],
-  ajuda: [
-    { href: "/paginas/como-comprar", label: "Como comprar" },
-    { href: "/paginas/frete-entrega", label: "Frete e entrega" },
-    { href: "/paginas/trocas-devolucoes", label: "Trocas e devoluções" },
+  casa: [
+    { href: "/paginas/sobre", label: "Sobre a Mais que Mimo" },
     { href: "/paginas/faq", label: "Perguntas frequentes" },
-  ],
-  institucional: [
-    { href: "/paginas/sobre", label: "Sobre nós" },
-    { href: "/paginas/politica-privacidade", label: "Política de privacidade" },
-    { href: "/paginas/termos-de-uso", label: "Termos de uso" },
+    { href: "/paginas/politica-privacidade", label: "Privacidade" },
   ],
 };
 
 export function StoreFooter() {
   return (
-    <footer className="border-t border-border/75 bg-[var(--mqm-paper-100)]">
-      <div className="container mx-auto px-4 py-12 sm:px-6">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          {/* Brand column */}
-          <div className="col-span-2 md:col-span-1">
+    <footer className="border-t border-border/55 bg-[var(--mqm-paper-100)]/70">
+      <div className="container mx-auto px-4 py-16 sm:px-6 sm:py-20">
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
+          <div className="space-y-7 lg:col-span-5">
             <Link href="/" className="flex flex-col leading-none">
               <span className="font-display text-xl font-medium text-primary">
                 mais que mimo
               </span>
               <span className="mt-0.5 text-[10px] text-muted-foreground tracking-[0.2em] uppercase">
-                papelaria boutique
+                escrita . afeto . presença
               </span>
             </Link>
-            <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-              Produtos que transformam o cotidiano em arte, com carinho e afeto em cada detalhe.
+            <p className="max-w-sm text-sm text-muted-foreground leading-relaxed">
+              A nossa loja existe para transformar detalhes cotidianos em momentos lembrados.
+              Cada coleção nasce da mesma intenção: criar beleza útil para uma rotina mais gentil.
             </p>
-            <div className="mt-5 flex items-center gap-3">
+
+            <div className="flex items-center gap-3">
               <a
                 href="https://www.instagram.com/_maisquemimo/"
                 target="_blank"
@@ -69,18 +63,12 @@ export function StoreFooter() {
             </div>
           </div>
 
-          {/* Loja */}
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground">
-              Loja
-            </h3>
+          <div className="lg:col-span-3">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground">Jornada</h3>
             <ul className="mt-4 space-y-2.5">
-              {footerLinks.loja.map((link) => (
+              {footerLinks.jornada.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
+                  <Link href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
                     {link.label}
                   </Link>
                 </li>
@@ -88,18 +76,12 @@ export function StoreFooter() {
             </ul>
           </div>
 
-          {/* Ajuda */}
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground">
-              Ajuda
-            </h3>
+          <div className="lg:col-span-2">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground">A casa</h3>
             <ul className="mt-4 space-y-2.5">
-              {footerLinks.ajuda.map((link) => (
+              {footerLinks.casa.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
+                  <Link href={link.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
                     {link.label}
                   </Link>
                 </li>
@@ -107,29 +89,21 @@ export function StoreFooter() {
             </ul>
           </div>
 
-          {/* Institucional */}
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground">
-              Institucional
-            </h3>
-            <ul className="mt-4 space-y-2.5">
-              {footerLinks.institucional.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <article className="relative overflow-hidden rounded-[var(--radius-xl)] lg:col-span-2">
+            <Image
+              src="https://images.unsplash.com/photo-1506617420156-8e4536971650?auto=format&fit=crop&w=900&q=80"
+              alt="Pacote de presente com fita em luz natural"
+              width={700}
+              height={880}
+              className="h-48 w-full object-cover sm:h-64"
+            />
+            <div className="mqm-caption-chip absolute bottom-3 left-3 px-3 py-2">
+              <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Presente</p>
+            </div>
+          </article>
         </div>
 
-        <Separator className="my-8" />
-
-        <div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border/60 pt-6 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Mais que Mimo. Todos os direitos reservados.
           </p>

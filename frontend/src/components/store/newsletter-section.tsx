@@ -21,35 +21,36 @@ export function NewsletterSection() {
   }
 
   return (
-    <section className="mqm-section">
+    <section className="mqm-section pb-24 pt-14 sm:pb-28 sm:pt-16">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="mx-auto max-w-3xl rounded-[var(--radius-xl)] border border-border/80 bg-card px-6 py-12 text-center shadow-[var(--shadow-md)] sm:px-10">
-          <div className="mb-4 flex justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] border border-border bg-[var(--mqm-paper-100)]">
+        <div className="mqm-reveal mx-auto max-w-3xl px-2 text-center sm:px-6">
+          <div className="mb-5 flex justify-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border/70 bg-background/70">
               <Mail className="size-5 text-primary" aria-hidden="true" />
             </div>
           </div>
 
-          <p className="mqm-eyebrow">Clube Mais que Mimo</p>
+          <p className="mqm-eyebrow">Cartas da Mais que Mimo</p>
           <h2 className="mqm-title mt-3 text-3xl font-medium sm:text-4xl">
-            Receba inspirações e lançamentos exclusivos
+            Um e-mail calmo, de tempos em tempos.
           </h2>
           <p className="mqm-copy mx-auto mt-4 max-w-xl text-base">
-            Conteúdos sazonais, novidades de coleção e convites para pré-vendas selecionadas.
+            Enviamos referências de organização, escrita, presentes e novidades da casa sem pressa,
+            sempre com a mesma linguagem da loja.
           </p>
 
           {submitted ? (
-            <div className="mt-8 flex flex-col items-center gap-3">
+            <div className="mt-8 flex flex-col items-center gap-3 rounded-[var(--radius-lg)] border border-border/65 bg-[var(--mqm-paper-100)]/60 px-6 py-7">
               <CheckCircle2 className="size-10 text-primary" aria-hidden="true" />
-              <p className="font-medium text-foreground">Cadastro confirmado com sucesso.</p>
+              <p className="font-medium text-foreground">Seu e-mail foi recebido com carinho.</p>
               <p className="text-sm text-muted-foreground">
-                Em breve você receberá nossos conteúdos mais especiais.
+                Quando houver novidades que façam sentido, elas chegam até você.
               </p>
             </div>
           ) : (
             <form
               onSubmit={handleSubmit}
-              className="mt-8 flex flex-col gap-3 sm:flex-row"
+              className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 rounded-[var(--radius-xl)] border border-border/65 bg-[var(--mqm-paper-100)]/60 p-3 sm:flex-row sm:items-center"
               aria-label="Formulário de newsletter"
             >
               <Input
@@ -59,12 +60,12 @@ export function NewsletterSection() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 aria-label="E-mail para newsletter"
-                className="h-11 flex-1"
+                className="h-11 flex-1 border-transparent bg-background"
               />
               <Button
                 type="submit"
                 loading={loading}
-                className="h-11 shrink-0 px-6"
+                className="h-11 shrink-0 rounded-full px-6"
               >
                 Quero receber
               </Button>
@@ -72,7 +73,7 @@ export function NewsletterSection() {
           )}
 
           <p className="mt-4 text-xs text-muted-foreground">
-            Sem spam. Apenas conteúdo que você vai amar. Cancele quando quiser.
+            Sem excessos. Você pode sair quando quiser.
           </p>
         </div>
       </div>

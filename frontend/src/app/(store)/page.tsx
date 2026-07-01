@@ -14,8 +14,8 @@ export default function HomePage() {
     <>
       <HeroSection />
       <FeaturedCategories />
-      <FeaturedProducts />
       <BrandValues />
+      <FeaturedProducts />
       <NewsletterSection />
     </>
   );

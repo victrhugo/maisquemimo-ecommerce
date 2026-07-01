@@ -8,11 +8,11 @@ import { useCartStore } from "@/stores/cart-store";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "/produtos", label: "Produtos" },
+  { href: "/produtos", label: "Coleção" },
   { href: "/produtos?categoria=cadernos", label: "Cadernos" },
-  { href: "/produtos?categoria=adesivos", label: "Adesivos" },
-  { href: "/produtos?categoria=planner", label: "Planner" },
+  { href: "/produtos?categoria=planner", label: "Planners" },
   { href: "/produtos?categoria=presentes", label: "Presentes" },
+  { href: "/produtos?categoria=canetas", label: "Escrita" },
 ];
 
 export function StoreHeader() {
@@ -20,28 +20,25 @@ export function StoreHeader() {
   const itemCount = useCartStore((s) => s.itemCount);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/92 backdrop-blur-xl supports-[backdrop-filter]:bg-background/85">
-      <div className="container mx-auto flex h-[4.4rem] items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-50 w-full border-b border-border/35 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/72">
+      <div className="container mx-auto flex h-[5rem] items-center justify-between px-4 sm:px-6">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 leading-none">
-          <span className="hidden h-9 w-9 rounded-full border border-border/70 bg-[var(--gradient-brand)] sm:block" />
-          <span className="flex flex-col">
-            <span className="font-display text-xl font-medium text-primary tracking-tight">
-              mais que mimo
-            </span>
-            <span className="text-[10px] text-muted-foreground tracking-[0.2em] uppercase">
-              papelaria boutique
-            </span>
+        <Link href="/" className="flex flex-col leading-none">
+          <span className="font-display text-[1.35rem] font-medium text-primary tracking-tight">
+            mais que mimo
+          </span>
+          <span className="text-[10px] text-muted-foreground tracking-[0.19em] uppercase">
+            escrita . afeto . organização
           </span>
         </Link>
 
         {/* Nav desktop */}
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Navegação principal">
+        <nav className="hidden items-center gap-9 md:flex" aria-label="Navegação principal">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors duration-[var(--motion-fast)] hover:text-foreground"
+              className="text-sm text-muted-foreground transition-colors duration-[var(--motion-fast)] hover:text-foreground"
             >
               {link.label}
             </Link>
@@ -49,20 +46,20 @@ export function StoreHeader() {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <Button variant="ghost" size="icon-sm" asChild aria-label="Buscar">
             <Link href="/busca">
               <Search className="size-5" />
             </Link>
           </Button>
 
-          <Button variant="ghost" size="icon-sm" asChild aria-label="Favoritos">
+          <Button variant="ghost" size="icon-sm" asChild aria-label="Favoritos" className="hidden sm:inline-flex">
             <Link href="/conta/favoritos">
               <Heart className="size-5" />
             </Link>
           </Button>
 
-          <Button variant="ghost" size="icon-sm" asChild aria-label="Minha conta">
+          <Button variant="ghost" size="icon-sm" asChild aria-label="Minha conta" className="hidden sm:inline-flex">
             <Link href="/conta">
               <User className="size-5" />
             </Link>

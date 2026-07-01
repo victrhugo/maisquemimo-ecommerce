@@ -62,11 +62,11 @@
   --space-12: 3rem;
 
   /* Radius tokens */
-  --radius-xs: 0.35rem;
-  --radius-sm: 0.55rem;
-  --radius-md: 0.85rem;
-  --radius-lg: 1.1rem;
-  --radius-xl: 1.5rem;
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.8rem;
+  --radius-md: 1.15rem;
+  --radius-lg: 1.65rem;
+  --radius-xl: 2.25rem;
   --radius-pill: 999px;
   --radius: var(--radius-md);
 
@@ -84,9 +84,6 @@
 
   /* Brand gradients */
   --gradient-brand: linear-gradient(140deg, var(--mqm-olive-500) 0%, var(--mqm-olive-700) 100%);
-  --gradient-soft: linear-gradient(180deg, var(--mqm-paper-50) 0%, var(--mqm-paper-100) 100%);
-  --gradient-tint: radial-gradient(circle at 10% 0%, color-mix(in srgb, var(--mqm-blush-200) 50%, transparent) 0%, transparent 42%),
-    radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--mqm-olive-100) 65%, transparent) 0%, transparent 46%);
 }
 
 .dark {
@@ -143,7 +140,7 @@
 }
 
 body {
-  background: var(--gradient-soft);
+  background: var(--background);
   color: var(--foreground);
   font-feature-settings: "ss01" on;
   text-rendering: optimizeLegibility;
@@ -156,17 +153,17 @@ a {
 }
 
 .mqm-shell {
-  background: var(--gradient-tint), var(--gradient-soft);
+  background: var(--background);
 }
 
 .mqm-surface {
   border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
-  background: color-mix(in srgb, var(--card) 92%, white);
-  box-shadow: var(--shadow-sm);
+  background: color-mix(in srgb, var(--card) 96%, white);
+  box-shadow: var(--shadow-xs);
 }
 
 .mqm-section {
-  padding-block: clamp(3rem, 7vw, 6rem);
+  padding-block: clamp(4.5rem, 9vw, 8rem);
 }
 
 .mqm-eyebrow {
@@ -185,7 +182,7 @@ a {
 
 .mqm-copy {
   color: var(--muted-foreground);
-  line-height: 1.68;
+  line-height: 1.78;
 }
 
 .mqm-grid {
@@ -195,15 +192,14 @@ a {
 
 .mqm-interactive {
   transition:
-    transform var(--motion-base) var(--ease-brand),
     box-shadow var(--motion-base) var(--ease-brand),
     border-color var(--motion-fast) var(--ease-brand),
-    background-color var(--motion-fast) var(--ease-brand);
+    background-color var(--motion-fast) var(--ease-brand),
+    opacity var(--motion-fast) var(--ease-brand);
 }
 
 .mqm-interactive:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .mqm-field {
@@ -211,6 +207,33 @@ a {
   background: color-mix(in srgb, var(--card) 90%, var(--mqm-paper-50));
   border-radius: var(--radius-pill);
   min-height: 2.8rem;
+}
+
+.mqm-organic {
+  border-radius: 42% 58% 49% 51% / 36% 42% 58% 64%;
+}
+
+.mqm-caption-chip {
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  background: color-mix(in srgb, var(--card) 94%, white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  backdrop-filter: blur(6px);
+}
+
+@keyframes mqm-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mqm-reveal {
+  animation: mqm-fade-up 680ms var(--ease-brand) both;
 }
 
 ::-webkit-scrollbar {
