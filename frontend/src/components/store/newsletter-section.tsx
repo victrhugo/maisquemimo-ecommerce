@@ -25,7 +25,7 @@ export function NewsletterSection() {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="mqm-reveal mx-auto max-w-3xl px-2 text-center sm:px-6">
           <div className="mb-5 flex justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border/70 bg-background/70">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--mqm-blush-100)] shadow-[var(--shadow-xs)]">
               <Mail className="size-5 text-primary" aria-hidden="true" />
             </div>
           </div>
@@ -40,7 +40,7 @@ export function NewsletterSection() {
           </p>
 
           {submitted ? (
-            <div className="mt-8 flex flex-col items-center gap-3 rounded-[var(--radius-lg)] border border-border/65 bg-[var(--mqm-paper-100)]/60 px-6 py-7">
+            <div className="mt-8 flex flex-col items-center gap-3 rounded-[var(--radius-lg)] bg-[color-mix(in_srgb,var(--mqm-warm-200)_50%,white)] px-6 py-7 shadow-[var(--shadow-xs)]">
               <CheckCircle2 className="size-10 text-primary" aria-hidden="true" />
               <p className="font-medium text-foreground">Seu e-mail foi recebido com carinho.</p>
               <p className="text-sm text-muted-foreground">
@@ -50,7 +50,7 @@ export function NewsletterSection() {
           ) : (
             <form
               onSubmit={handleSubmit}
-              className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 rounded-[var(--radius-xl)] border border-border/65 bg-[var(--mqm-paper-100)]/60 p-3 sm:flex-row sm:items-center"
+              className="mqm-paper-card mx-auto mt-8 flex max-w-2xl flex-col gap-3 rounded-[var(--radius-xl)] p-3 sm:flex-row sm:items-center"
               aria-label="Formulário de newsletter"
             >
               <Input
@@ -65,7 +65,7 @@ export function NewsletterSection() {
               <Button
                 type="submit"
                 loading={loading}
-                className="h-11 shrink-0 rounded-full px-6"
+                className="h-11 shrink-0 rounded-full px-7"
               >
                 Quero receber
               </Button>

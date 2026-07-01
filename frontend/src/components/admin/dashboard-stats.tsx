@@ -34,7 +34,7 @@ const stats = [
     change: +3.7,
     icon: Package,
     color: "text-[var(--mqm-olive-800)]",
-    bg: "bg-[var(--mqm-paper-200)]",
+    bg: "bg-[var(--mqm-warm-200)]",
   },
 ];
 

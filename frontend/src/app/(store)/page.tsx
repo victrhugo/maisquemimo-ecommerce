@@ -1,8 +1,4 @@
-import { HeroSection } from "@/components/store/hero-section";
-import { FeaturedCategories } from "@/components/store/featured-categories";
-import { FeaturedProducts } from "@/components/store/featured-products";
-import { BrandValues } from "@/components/store/brand-values";
-import { NewsletterSection } from "@/components/store/newsletter-section";
+import { HomeStory } from "@/components/store/home-story";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,13 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return (
-    <>
-      <HeroSection />
-      <FeaturedCategories />
-      <BrandValues />
-      <FeaturedProducts />
-      <NewsletterSection />
-    </>
-  );
+  return <HomeStory />;
 }

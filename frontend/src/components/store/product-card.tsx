@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingBag, Sparkles } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cart-store";
@@ -47,23 +47,15 @@ export function ProductCard({ product, className }: ProductCardProps) {
   return (
     <article className={cn("group", className)}>
       <Link href={`/produto/${product.slug}`} className="block">
-        {/* Image container */}
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-lg)] bg-[var(--mqm-paper-100)]">
-          {product.images?.[0]?.imageUrl ? (
-            <Image
-              src={product.images[0].imageUrl}
-              alt={product.name}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <Sparkles className="size-10 text-[var(--mqm-blush-300)]" aria-hidden="true" />
-            </div>
-          )}
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-lg)] bg-[var(--mqm-warm-200)]">
+          <Image
+            src="/images/product-card-placeholder.svg"
+            alt={`Placeholder elegante para ${product.name}`}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          />
 
-          {/* Favorite button */}
           <button
             onClick={handleFavorite}
             aria-label={favorited ? "Remover dos favoritos" : "Adicionar aos favoritos"}
@@ -73,7 +65,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
               "opacity-100",
               favorited
                 ? "bg-secondary text-primary"
-                : "bg-[var(--mqm-paper-50)]/86 text-muted-foreground hover:text-primary backdrop-blur-sm"
+                : "bg-[var(--mqm-warm-50)]/86 text-muted-foreground hover:text-primary backdrop-blur-sm"
             )}
           >
             <Heart
@@ -86,7 +78,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
           <div className="absolute bottom-2 left-2">
             <span className="mqm-caption-chip px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              {product.inStock ? "Em estoque" : "Indisponível"}
+              {product.inStock ? "Disponível" : "Indisponível"}
             </span>
           </div>
 
@@ -106,13 +98,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
         </div>
 
         {/* Info */}
-        <div className="mt-3 space-y-1 px-0.5">
-          <p className="text-xs text-muted-foreground">{product.categoryId}</p>
-          <h3 className="line-clamp-2 text-sm font-medium leading-snug text-foreground group-hover:text-primary transition-colors">
+        <div className="mt-3 space-y-1.5 px-0.5">
+          <p className="text-xs uppercase tracking-[0.13em] text-muted-foreground">{product.categoryId}</p>
+          <h3 className="line-clamp-2 font-display text-xl font-semibold leading-[1.15] text-foreground transition-colors group-hover:text-primary">
             {product.name}
           </h3>
 
-          {/* Price */}
           <div className="flex items-baseline gap-2 pt-0.5">
             <span className="text-base font-semibold text-foreground">
               {formatCurrency(product.price / 100)}

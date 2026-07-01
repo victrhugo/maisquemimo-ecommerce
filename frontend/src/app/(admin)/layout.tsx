@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--mqm-paper-100)]/60">
+    <div className="flex h-screen overflow-hidden bg-[color-mix(in_srgb,var(--mqm-warm-200)_45%,white)]">
       <AdminSidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
         <AdminHeader />

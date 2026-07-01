@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MessageCircle, Mail, HandHeart, Camera } from "lucide-react";
+import { PhotoSlot } from "@/components/store/photo-slot";
 
 const footerLinks = {
   jornada: [
@@ -17,16 +18,20 @@ const footerLinks = {
 
 export function StoreFooter() {
   return (
-    <footer className="border-t border-border/55 bg-[var(--mqm-paper-100)]/70">
+    <footer className="bg-[color-mix(in_srgb,var(--mqm-warm-200)_48%,white)]">
       <div className="container mx-auto px-4 py-16 sm:px-6 sm:py-20">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
           <div className="space-y-7 lg:col-span-5">
-            <Link href="/" className="flex flex-col leading-none">
-              <span className="font-display text-xl font-medium text-primary">
+            <Link href="/" className="flex items-center gap-3 leading-none">
+              <Image
+                src="/images.png"
+                alt="Logo Mais que Mimo"
+                width={44}
+                height={44}
+                className="h-11 w-11 rounded-full object-cover shadow-[var(--shadow-sm)]"
+              />
+              <span className="font-display text-2xl font-semibold text-primary">
                 mais que mimo
-              </span>
-              <span className="mt-0.5 text-[10px] text-muted-foreground tracking-[0.2em] uppercase">
-                escrita . afeto . presença
               </span>
             </Link>
             <p className="max-w-sm text-sm text-muted-foreground leading-relaxed">
@@ -40,7 +45,7 @@ export function StoreFooter() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary/35 hover:text-primary"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--mqm-warm-50)] text-muted-foreground shadow-[var(--shadow-xs)] transition-colors hover:text-primary"
               >
                 <Camera className="size-4" />
               </a>
@@ -49,14 +54,14 @@ export function StoreFooter() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary/35 hover:text-primary"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--mqm-warm-50)] text-muted-foreground shadow-[var(--shadow-xs)] transition-colors hover:text-primary"
               >
                 <MessageCircle className="size-4" />
               </a>
               <a
                 href="mailto:oi@maisquemimo.com.br"
                 aria-label="E-mail"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary/35 hover:text-primary"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--mqm-warm-50)] text-muted-foreground shadow-[var(--shadow-xs)] transition-colors hover:text-primary"
               >
                 <Mail className="size-4" />
               </a>
@@ -90,20 +95,14 @@ export function StoreFooter() {
           </div>
 
           <article className="relative overflow-hidden rounded-[var(--radius-xl)] lg:col-span-2">
-            <Image
-              src="https://images.unsplash.com/photo-1506617420156-8e4536971650?auto=format&fit=crop&w=900&q=80"
-              alt="Pacote de presente com fita em luz natural"
-              width={700}
-              height={880}
-              className="h-48 w-full object-cover sm:h-64"
+            <PhotoSlot
+              className="h-48 sm:h-64"
+              label="Fotografia real da loja sera inserida aqui"
             />
-            <div className="mqm-caption-chip absolute bottom-3 left-3 px-3 py-2">
-              <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Presente</p>
-            </div>
           </article>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border/60 pt-6 text-center sm:flex-row sm:text-left">
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 pt-6 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Mais que Mimo. Todos os direitos reservados.
           </p>

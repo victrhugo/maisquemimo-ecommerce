@@ -1,0 +1,8 @@
+<svg width="1300" height="840" viewBox="0 0 1300 840" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1300" height="840" rx="60" fill="#F8F3EA"/>
+  <rect x="120" y="120" width="1060" height="600" rx="58" fill="#FFFDF8"/>
+  <rect x="220" y="240" width="860" height="110" rx="55" fill="#DA959B" fill-opacity="0.24"/>
+  <rect x="220" y="390" width="620" height="110" rx="55" fill="#C7D39E" fill-opacity="0.55"/>
+  <rect x="220" y="540" width="740" height="110" rx="55" fill="#626D3D" fill-opacity="0.16"/>
+  <text x="220" y="205" fill="#556033" font-size="32" font-family="Nunito, sans-serif" font-weight="700">produto 2</text>
+</svg>
