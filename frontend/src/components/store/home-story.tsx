@@ -3,108 +3,269 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Heart, Sparkles, BookOpen, PenTool, Gift, Mail, Check, AlignLeft } from "lucide-react";
+import { ArrowRight, Heart, Sparkles, PenTool, Gift, Mail, Check, Star } from "lucide-react";
 import { PhotoSlot } from "@/components/store/photo-slot";
 import { Button } from "@/components/ui/button";
+import { ProductCard } from "@/components/store/product-card";
+import { useNewProducts, useFeaturedProducts } from "@/hooks/use-products";
+import type { Product } from "@/types/product";
 
-const featuredItems = [
+// Categorias com imagens de background, descrição e links afetivos
+const categoriesList = [
   {
-    id: "1",
-    name: "Planner Semanal Amanhecer",
-    category: "Planners",
-    description: "Capa em tecido de linho oliva, miolo em papel pólen 90g e espaço reservado para intenções semanais.",
-    price: "R$ 89,90",
-    imageLabel: "Fotografia do Planner Amanhecer em mesa com luz da manhã",
+    id: "planners",
+    name: "Planners",
+    description: "Espaço para rituais e intenções",
     href: "/produtos?categoria=planner",
+    imageLabel: "Planejador aberto cercado por flores secas e luz do sol",
+    imageSrc: "/images/category-2.svg"
   },
   {
-    id: "2",
-    name: "Caderno Costura Manual A5",
-    category: "Cadernos",
-    description: "Encadernação artesanal exposta, capa dura em tom blush e folhas pontilhadas livres para desenhar caminhos.",
-    price: "R$ 49,90",
-    imageLabel: "Detalhe da costura exposta do Caderno Blush A5",
+    id: "cadernos",
+    name: "Cadernos",
+    description: "Linho e costura que abre em 180°",
     href: "/produtos?categoria=cadernos",
+    imageLabel: "Pilha de cadernos de linho colorido com costura exposta",
+    imageSrc: "/images/category-1.svg"
   },
   {
-    id: "3",
-    name: "Kit Caligrafia Afeto",
-    category: "Presentes",
-    description: "Caneta gel com escrita fluida, bloco de notas de algodão e fita de algodão desfiada para amarrar ideias.",
-    price: "R$ 34,90",
-    imageLabel: "Composição com kit de escrita e ramos de lavanda secos",
+    id: "kits",
+    name: "Kits de Presente",
+    description: "Curadoria pronta para entregar carinho",
+    href: "/produtos?categoria=kits",
+    imageLabel: "Caixa kraft aberta com embrulho de seda e flores",
+    imageSrc: "/images/category-3.svg"
+  },
+  {
+    id: "presentes",
+    name: "Presentes",
+    description: "Lembranças com profundo significado",
     href: "/produtos?categoria=presentes",
-  },
-];
-
-const drawers = [
-  {
-    id: "organizar",
-    label: "Organizar a mente",
-    title: "Planners & Diários para o seu próprio tempo.",
-    description: "Nossos planners não cobram produtividade. Eles oferecem um refúgio de papel para que suas tarefas ganhem leveza e suas intenções encontrem espaço para florescer.",
-    items: ["Planners anuais sem data", "Blocos de notas semanais", "Diários de escrita reflexiva"],
-    href: "/produtos?categoria=planner",
-    cta: "Explorar planners",
-    imageLabel: "Organizador semanal cercado por flores secas e xícara de chá",
+    imageLabel: "Mão amarrando laço de algodão em caixa de presente",
+    imageSrc: "/images/manifesto-gift.svg"
   },
   {
-    id: "rabiscar",
-    label: "Escrever memórias",
-    title: "Cadernos que guardam e dão forma a ideias.",
-    description: "Capas em tecidos naturais e costura que abre em 180° com suavidade. Papéis de alta gramatura escolhidos para que a tinta de sua caneta deslize sem pressa e sem atravessar.",
-    items: ["Cadernos pautados em linho", "Cadernos pontilhados para projetos", "Sketchbooks de folhas lisas"],
-    href: "/produtos?categoria=cadernos",
-    cta: "Ver coleção de cadernos",
-    imageLabel: "Mão segurando caneta escrevendo em caderno de linho aberto",
-  },
-  {
-    id: "presentear",
-    label: "Gesto de presente",
-    title: "Mimos para lembrar a alguém que ela é querida.",
-    description: "Dar um presente é escrever um bilhete de afeto no mundo. Criamos conjuntos e caixas prontas com curadoria especial, ideais para abraçar a rotina de quem você ama.",
-    items: ["Caixas de presente completas", "Conjuntos combinados de escrita", "Cartões com envelopes artesanais"],
-    href: "/produtos?categoria=presentes",
-    cta: "Explorar presentes",
-    imageLabel: "Caixa de presente amarrada com laço de algodão desfiado",
-  },
-  {
-    id: "customizar",
-    label: "Detalhes de afeto",
-    title: "Papelaria criativa que perfuma o dia.",
-    description: "Os pequenos complementos que dão personalidade: fitas de linho, selos de cera, marcadores de página magnéticos e adesivos botânicos pintados em aquarela.",
-    items: ["Fitas e carimbos artesanais", "Adesivos em aquarela", "Clips dourados e acessórios"],
+    id: "canetas",
+    name: "Escrita & Canetas",
+    description: "Tinta macia para desacelerar a rotina",
     href: "/produtos?categoria=canetas",
-    cta: "Ver escrita e mimos",
-    imageLabel: "Espalho de adesivos florais e carimbo de lacre de cera",
+    imageLabel: "Coleção de canetas de metal com clipe dourado e blocos",
+    imageSrc: "/images/manifesto-desk.svg"
   },
+  {
+    id: "adesivos",
+    name: "Adesivos",
+    description: "Ilustrações botânicas em aquarela",
+    href: "/produtos?categoria=adesivos",
+    imageLabel: "Cartelas de adesivos botânicos pintados em aquarela",
+    imageSrc: "/images/product-card-placeholder.svg"
+  }
 ];
 
-const guestbookNotes = [
+// Fallback de Lançamentos se a API estiver vazia/offline
+const fallbackNewProducts: Product[] = [
   {
-    text: "Abrir a caixa da Mais que Mimo parece um ritual de cuidado. O perfume delicado, o capricho na fita de linho e a sensação de que cada detalhe foi embrulhado pensando em me acolher.",
-    author: "Mariana S.",
-    location: "São Paulo",
-    rotation: "-rotate-1",
+    id: "new-1",
+    name: "Planner Semanal Amanhecer",
+    slug: "planner-semanal-amanhecer",
+    description: "Capa em linho oliva, miolo em papel pólen 90g com espaço para rituais e intenções semanais.",
+    price: 8990,
+    originalPrice: null,
+    categoryId: "planners",
+    stockQuantity: 15,
+    sku: "PLN-AMN-01",
+    rating: 5,
+    reviewCount: 12,
+    isNew: true,
+    isFeatured: false,
+    active: true,
+    inStock: true,
+    images: [{ id: "img-n1", imageUrl: "/images/product-1.svg", displayOrder: 1 }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    text: "Meu planner virou meu refúgio dos domingos. Planejo a semana tomando um chá com calma e olhando as páginas de papel polén. Minha rotina ficou mais bonita e gentil.",
-    author: "Beatriz M.",
-    location: "Rio de Janeiro",
-    rotation: "rotate-2",
+    id: "new-2",
+    name: "Caderno Costura Manual Blush",
+    slug: "caderno-costura-manual-blush",
+    description: "Encadernação artesanal copta exposta com linha de algodão encerada e capa dura em tom rosé.",
+    price: 4990,
+    originalPrice: null,
+    categoryId: "cadernos",
+    stockQuantity: 8,
+    sku: "CAD-BLS-02",
+    rating: 5,
+    reviewCount: 8,
+    isNew: true,
+    isFeatured: false,
+    active: true,
+    inStock: true,
+    images: [{ id: "img-n2", imageUrl: "/images/product-2.svg", displayOrder: 1 }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
-    text: "Comprei um kit de escrita para presentear uma amiga especial e ela chorou com o bilhete que vocês escreveram à mão. É muito lindo ver uma marca que vende carinho de verdade.",
-    author: "Letícia R.",
-    location: "Curitiba",
-    rotation: "-rotate-2",
+    id: "new-3",
+    name: "Caneta Gel Caligrafia Ouro",
+    slug: "caneta-gel-caligrafia-ouro",
+    description: "Escrita extrafina e macia com tinta gel preta resistente à água e clipe metálico dourado.",
+    price: 1990,
+    originalPrice: 2490,
+    categoryId: "canetas",
+    stockQuantity: 20,
+    sku: "CAN-GEL-GD",
+    rating: 4.8,
+    reviewCount: 15,
+    isNew: true,
+    isFeatured: false,
+    active: true,
+    inStock: true,
+    images: [{ id: "img-n3", imageUrl: "/images/product-3.svg", displayOrder: 1 }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
+  {
+    id: "new-4",
+    name: "Kit de Adesivos Botânica",
+    slug: "kit-de-adesivos-botanica",
+    description: "Cartela contendo 24 adesivos ilustrados em aquarela com motivos florais e folhagens para o seu diário.",
+    price: 1490,
+    originalPrice: null,
+    categoryId: "adesivos",
+    stockQuantity: 30,
+    sku: "KIT-AD-BOT",
+    rating: 5,
+    reviewCount: 22,
+    isNew: true,
+    isFeatured: false,
+    active: true,
+    inStock: true,
+    images: [{ id: "img-n4", imageUrl: "/images/product-card-placeholder.svg", displayOrder: 1 }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+];
+
+// Fallback de Mais Vendidos se a API estiver vazia/offline
+const fallbackFeaturedProducts: Product[] = [
+  {
+    id: "feat-1",
+    name: "Planner Anual Coleção Calmaria",
+    slug: "planner-anual-colecao-calmaria",
+    description: "Planejador completo de 12 meses com capa dura em tecido oliva e marcadores de página de gorgorão.",
+    price: 11990,
+    originalPrice: null,
+    categoryId: "planners",
+    stockQuantity: 5,
+    sku: "PLN-AN-CALM",
+    rating: 5,
+    reviewCount: 31,
+    isNew: false,
+    isFeatured: true,
+    active: true,
+    inStock: true,
+    images: [{ id: "img-f1", imageUrl: "/images/product-2.svg", displayOrder: 1 }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: "feat-2",
+    name: "Caderno Pautado Alecrim A5",
+    slug: "caderno-pautado-alecrim-a5",
+    description: "Folhas pautadas em papel pólen de alta gramatura, perfeito para escrita com caneta tinteiro.",
+    price: 4590,
+    originalPrice: null,
+    categoryId: "cadernos",
+    stockQuantity: 12,
+    sku: "CAD-ALE-A5",
+    rating: 4.9,
+    reviewCount: 18,
+    isNew: false,
+    isFeatured: true,
+    active: true,
+    inStock: true,
+    images: [{ id: "img-f2", imageUrl: "/images/product-1.svg", displayOrder: 1 }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: "feat-3",
+    name: "Kit de Escrita Calmaria Completo",
+    slug: "kit-de-escrita-calmaria-completo",
+    description: "Composição contendo caderno de bolso, bloco de anotações pautado, caneta metálica e sachê perfumado.",
+    price: 7990,
+    originalPrice: 8990,
+    categoryId: "kits",
+    stockQuantity: 3,
+    sku: "KIT-ESC-CALM",
+    rating: 5,
+    reviewCount: 10,
+    isNew: false,
+    isFeatured: true,
+    active: true,
+    inStock: true,
+    images: [{ id: "img-f3", imageUrl: "/images/product-3.svg", displayOrder: 1 }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: "feat-4",
+    name: "Caixa Presente Afeto e Aromas",
+    slug: "caixa-presente-afeto-e-aromas",
+    description: "O presente perfeito para quem precisa pausar. Caixa rígida, planner de mesa, caneta e buquê de lavanda.",
+    price: 9890,
+    originalPrice: null,
+    categoryId: "presentes",
+    stockQuantity: 7,
+    sku: "PRES-AFT-ARM",
+    rating: 5,
+    reviewCount: 14,
+    isNew: false,
+    isFeatured: true,
+    active: true,
+    inStock: true,
+    images: [{ id: "img-f4", imageUrl: "/images/product-card-placeholder.svg", displayOrder: 1 }],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+];
+
+// Fotos de Lifestyle (Instagram Showcase)
+const instagramPhotos = [
+  {
+    id: 1,
+    label: "Uma xícara de café fumegante ao lado de um planner aberto sobre mesa de madeira rústica",
+  },
+  {
+    id: 2,
+    label: "Mão escrevendo com caneta dourada sobre papel de linho sob luz lateral da janela",
+  },
+  {
+    id: 3,
+    label: "Ramos de flores secas e rolos de fitas de algodão desfiados em potes de cerâmica clara",
+  },
+  {
+    id: 4,
+    label: "Caixa kraft de presente sendo selada artesanalmente com lacre de cera vermelha",
+  }
 ];
 
 export function HomeStory() {
-  const [activeDrawer, setActiveDrawer] = useState("organizar");
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
   const [emailInput, setEmailInput] = useState("");
+
+  // Queries dinâmicas de produtos
+  const { data: newProductsData } = useNewProducts(4);
+  const { data: featuredProductsData } = useFeaturedProducts(4);
+
+  // Fallbacks graciosos se a API estiver vazia ou offline
+  const newProductsList = newProductsData?.content?.length 
+    ? newProductsData.content 
+    : fallbackNewProducts;
+    
+  const featuredProductsList = featuredProductsData?.content?.length 
+    ? featuredProductsData.content 
+    : fallbackFeaturedProducts;
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,375 +275,295 @@ export function HomeStory() {
     }
   };
 
-  const currentDrawer = drawers.find((d) => d.id === activeDrawer) || drawers[0];
-
   return (
-    <div className="flex flex-col overflow-hidden">
-      {/* SEÇÃO 1: O UMBRAL (A Entrada da Loja) */}
-      <section className="relative px-4 pt-12 pb-20 sm:px-6 sm:pt-16 sm:pb-24 lg:pt-20">
+    <div className="flex flex-col overflow-hidden bg-[var(--background)]">
+      
+      {/* 1. HERO EMOCIONAL + DIRECIONAMENTO */}
+      <section className="relative px-4 pt-14 pb-20 sm:px-6 sm:pt-20 sm:pb-28">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mqm-reveal flex flex-col items-center">
-            {/* Logo emoldurada de forma artística e delicada */}
+            
+            {/* Logo integrada em círculo animado delicado */}
             <div className="relative mb-6 p-2">
-              <div className="absolute inset-0 rounded-full border border-dashed border-[color-mix(in_srgb,var(--mqm-blush-300)_50%,transparent)] animate-[spin_60s_linear_infinite]" />
+              <div className="absolute inset-0 rounded-full border border-dashed border-[color-mix(in_srgb,var(--mqm-blush-300)_50%,transparent)] animate-[spin_80s_linear_infinite]" />
               <Image
                 src="/images.png"
                 alt="Logo Mais que Mimo"
-                width={130}
-                height={130}
+                width={124}
+                height={124}
                 priority
-                className="h-28 w-28 rounded-full object-cover shadow-[var(--shadow-sm)]"
+                className="h-24 w-24 rounded-full object-cover shadow-[var(--shadow-xs)]"
               />
             </div>
             
-            <p className="font-cursive text-3xl text-[var(--mqm-olive-600)] tracking-wide">
+            <p className="font-cursive text-2xl text-[var(--mqm-olive-600)] tracking-wide">
               papelaria afetiva
             </p>
             
-            <h1 className="mqm-title mt-4 text-[2.2rem] font-medium leading-[1.1] text-[var(--mqm-olive-800)] sm:text-5xl lg:text-[4rem]">
+            <h1 className="mqm-title mt-4 text-[2.25rem] font-medium leading-[1.08] text-[var(--mqm-olive-800)] sm:text-5xl lg:text-[4.2rem]">
               A porta está encostada.
               <br />
-              <span className="font-cursive text-[2.6rem] text-[var(--mqm-blush-600)] font-normal sm:text-[3.8rem] lg:text-[5rem]">
+              <span className="font-cursive text-[2.7rem] text-[var(--mqm-blush-600)] font-normal sm:text-[3.9rem] lg:text-[5.2rem]">
                 Entre sem pressa.
               </span>
             </h1>
             
             <p className="mqm-copy mx-auto mt-6 max-w-xl text-base text-[var(--mqm-olive-800)]/80 sm:text-lg">
-              Um refúgio delicado para quem gosta de rabiscar memórias, acalmar os pensamentos e fazer o tempo correr no ritmo suave do coração.
+              Um refúgio delicado para quem gosta de organizar os pensamentos, rabiscar memórias e viver os rituais simples da escrita manual.
             </p>
 
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link
-                href="/produtos"
-                className="inline-flex h-11 items-center justify-center rounded-full bg-[var(--mqm-olive-700)] px-6 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-[var(--shadow-xs)] transition-all duration-[var(--motion-base)] hover:bg-[var(--mqm-olive-800)] hover:shadow-[var(--shadow-sm)]"
+            {/* CTA Emocional + Botão de Descida para Loja */}
+            <div className="mt-9 flex flex-col items-center gap-3">
+              <a
+                href="#categorias"
+                className="inline-flex h-11 items-center justify-center rounded-full bg-[var(--mqm-olive-700)] px-7 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-[var(--shadow-xs)] transition-all duration-[var(--motion-base)] hover:bg-[var(--mqm-olive-800)] hover:translate-y-px"
               >
-                Passear pela papelaria
-              </Link>
-              <Link
-                href="/produtos?categoria=presentes"
-                className="inline-flex h-11 items-center justify-center rounded-full border border-[color-mix(in_srgb,var(--mqm-olive-200)_60%,transparent)] bg-[color-mix(in_srgb,var(--mqm-warm-50)_85%,transparent)] px-6 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mqm-olive-800)] transition-all duration-[var(--motion-base)] hover:bg-[var(--mqm-blush-100)]"
-              >
-                Montar um presente
-              </Link>
+                Conhecer a papelaria
+              </a>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest animate-bounce mt-2">
+                Descubra abaixo
+              </span>
             </div>
           </div>
 
-          {/* Fotografia da vitrine elegante da papelaria */}
-          <div className="mqm-reveal mt-12 sm:mt-16">
+          {/* Fotografia Principal (Vitrine da papelaria) */}
+          <div className="mqm-reveal mt-12">
             <PhotoSlot 
-              className="aspect-[16/7] min-h-[14rem] sm:min-h-[22rem] mqm-organic rounded-[3.5rem_2rem_3.5rem_2rem] shadow-[var(--shadow-xs)]" 
-              label="Visão de entrada: Mesa de pinus com luz lateral iluminando cadernos e buquê de lavandas"
+              className="aspect-[16/7] min-h-[14rem] sm:min-h-[22rem] mqm-organic rounded-[3rem_1.5rem_3rem_1.5rem] shadow-[var(--shadow-xs)]" 
+              label="Mesa de pinus decorada com planners, cadernos abertos e ramos de lavandas sob luz natural"
             />
           </div>
         </div>
       </section>
 
-      {/* SEÇÃO 2: A MESA DE ENTRADA (Vitrine Assimétrica) */}
-      <section className="relative px-4 py-16 sm:px-6 sm:py-24 bg-[color-mix(in_srgb,var(--mqm-warm-200)_35%,transparent)]">
+
+      {/* 2. GRADE DE CATEGORIAS (Clareza Operacional) */}
+      <section id="categorias" className="relative px-4 py-16 sm:px-6 sm:py-24 border-t border-[color-mix(in_srgb,var(--border)_40%,transparent)] scroll-mt-6">
         <div className="mx-auto max-w-5xl">
-          <div className="mb-12 text-center sm:text-left">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--mqm-olive-500)]">Curadoria de Detalhes</p>
-            <h2 className="mqm-title mt-2 text-3xl font-semibold leading-tight text-[var(--mqm-olive-800)] sm:text-4xl">
-              Três peças para viver no cotidiano
+          <div className="mb-12 text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--mqm-olive-500)]">Escolhas por Intenção</p>
+            <h2 className="mqm-title mt-2 text-3xl font-semibold text-[var(--mqm-olive-800)]">
+              Explore nossos caminhos de papel
             </h2>
-            <p className="mqm-copy mt-3 max-w-xl text-base text-[var(--mqm-olive-700)]/70">
-              Itens selecionados não para preencher uma prateleira vazia, mas para dar textura e presença aos seus momentos de pausa.
+            <p className="mqm-copy mx-auto mt-3 max-w-md text-sm text-[var(--mqm-olive-700)]/70">
+              Selecione o formato ideal para acolher sua rotina, suas anotações ou para presentear quem você ama.
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-3 md:gap-6">
-            {featuredItems.map((item, index) => (
-              <article 
-                key={item.id} 
-                className={`flex flex-col bg-[var(--mqm-warm-50)] p-5 rounded-[2rem] border border-[color-mix(in_srgb,var(--border)_50%,transparent)] shadow-[var(--shadow-xs)] transition-transform duration-[var(--motion-slow)] hover:-translate-y-1.5 ${
-                  index === 1 ? "md:translate-y-8" : index === 2 ? "md:translate-y-4" : ""
-                }`}
+          <div className="grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            {categoriesList.map((category) => (
+              <Link 
+                key={category.id} 
+                href={category.href}
+                className="group flex flex-col items-center text-center"
               >
-                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.3rem_1.3rem_0.8rem_0.8rem]">
-                  <PhotoSlot 
-                    label={item.imageLabel} 
-                    className="h-full w-full absolute inset-0"
+                {/* Imagem circular da categoria com zoom sutil */}
+                <div className="relative h-28 w-28 sm:h-32 sm:w-32 overflow-hidden rounded-full border border-[color-mix(in_srgb,var(--border)_60%,transparent)] bg-[var(--mqm-warm-100)] shadow-[var(--shadow-xs)] transition-transform duration-[var(--motion-base)] group-hover:scale-[1.03]">
+                  <Image
+                    src={category.imageSrc}
+                    alt={category.name}
+                    fill
+                    className="object-cover transition-transform duration-500 ease-brand group-hover:scale-105"
                   />
-                  <span className="absolute top-3 left-3 bg-[var(--mqm-warm-100)] border border-[color-mix(in_srgb,var(--border)_70%,transparent)] rounded-full px-3 py-1 text-[10px] uppercase font-bold tracking-wider text-[var(--mqm-olive-600)] shadow-sm">
-                    {item.category}
-                  </span>
+                  <div className="absolute inset-0 bg-black/[0.02]" />
                 </div>
                 
-                <div className="mt-5 flex flex-col flex-1">
-                  <h3 className="font-display text-xl font-semibold text-[var(--mqm-olive-800)] leading-snug">
-                    {item.name}
-                  </h3>
-                  <p className="mt-2 text-sm text-[var(--mqm-olive-700)]/75 leading-relaxed flex-1">
-                    {item.description}
-                  </p>
-                  
-                  <div className="mt-5 pt-4 border-t border-[color-mix(in_srgb,var(--border)_40%,transparent)] flex items-center justify-between">
-                    <span className="text-lg font-display font-medium text-[var(--mqm-olive-800)]">
-                      {item.price}
-                    </span>
-                    <Link
-                      href={item.href}
-                      className="group flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--mqm-olive-700)] transition-colors hover:text-[var(--mqm-blush-700)]"
-                    >
-                      Segurar na mão
-                      <ArrowRight className="size-3.5 transition-transform duration-[var(--motion-fast)] group-hover:translate-x-1" />
-                    </Link>
-                  </div>
-                </div>
-              </article>
+                <h3 className="font-display text-base font-semibold text-[var(--mqm-olive-800)] mt-4 transition-colors group-hover:text-[var(--mqm-blush-700)]">
+                  {category.name}
+                </h3>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1 px-1">
+                  {category.description}
+                </p>
+              </Link>
             ))}
           </div>
-          
-          <div className="mt-16 md:mt-24 text-center">
+        </div>
+      </section>
+
+
+      {/* 3. LANÇAMENTOS (Novidades Recentes) */}
+      <section className="relative px-4 py-16 sm:px-6 sm:py-24 bg-[color-mix(in_srgb,var(--mqm-warm-200)_30%,transparent)]">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div className="text-left">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--mqm-olive-500)]">Frescos do Ateliê</p>
+              <h2 className="mqm-title mt-2 text-3xl font-semibold text-[var(--mqm-olive-800)]">
+                Novidades na bancada
+              </h2>
+              <p className="mqm-copy mt-2 max-w-md text-sm text-[var(--mqm-olive-700)]/70">
+                Itens recém-tirados de nossas mesas de costura e prensas, prontos para estrear em sua mesa.
+              </p>
+            </div>
+            
             <Link
               href="/produtos"
-              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[var(--mqm-olive-700)] transition-colors hover:text-[var(--mqm-blush-700)]"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--mqm-olive-700)] hover:text-[var(--mqm-blush-700)] transition-colors self-start sm:self-auto"
             >
-              Ver toda a nossa mesa de produtos
-              <ArrowRight className="size-4" />
+              Ver todas as novidades
+              <ArrowRight className="size-3.5" />
             </Link>
           </div>
-        </div>
-      </section>
 
-      {/* SEÇÃO 3: O ARMÁRIO DE SENTIMENTOS (Abas interativas das gavetas) */}
-      <section className="relative px-4 py-16 sm:px-6 sm:py-24">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-10 text-center">
-            <p className="font-cursive text-2xl text-[var(--mqm-blush-600)]">o armário da papelaria</p>
-            <h2 className="mqm-title mt-1 text-3xl font-semibold text-[var(--mqm-olive-800)] sm:text-4xl">
-              Abra a gaveta de intenções
-            </h2>
-            <p className="mqm-copy mx-auto mt-3 max-w-md text-base text-[var(--mqm-olive-700)]/70">
-              Criamos uma organização que respeita sua sensibilidade. O que você gostaria de acolher hoje em sua vida?
-            </p>
-          </div>
-
-          {/* Abas horizontais no celular / Grid de Gavetas no Desktop */}
-          <div className="flex flex-wrap justify-center gap-2 p-1.5 bg-[var(--mqm-warm-100)] rounded-full border border-[color-mix(in_srgb,var(--border)_60%,transparent)] max-w-2xl mx-auto mb-10">
-            {drawers.map((drawer) => (
-              <button
-                key={drawer.id}
-                onClick={() => setActiveDrawer(drawer.id)}
-                className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-full transition-all duration-[var(--motion-base)] ${
-                  activeDrawer === drawer.id
-                    ? "bg-[var(--mqm-olive-700)] text-white shadow-sm"
-                    : "text-[var(--mqm-olive-700)] hover:bg-[var(--mqm-blush-100)]"
-                }`}
-              >
-                {drawer.label}
-              </button>
+          <div className="grid gap-6 grid-cols-2 md:grid-cols-4">
+            {newProductsList.map((product) => (
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
-
-          {/* Conteúdo da Gaveta Ativa */}
-          <div className="bg-[var(--mqm-warm-50)] rounded-[2.5rem] border border-[color-mix(in_srgb,var(--border)_50%,transparent)] p-6 sm:p-10 shadow-[var(--shadow-sm)] transition-all duration-[var(--motion-base)]">
-            <div className="grid gap-8 md:grid-cols-12 md:items-center">
-              <div className="md:col-span-5 order-2 md:order-1">
-                <p className="text-[10px] uppercase font-bold tracking-widest text-[var(--mqm-blush-600)] bg-[var(--mqm-blush-100)] rounded-full px-3 py-1 inline-block mb-4">
-                  {currentDrawer.label}
-                </p>
-                <h3 className="font-display text-2xl sm:text-3xl font-semibold text-[var(--mqm-olive-800)] leading-tight">
-                  {currentDrawer.title}
-                </h3>
-                <p className="mt-4 text-sm sm:text-base text-[var(--mqm-olive-700)]/80 leading-relaxed">
-                  {currentDrawer.description}
-                </p>
-                
-                <ul className="mt-6 space-y-2.5">
-                  {currentDrawer.items.map((item, idx) => (
-                    <li key={idx} className="flex items-center gap-2.5 text-xs text-[var(--mqm-olive-800)]/85">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--mqm-olive-100)] text-[var(--mqm-olive-700)]">
-                        <Check className="size-3" />
-                      </span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mt-8">
-                  <Button asChild variant="brand" className="rounded-full shadow-xs">
-                    <Link href={currentDrawer.href} className="gap-2">
-                      {currentDrawer.cta}
-                      <ArrowRight className="size-4" />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-
-              <div className="md:col-span-7 order-1 md:order-2">
-                <PhotoSlot 
-                  className="aspect-[4/3] w-full min-h-[14rem] sm:min-h-[18rem] mqm-organic rounded-[2rem_3.5rem_2rem_3.5rem] shadow-inner" 
-                  label={currentDrawer.imageLabel}
-                />
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* SEÇÃO 4: O CANTO DE ESCRITA (Ateliê e Manifesto) */}
+
+      {/* 4. COLEÇÃO ESPECIAL (Destaque Calmaria Editorial) */}
       <section className="relative px-4 py-16 sm:px-6 sm:py-24 bg-[var(--mqm-olive-50)]">
         <div className="mx-auto max-w-5xl">
-          <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
-            {/* Bloco de imagem da escrivaninha */}
-            <div className="lg:col-span-6">
+          <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
+            
+            {/* Imagem grande e afetiva do Ensaio */}
+            <div className="lg:col-span-7">
               <div className="relative p-2">
-                {/* Detalhe flutuante de papel craft */}
-                <div className="absolute -top-3 -left-3 h-10 w-10 border-t-2 border-l-2 border-[var(--mqm-blush-300)]" />
+                <div className="absolute top-0 left-0 h-8 w-8 border-t-2 border-l-2 border-[var(--mqm-blush-300)]" />
                 <PhotoSlot
-                  className="aspect-[4/5] min-h-[20rem] sm:min-h-[28rem] rounded-[3rem_1rem_3rem_1rem] shadow-[var(--shadow-md)]"
-                  label="Detalhe em close-up: Tinteiro vintage, ponta de caneta tinteiro molhada e escrita cursiva secando sobre papel encorpado"
+                  className="aspect-[16/10] min-h-[16rem] sm:min-h-[22rem] rounded-[2.5rem_1.2rem_2.5rem_1.2rem] shadow-[var(--shadow-xs)]"
+                  label="Ensaio Coleção Calmaria: Tecidos de linho tingidos com plantas, carimbos manuais de ramos e caderno aberto cercado por folhas de sálvia"
                 />
-                <div className="absolute -bottom-3 -right-3 h-10 w-10 border-b-2 border-r-2 border-[var(--mqm-blush-300)]" />
+                <div className="absolute bottom-0 right-0 h-8 w-8 border-b-2 border-r-2 border-[var(--mqm-blush-300)]" />
               </div>
             </div>
 
-            {/* Bloco do manifesto da escrita */}
-            <div className="lg:col-span-6 flex flex-col justify-center">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--mqm-olive-600)]">O Rito do Silêncio</p>
-              <h2 className="mqm-title mt-2 text-3xl font-semibold leading-tight text-[var(--mqm-olive-800)] sm:text-4xl lg:text-[2.6rem]">
-                Escrever é criar um cantinho para si mesma.
+            {/* Texto editorial e emocional com link focado */}
+            <div className="lg:col-span-5 flex flex-col justify-center text-left">
+              <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--mqm-blush-600)] bg-[var(--mqm-blush-100)] rounded-full px-3 py-1 inline-block self-start mb-4">
+                Edição Limitada
+              </span>
+              
+              <h2 className="mqm-title text-3xl font-semibold leading-tight text-[var(--mqm-olive-800)] sm:text-4xl">
+                Coleção Calmaria
               </h2>
               
-              <div className="mt-6 space-y-4 text-base text-[var(--mqm-olive-800)]/85 leading-relaxed">
-                <p>
-                  O ruído das teclas, a pressa das notificações, as listas de tarefas intermináveis que piscam no telefone. Nós convidamos você para um caminho diferente.
-                </p>
-                <p>
-                  A costura do caderno que se abre totalmente plano na mesa, a textura encorpada de folhas prontas para acolher medos e sonhos, o som sutil da tinta deslizando. A escrita à mão não é uma obrigação do dia; é um abraço íntimo na própria mente.
-                </p>
-              </div>
+              <p className="mt-4 text-sm text-[var(--mqm-olive-800)]/85 leading-relaxed">
+                Um conjunto completo de planners, blocos e canetas concebidos para acalmar os dias barulhentos. Utilizamos tecidos 100% de linho cru com tingimento natural e papéis de fibras vegetais recicladas. O toque é macio e cada peça carrega pequenas irregularidades que contam o tempo de sua manufatura.
+              </p>
+              
+              <p className="mt-3 font-cursive text-2xl text-[var(--mqm-blush-700)]">
+                Rabiscos sem pressa, pensamentos organizados.
+              </p>
 
-              {/* Assinatura poética simulando carimbo manuscrito */}
-              <div className="mt-8 flex items-center gap-4">
-                <span className="h-10 w-10 rounded-full bg-[var(--mqm-blush-200)]/50 flex items-center justify-center text-[var(--mqm-blush-700)]">
-                  <Heart className="size-5 fill-[var(--mqm-blush-500)]/30 text-[var(--mqm-blush-600)]" />
-                </span>
-                <div>
-                  <p className="font-cursive text-2xl text-[var(--mqm-blush-700)] leading-none">
-                    Com carinho,
-                  </p>
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--mqm-olive-700)] mt-1">
-                    Equipe Mais que Mimo
-                  </p>
-                </div>
+              <div className="mt-7">
+                <Button asChild variant="brand" className="rounded-full shadow-xs">
+                  <Link href="/produtos?categoria=kits" className="gap-2">
+                    Explorar Coleção Calmaria
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
               </div>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* SEÇÃO 5: A ARTE DE PRESENTEAR (Gesto de Cuidado) */}
+
+      {/* 5. MAIS VENDIDOS (Os Favoritos da Casa) */}
       <section className="relative px-4 py-16 sm:px-6 sm:py-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[var(--mqm-olive-500)]">Ritual de Embrulho</p>
-          <h2 className="mqm-title mt-2 text-3xl font-semibold text-[var(--mqm-olive-800)] sm:text-4xl">
-            Como enviamos o seu carinho
-          </h2>
-          <p className="mqm-copy mx-auto mt-4 max-w-xl text-base text-[var(--mqm-olive-700)]/70">
-            Não jogamos caixas em sacos plásticos cinzas. Cada embrulho é composto de pequenos toques delicados que mostram respeito a quem vai receber.
-          </p>
-
-          <div className="mt-12 grid gap-8 sm:grid-cols-3">
-            <div className="flex flex-col items-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--mqm-blush-100)] text-[var(--mqm-blush-600)] shadow-sm">
-                <Gift className="size-6" />
-              </div>
-              <h3 className="font-display text-lg font-semibold text-[var(--mqm-olive-800)] mt-4">1. Curadoria do Mimo</h3>
-              <p className="text-sm text-[var(--mqm-olive-700)]/75 mt-2 max-w-[15rem] leading-relaxed">
-                Você escolhe as peças e nós organizamos em uma caixa rígida, aninhada em papel de seda macio.
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div className="text-left">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--mqm-olive-500)]">Escolhas das Clientes</p>
+              <h2 className="mqm-title mt-2 text-3xl font-semibold text-[var(--mqm-olive-800)]">
+                Os queridinhos da casa
+              </h2>
+              <p className="mqm-copy mt-2 max-w-md text-sm text-[var(--mqm-olive-700)]/70">
+                Os produtos que mais acompanham xícaras de café e escritas reflexivas pelo país.
               </p>
             </div>
-
-            <div className="flex flex-col items-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--mqm-olive-100)] text-[var(--mqm-olive-600)] shadow-sm">
-                <PenTool className="size-6" />
-              </div>
-              <h3 className="font-display text-lg font-semibold text-[var(--mqm-olive-800)] mt-4">2. Bilhete Escrito à Mão</h3>
-              <p className="text-sm text-[var(--mqm-olive-700)]/75 mt-2 max-w-[15rem] leading-relaxed">
-                Você dita as palavras no carrinho e nós transcrevemos em um cartão elegante com caneta tinteiro.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--mqm-blush-200)]/30 text-[var(--mqm-blush-700)] shadow-sm">
-                <Sparkles className="size-6" />
-              </div>
-              <h3 className="font-display text-lg font-semibold text-[var(--mqm-olive-800)] mt-4">3. Aroma & Ramos</h3>
-              <p className="text-sm text-[var(--mqm-olive-700)]/75 mt-2 max-w-[15rem] leading-relaxed">
-                Perfumamos o interior com nossa essência floral e finalizamos com um ramo de lavandas secas.
-              </p>
-            </div>
+            
+            <Link
+              href="/produtos"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--mqm-olive-700)] hover:text-[var(--mqm-blush-700)] transition-colors self-start sm:self-auto"
+            >
+              Ver toda a coleção
+              <ArrowRight className="size-3.5" />
+            </Link>
           </div>
 
-          <div className="mt-12">
-            <PhotoSlot 
-              className="aspect-[16/6] min-h-[12rem] sm:min-h-[18rem] mqm-organic rounded-[2rem] shadow-xs max-w-3xl mx-auto"
-              label="Composição visual da caixa aberta, com papel de seda blush amassado, flores secas e tag carimbada à mão"
-            />
-          </div>
-
-          <div className="mt-8">
-            <Button asChild variant="brand" className="rounded-full">
-              <Link href="/produtos?categoria=presentes" className="gap-2">
-                Conhecer nossos Kits Presente
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* SEÇÃO 6: O LIVRO DE VISITAS (Depoimentos em Papel) */}
-      <section className="relative px-4 py-16 sm:px-6 sm:py-24 bg-[color-mix(in_srgb,var(--mqm-warm-200)_25%,transparent)]">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-12 text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--mqm-olive-500)]">Caderno de Notas</p>
-            <h2 className="mqm-title mt-2 text-3xl font-semibold text-[var(--mqm-olive-800)] sm:text-4xl">
-              Quem já sentiu nosso carinho
-            </h2>
-            <p className="mqm-copy mx-auto mt-3 max-w-md text-base text-[var(--mqm-olive-700)]/70">
-              Palavras gentis que recebemos de pessoas reais que encontraram um momento de aconchego nas páginas dos nossos cadernos.
-            </p>
-          </div>
-
-          {/* Cards espalhados de forma assimétrica simulando recortes de papel de carta */}
-          <div className="grid gap-6 md:grid-cols-3">
-            {guestbookNotes.map((note, idx) => (
-              <article
-                key={idx}
-                className={`bg-[var(--mqm-warm-50)] p-6 rounded-[1.5rem] border border-[color-mix(in_srgb,var(--border)_50%,transparent)] shadow-[0_8px_16px_-6px_rgba(90,98,50,0.06)] transform transition-transform duration-[var(--motion-base)] hover:rotate-0 hover:scale-[1.02] ${note.rotation}`}
-              >
-                <div className="relative">
-                  {/* Detalhe de linhas pautadas leves no fundo */}
-                  <div className="absolute inset-0 bg-[linear-gradient(rgba(121,138,73,0.05)_1px,transparent_1px)] bg-[size:100%_1.5rem] pointer-events-none" />
-                  
-                  <Heart className="size-4 text-[var(--mqm-blush-400)] mb-3 fill-[var(--mqm-blush-200)]/20" />
-                  
-                  <p className="text-sm font-sans text-[var(--mqm-olive-800)]/90 leading-[1.65] relative z-10 italic">
-                    &ldquo;{note.text}&rdquo;
-                  </p>
-                  
-                  <div className="mt-5 pt-3 border-t border-[color-mix(in_srgb,var(--border)_45%,transparent)] flex flex-col relative z-10">
-                    <span className="font-cursive text-xl text-[var(--mqm-olive-700)] leading-none">
-                      {note.author}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground tracking-wider uppercase mt-1">
-                      {note.location}
-                    </span>
-                  </div>
-                </div>
-              </article>
+          <div className="grid gap-6 grid-cols-2 md:grid-cols-4">
+            {featuredProductsList.map((product) => (
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* SEÇÃO 7: CARTAS DA PAPELARIA (Newsletter minimalista) */}
-      <section className="relative px-4 py-16 sm:px-6 sm:py-24">
+
+      {/* 6. MANIFESTO DA MARCA (Conexão e Calma) */}
+      <section className="relative px-4 py-12 sm:px-6 sm:py-16 border-y border-[color-mix(in_srgb,var(--border)_45%,transparent)] bg-[color-mix(in_srgb,var(--mqm-warm-100)_20%,transparent)]">
+        <div className="mx-auto max-w-3xl text-center">
+          <Heart className="size-5 text-[var(--mqm-blush-400)] mb-4 mx-auto fill-[var(--mqm-blush-200)]/30" />
+          <h2 className="mqm-title text-2xl font-semibold text-[var(--mqm-olive-800)] sm:text-3xl leading-snug">
+            Organização também é um gesto de carinho.
+          </h2>
+          <p className="mqm-copy mx-auto mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-[var(--mqm-olive-700)]/85">
+            Acreditamos em uma rotina mais gentil. Desenvolvemos papéis que acolhem pensamentos, costuras manuais que desaceleram o ritmo do dia e embalagens repletas de presença. Mais que objetos físicos, criamos companheiros para a jornada de autodescoberta.
+          </p>
+          <p className="font-cursive text-2xl text-[var(--mqm-blush-600)] mt-4">
+            Feito para quem valoriza os detalhes das pequenas pausas.
+          </p>
+        </div>
+      </section>
+
+
+      {/* 7. INSTAGRAM SHOWCASE (Vitrinas do Cotidiano) */}
+      <section className="relative px-4 py-16 sm:px-6 sm:py-20">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-10 text-center">
+            <div className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--mqm-blush-100)] text-[var(--mqm-blush-600)] mb-3 shadow-xs">
+              <svg
+                className="size-4.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
+            </div>
+            <h2 className="mqm-title text-2xl font-semibold text-[var(--mqm-olive-800)]">
+              No ateliê e no cotidiano
+            </h2>
+            <p className="mqm-copy mx-auto mt-2 max-w-md text-sm text-[var(--mqm-olive-700)]/70">
+              Acompanhe nosso trabalho manual e inspire-se com composições de escrivaninha reais.
+            </p>
+          </div>
+
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+            {instagramPhotos.map((photo) => (
+              <div key={photo.id} className="relative aspect-square overflow-hidden rounded-[1.8rem] border border-[color-mix(in_srgb,var(--border)_50%,transparent)] group">
+                <PhotoSlot 
+                  className="h-full w-full absolute inset-0 rounded-none shadow-none" 
+                  label={photo.label}
+                />
+                {/* Overlay sutil ao hover simulando instagram */}
+                <div className="absolute inset-0 bg-[var(--mqm-olive-900)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--mqm-olive-800)] bg-white/95 rounded-full px-4 py-1.5 shadow-sm">
+                    Ver Atmosfera
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+      {/* 8. CARTAS DA PAPELARIA (Newsletter minimalista e afetiva) */}
+      <section className="relative px-4 py-14 pb-24 sm:px-6 sm:py-16 sm:pb-28">
         <div className="mx-auto max-w-3xl">
           <div className="relative bg-[var(--mqm-warm-50)] p-8 sm:p-12 rounded-[2.5rem] border border-[color-mix(in_srgb,var(--border)_60%,transparent)] shadow-[var(--shadow-sm)] text-center">
+            
             {/* Detalhe estético de envelope antigo */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-[var(--mqm-blush-200)] flex items-center justify-center text-[var(--mqm-blush-700)] shadow-xs">
               <Mail className="size-5" />
@@ -497,7 +578,7 @@ export function HomeStory() {
             </h2>
             
             <p className="mqm-copy mx-auto mt-4 max-w-lg text-sm sm:text-base leading-relaxed text-[var(--mqm-olive-700)]/85">
-              Não enviamos cupons com relógios piscando ou e-mails promocionais invasivos. Enviamos crônicas de papelaria, pensamentos sobre organização calma e rituais de escrita. Uma conversa suave para acompanhar sua xícara de café.
+              Não enviamos cupons barulhentos ou alertas de e-commerce invasivos. Compartilhamos crônicas de papelaria, pensamentos sobre organização gentil e sugestões de leitura e escrita. Uma conversa leve para ler tomando seu café.
             </p>
 
             <div className="mt-8 max-w-md mx-auto">
@@ -539,6 +620,7 @@ export function HomeStory() {
           </div>
         </div>
       </section>
+
     </div>
   );
 }

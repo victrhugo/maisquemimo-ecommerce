@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cart-store";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency, cn } from "@/lib/utils";
@@ -24,13 +23,16 @@ export function ProductCard({ product, className }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     if (!product.inStock) return;
+    
+    const imageUrl = product.images?.[0]?.imageUrl ?? "/images/product-card-placeholder.svg";
     addItem({
       productId: product.id,
       name: product.name,
       slug: product.slug,
       price: product.price,
-      imageUrl: product.images?.[0]?.imageUrl ?? '',
+      imageUrl: imageUrl,
     });
+    
     toast({
       title: "Adicionado ao carrinho!",
       description: product.name,
@@ -44,80 +46,79 @@ export function ProductCard({ product, className }: ProductCardProps) {
     setFavorited(!favorited);
   }
 
+  const imageSrc = product.images?.[0]?.imageUrl || "/images/product-card-placeholder.svg";
+
   return (
-    <article className={cn("group", className)}>
-      <Link href={`/produto/${product.slug}`} className="block">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-lg)] bg-[var(--mqm-warm-200)]">
+    <article className={cn("group flex flex-col h-full", className)}>
+      <Link href={`/produto/${product.slug}`} className="flex flex-col h-full">
+        {/* Imagem do Produto */}
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.8rem] bg-[var(--mqm-warm-100)] border border-[color-mix(in_srgb,var(--border)_45%,transparent)] transition-all duration-500 group-hover:shadow-[var(--shadow-xs)]">
           <Image
-            src="/images/product-card-placeholder.svg"
-            alt={`Placeholder elegante para ${product.name}`}
+            src={imageSrc}
+            alt={product.name}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            className="object-cover transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-[1.03]"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
 
+          {/* Botão de Favoritar - sutil */}
           <button
             onClick={handleFavorite}
             aria-label={favorited ? "Remover dos favoritos" : "Adicionar aos favoritos"}
             aria-pressed={favorited}
             className={cn(
-              "absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full transition-all duration-200",
-              "opacity-100",
+              "absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full transition-all duration-[var(--motion-base)]",
               favorited
-                ? "bg-secondary text-primary"
-                : "bg-[var(--mqm-warm-50)]/86 text-muted-foreground hover:text-primary backdrop-blur-sm"
+                ? "bg-[var(--mqm-blush-100)] text-[var(--mqm-blush-700)] shadow-xs"
+                : "bg-[var(--mqm-warm-50)]/90 text-[var(--mqm-olive-500)] hover:text-primary hover:bg-white shadow-xs backdrop-blur-xs opacity-0 group-hover:opacity-100"
             )}
           >
             <Heart
               className={cn(
                 "size-4 transition-all",
-                favorited && "fill-primary"
+                favorited && "fill-[var(--mqm-blush-600)] text-[var(--mqm-blush-600)]"
               )}
             />
           </button>
 
-          <div className="absolute bottom-2 left-2">
-            <span className="mqm-caption-chip px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              {product.inStock ? "Disponível" : "Indisponível"}
-            </span>
-          </div>
-
-          <div className="absolute bottom-2 right-2">
-            <Button
-              size="sm"
-              variant="brand"
-              className="h-8 rounded-full px-3 text-[11px]"
-              onClick={handleAddToCart}
-              disabled={!product.inStock}
-              aria-label={`Adicionar ${product.name} ao carrinho`}
-            >
-              <ShoppingBag className="size-3.5" />
-              {product.inStock ? "Adicionar" : "Esgotado"}
-            </Button>
-          </div>
+          {/* Tag de ESGOTADO discreta na foto */}
+          {!product.inStock && (
+            <div className="absolute inset-0 bg-black/5 flex items-center justify-center backdrop-blur-[1px]">
+              <span className="bg-white/95 border border-[var(--border)] rounded-full px-4 py-1.5 text-[10px] uppercase font-bold tracking-wider text-[var(--mqm-olive-600)] shadow-sm">
+                Esgotado
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* Info */}
-        <div className="mt-3 space-y-1.5 px-0.5">
-          <p className="text-xs uppercase tracking-[0.13em] text-muted-foreground">{product.categoryId}</p>
-          <h3 className="line-clamp-2 font-display text-xl font-semibold leading-[1.15] text-foreground transition-colors group-hover:text-primary">
+        {/* Info - Sem categoria acima do nome, e com espaçamentos elegantes */}
+        <div className="mt-4 flex flex-col flex-1 px-1">
+          <h3 className="line-clamp-2 font-display text-lg font-semibold leading-[1.25] text-[var(--mqm-olive-800)] transition-colors group-hover:text-[var(--mqm-olive-600)]">
             {product.name}
           </h3>
 
-          <div className="flex items-baseline gap-2 pt-0.5">
-            <span className="text-base font-semibold text-foreground">
-              {formatCurrency(product.price / 100)}
-            </span>
-            {product.originalPrice && (
-              <span className="text-xs text-muted-foreground line-through">
-                {formatCurrency(product.originalPrice / 100)}
+          <div className="mt-1.5 flex items-baseline justify-between gap-2">
+            <div className="flex items-baseline gap-2">
+              <span className="text-sm font-semibold text-[var(--mqm-olive-900)]">
+                {formatCurrency(product.price / 100)}
               </span>
+              {product.originalPrice && (
+                <span className="text-xs text-muted-foreground line-through font-normal">
+                  {formatCurrency(product.originalPrice / 100)}
+                </span>
+              )}
+            </div>
+
+            {/* Link de compra discreto que aparece no hover ou fixa-se no mobile */}
+            {product.inStock && (
+              <button
+                onClick={handleAddToCart}
+                className="text-[10px] font-bold uppercase tracking-widest text-[var(--mqm-olive-700)] hover:text-[var(--mqm-blush-700)] border-b border-[color-mix(in_srgb,var(--mqm-olive-300)_50%,transparent)] hover:border-[var(--mqm-blush-400)] pb-0.5 transition-all duration-[var(--motion-fast)]"
+              >
+                + Adicionar
+              </button>
             )}
           </div>
-
-          {!product.inStock && (
-            <p className="text-xs uppercase tracking-[0.14em] text-muted-foreground">Indisponível no momento</p>
-          )}
         </div>
       </Link>
     </article>
